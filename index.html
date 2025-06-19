@@ -1339,7 +1339,7 @@
                         <li>All fields marked with * are required</li>
                         <li>Wall dimensions must be between 1 and 10000 cm</li>
                         <li>Line thickness must be between 1 and 200 cm</li>
-                        <li>Line ratio must be between 0.1 and 10</li>
+                        <li>Line ratio must be between 0.5 and 5</li>
                         <li>Wardrobe/Window dimensions must be positive numbers</li>
                     </ul>
                 </div>
@@ -1383,7 +1383,8 @@
 
                         <div class="input-group">
                             <label for="lineRatio" class="required">Line Width Ratio (Coloured:White):</label>
-                            <input type="number" id="lineRatio" name="lineRatio" value="1" min="0.1" max="10" step="0.1" required onchange="updateLineConfigOptions(); calculateAndVisualize()">
+                            <input type="number" id="lineRatio" name="lineRatio" value="1" min="0.5" max="5" step="0.5" required onchange="updateLineConfigOptions(); calculateAndVisualize()">
+                            <div class="validation-message">Please enter a value between 0.5 and 5 in steps of 0.5</div>
                             <div class="validation-message">Please enter a ratio between 0.1 and 10</div>
                             <div class="help-text">
                                 1 = equal widths, 0.5 = coloured half width of white, 2 = coloured twice width of white
