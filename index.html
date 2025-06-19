@@ -299,6 +299,31 @@
             h1 {
                 font-size: 1.5rem;
             }
+            
+            /* Smaller mobile devices - more flexible for aspect ratios */
+            #wall-container {
+                min-height: 120px;
+                max-height: 220px; /* Allow reasonable height for tall walls */
+                min-width: 200px;
+                max-width: 280px; /* Constrain max width on small mobile */
+                box-sizing: border-box;
+            }
+            
+            /* Override data-height attributes for very small screens */
+            #wall-container[data-height="small"] { 
+                min-height: 130px;
+            }
+            #wall-container[data-height="medium"] { 
+                min-height: 150px;
+            }
+            #wall-container[data-height="large"] { 
+                min-height: 170px;
+            }
+            
+            .calculator-visualization {
+                padding: 0.75rem;
+                min-height: 180px; /* Adjust for small screens but allow tall walls */
+            }
         }
         
         label {
@@ -740,10 +765,10 @@
             animation: spin 1s linear infinite;
         }
         
-        /* Dynamic wall height classes */
-        .wall-container[data-height="small"] { height: 200px; max-height: 200px; }
-        .wall-container[data-height="medium"] { height: 300px; max-height: 300px; }
-        .wall-container[data-height="large"] { height: 400px; max-height: 400px; }
+        /* Dynamic wall height classes - now more flexible */
+        .wall-container[data-height="small"] { min-height: 140px; }
+        .wall-container[data-height="medium"] { min-height: 180px; }
+        .wall-container[data-height="large"] { min-height: 220px; }
         
         /* Collapsible content state improvements */
         .collapsible-content {
@@ -783,7 +808,7 @@
         }
         
         #wall-container {
-            width: 100%;
+            max-width: 100%; /* Allow flexible width */
             border: 3px solid var(--text-color);
             display: flex;
             overflow: hidden;
@@ -791,7 +816,12 @@
             background-color: var(--section-bg);
             border-radius: var(--border-radius);
             position: relative;
-            margin: 0;
+            margin: 0 auto; /* Center the container */
+            height: 250px; /* Default height - will be overridden by JavaScript */
+            width: 400px; /* Default width - will be overridden by JavaScript */
+            min-height: 150px;
+            min-width: 200px;
+            max-height: 450px; /* Allow for tall walls on desktop */
         }
         
         .line {
@@ -980,7 +1010,7 @@
             flex-direction: column;
             justify-content: flex-start;
             align-items: center;
-            padding: 0;
+            padding: 1rem;
             background-color: var(--container-bg);
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
@@ -988,6 +1018,8 @@
             height: fit-content;
             align-self: flex-start;
             width: 100%;
+            min-height: 200px; /* Ensure minimum height */
+            overflow: visible; /* Allow content to determine size */
         }
         
         .calculator-results {
@@ -1016,11 +1048,35 @@
             .calculator-visualization {
                 margin-bottom: 1rem;
                 padding: 1rem;
+                min-height: 200px; /* Increase to accommodate taller walls */
             }
             
             .calculator-controls {
                 height: auto;
                 overflow-y: visible;
+            }
+            
+            /* Mobile-specific wall container styles */
+            #wall-container {
+                min-height: 120px;
+                max-height: 280px; /* Allow taller walls on mobile */
+                min-width: 250px;
+                max-width: 350px; /* Constrain max width on mobile */
+                /* Maintain aspect ratio based on actual wall proportions */
+                aspect-ratio: auto;
+                /* Ensure proper border-box sizing */
+                box-sizing: border-box;
+            }
+            
+            /* Override the data-height attributes for mobile - more flexible */
+            #wall-container[data-height="small"] { 
+                min-height: 140px;
+            }
+            #wall-container[data-height="medium"] { 
+                min-height: 160px;
+            }
+            #wall-container[data-height="large"] { 
+                min-height: 180px;
             }
         }
         
@@ -1874,10 +1930,52 @@
             // Set wall container to normal state
             wallContainer.className = 'wall-container';
             
-            // Set appropriate height class based on wall height
-            if (wallHeightCm <= 200) {
+            // Calculate and set proper aspect ratio based on actual wall dimensions
+            const wallAspectRatio = wallLengthCm / wallHeightCm;
+            
+            // Set container dimensions based on aspect ratio and screen size
+            const isMobile = window.innerWidth <= 768;
+            const isSmallMobile = window.innerWidth <= 600;
+            
+            let containerWidth, containerHeight;
+            
+            // Define maximum available space for the visualization
+            const maxAvailableWidth = isMobile ? (isSmallMobile ? 280 : 350) : 500;
+            const maxAvailableHeight = isMobile ? (isSmallMobile ? 220 : 280) : 400;
+            
+            if (wallAspectRatio >= 1) {
+                // Wall is wider than it is tall (width >= height)
+                containerWidth = Math.min(maxAvailableWidth, maxAvailableHeight * wallAspectRatio);
+                containerHeight = containerWidth / wallAspectRatio;
+            } else {
+                // Wall is taller than it is wide (height > width)
+                containerHeight = Math.min(maxAvailableHeight, maxAvailableWidth / wallAspectRatio);
+                containerWidth = containerHeight * wallAspectRatio;
+            }
+            
+            // Ensure minimum sizes for usability
+            const minWidth = isMobile ? (isSmallMobile ? 200 : 250) : 300;
+            const minHeight = isMobile ? (isSmallMobile ? 120 : 150) : 180;
+            
+            if (containerWidth < minWidth) {
+                containerWidth = minWidth;
+                containerHeight = containerWidth / wallAspectRatio;
+            }
+            if (containerHeight < minHeight) {
+                containerHeight = minHeight;
+                containerWidth = containerHeight * wallAspectRatio;
+            }
+            
+            // Apply the calculated dimensions
+            wallContainer.style.width = `${Math.round(containerWidth)}px`;
+            wallContainer.style.height = `${Math.round(containerHeight)}px`;
+            wallContainer.style.maxWidth = `${Math.round(containerWidth)}px`;
+            wallContainer.style.maxHeight = `${Math.round(containerHeight)}px`;
+            
+            // Set appropriate height class based on calculated height for CSS compatibility
+            if (containerHeight <= 160) {
                 wallContainer.setAttribute('data-height', 'small');
-            } else if (wallHeightCm <= 300) {
+            } else if (containerHeight <= 250) {
                 wallContainer.setAttribute('data-height', 'medium');
             } else {
                 wallContainer.setAttribute('data-height', 'large');
