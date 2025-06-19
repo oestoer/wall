@@ -79,7 +79,8 @@
             content: '▼';
             font-size: 0.8rem;
             margin-left: auto;
-            transition: transform 0.2s ease;
+            transition: transform 0.3s ease;
+            transform-origin: center;
         }
         
         .section details:not([open]) summary::after {
@@ -90,18 +91,47 @@
             margin-bottom: 16px;
         }
         
+        .section details {
+            overflow: hidden;
+        }
+        
         .section-content {
             animation: slideDown 0.3s ease-out;
+            overflow: hidden;
+        }
+        
+        /* Pure CSS animation for details opening */
+        .section details[open] .section-content {
+            animation: slideDown 0.3s ease-out;
+        }
+        
+        .section details:not([open]) .section-content {
+            animation: slideUp 0.3s ease-out;
         }
         
         @keyframes slideDown {
             from {
                 opacity: 0;
+                max-height: 0;
                 transform: translateY(-10px);
             }
             to {
                 opacity: 1;
+                max-height: 1000px;
                 transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 1;
+                max-height: 1000px;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                max-height: 0;
+                transform: translateY(-10px);
             }
         }
         
@@ -332,6 +362,27 @@
             border-color: #28a745;
             box-shadow: 0 0 0 3px rgba(40,167,69,0.25);
         }
+
+        /* CSS-only checkbox toggles */
+        .collapsible-content {
+            display: none;
+            background-color: white;
+            border-radius: 6px;
+            padding: 16px;
+            margin-top: 12px;
+            border: 2px solid #e9ecef;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        input[type="checkbox"]:checked + label + .collapsible-content,
+        .checkbox-group:has(input[type="checkbox"]:checked) ~ .collapsible-content {
+            display: block;
+            opacity: 1;
+            max-height: 500px;
+        }
         
         input[type="color"] {
             width: 50px;
@@ -463,21 +514,6 @@
             accent-color: #007bff;
         }
         
-        .help-text {
-            font-size: 0.85rem;
-            color: #6c757d;
-            margin-top: 4px;
-            font-style: italic;
-        }
-        
-        .collapsible-content {
-            background-color: white;
-            border-radius: 6px;
-            padding: 16px;
-            margin-top: 12px;
-            border: 2px solid #e9ecef;
-        }
-        
         .status-indicator {
             display: inline-block;
             width: 12px;
@@ -589,13 +625,12 @@
             <div class="section">
                 <details open>
                     <summary>🚪 Wardrobe/Door (Optional)</summary>
-                    <div class="section-content">
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="showWardrobe" name="showWardrobe" onchange="toggleWardrobeControls(); calculateAndVisualize();">
-                            <label for="showWardrobe">Show Wardrobe/Door</label>
-                        </div>
-                        
-                        <div id="wardrobeControls" class="collapsible-content" style="display: none;">
+                    <div class="section-content">                    <div class="checkbox-group">
+                        <input type="checkbox" id="showWardrobe" name="showWardrobe" onchange="calculateAndVisualize();">
+                        <label for="showWardrobe">Show Wardrobe/Door</label>
+                    </div>
+                    
+                    <div id="wardrobeControls" class="collapsible-content">
                             <div class="input-row">
                                 <div class="input-group">
                                     <label for="wardrobeWidth">Wardrobe/Door Width (cm):</label>
@@ -631,13 +666,12 @@
             <div class="section">
                 <details open>
                     <summary>🪟 Window (Optional)</summary>
-                    <div class="section-content">
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="showWindow" name="showWindow" onchange="toggleWindowControls(); calculateAndVisualize();">
-                            <label for="showWindow">Show Window</label>
-                        </div>
-                        
-                        <div id="windowControls" class="collapsible-content" style="display: none;">
+                    <div class="section-content">                    <div class="checkbox-group">
+                        <input type="checkbox" id="showWindow" name="showWindow" onchange="calculateAndVisualize();">
+                        <label for="showWindow">Show Window</label>
+                    </div>
+                    
+                    <div id="windowControls" class="collapsible-content">
                             <div class="input-row">
                                 <div class="input-group">
                                     <label for="windowWidth">Window Width (cm):</label>
@@ -711,30 +745,6 @@
 
             // Convert back to hex
             return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
-        }
-        
-        // Function to toggle the visibility of wardrobe controls
-        function toggleWardrobeControls() {
-            const showWardrobe = document.getElementById('showWardrobe').checked;
-            const wardrobeControls = document.getElementById('wardrobeControls');
-            
-            if (showWardrobe) {
-                wardrobeControls.style.display = 'block';
-            } else {
-                wardrobeControls.style.display = 'none';
-            }
-        }
-        
-        // Function to toggle the visibility of window controls
-        function toggleWindowControls() {
-            const showWindow = document.getElementById('showWindow').checked;
-            const windowControls = document.getElementById('windowControls');
-            
-            if (showWindow) {
-                windowControls.style.display = 'block';
-            } else {
-                windowControls.style.display = 'none';
-            }
         }
         
         // Function to update the line configuration dropdown based on current parameters
@@ -865,14 +875,12 @@
                     if (inputs.windowFloorOffset) document.getElementById('windowFloorOffset').value = inputs.windowFloorOffset;
                     if (inputs.windowColor) document.getElementById('windowColor').value = inputs.windowColor;
                     
-                    // Restore checkboxes
+                    // Restore checkboxes - CSS will handle the visibility
                     if (inputs.showWardrobe !== undefined) {
                         document.getElementById('showWardrobe').checked = inputs.showWardrobe;
-                        toggleWardrobeControls(); // Update visibility of wardrobe controls
                     }
                     if (inputs.showWindow !== undefined) {
                         document.getElementById('showWindow').checked = inputs.showWindow;
-                        toggleWindowControls(); // Update visibility of window controls
                     }
                     
                     // Update line config options first, then restore selection
@@ -1134,9 +1142,7 @@
             document.getElementById('windowFloorOffset').value = '100';
             document.getElementById('windowColor').value = '#87CEEB';
             
-            // Update UI state
-            toggleWardrobeControls(); // Hide wardrobe controls since checkbox is unchecked
-            toggleWindowControls(); // Hide window controls since checkbox is unchecked
+            // Update UI state - CSS handles visibility now
             updateLineConfigOptions(); // Refresh line configuration dropdown
             calculateAndVisualize(); // Recalculate with default values
         }
@@ -1144,8 +1150,6 @@
         // Initialize controls on page load
         document.addEventListener('DOMContentLoaded', function() {
             loadInputsFromLocalStorage(); // Load saved inputs first
-            toggleWardrobeControls();
-            toggleWindowControls();
             updateLineConfigOptions();
             addSaveListeners(); // Add listeners to save inputs when they change
             calculateAndVisualize(); // Calculate with loaded values
