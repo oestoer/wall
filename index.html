@@ -1201,6 +1201,9 @@
             overflow-y: auto;
             border-left: 1px solid rgba(0,0,0,0.05);
             backdrop-filter: blur(5px);
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
         }
 
         .side-menu.open {
@@ -1231,6 +1234,15 @@
             margin-bottom: 24px;
             padding-bottom: 16px;
             position: relative;
+        }
+        
+        /* Special handling for the rooms configuration section */
+        .menu-section.room-configs-section {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            min-height: 200px;
+            overflow: hidden; /* Prevent any overflow from causing scrollbars on the section itself */
         }
         
         .menu-section:not(:last-child):after {
@@ -1425,8 +1437,35 @@
         
         .saved-rooms-list {
             margin-top: 16px;
-            max-height: 250px;
+            max-height: calc(70vh - 240px); /* Dynamic calculation for available space */
+            min-height: 100px; /* Ensure minimum height */
             overflow-y: auto;
+            scrollbar-width: thin; /* For Firefox */
+            scrollbar-color: var(--border-color) transparent;
+            padding-right: 2px; /* Add a small padding to account for scrollbar space */
+        }
+        
+        /* Custom scrollbar for the saved rooms list */
+        .saved-rooms-list::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .saved-rooms-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .saved-rooms-list::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 10px;
+        }
+        
+        .saved-rooms-list::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+        
+        /* Always display scrollbar space to prevent layout shifts */
+        .saved-rooms-list {
+            scrollbar-gutter: stable;
         }
         
         .saved-room-item {
@@ -1497,7 +1536,7 @@
             </div>
         </div>
         
-        <div class="menu-section">
+        <div class="menu-section room-configs-section">
             <div class="menu-section-title">Room Configurations</div>
             <div class="room-input-group">
                 <input type="text" id="room-name-input" class="room-input" placeholder="Room name" maxlength="10">
@@ -1516,7 +1555,7 @@
                     </div>
                 </div>
             </div>
-            <div class="help-text" style="margin-top: 12px; text-align: center;">
+            <div class="help-text" style="margin-top: 12px; text-align: center; padding-bottom: 8px;">
                 Click on a room to load its configuration.<br>
                 You can save up to 10 rooms.
             </div>
