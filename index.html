@@ -934,12 +934,12 @@
             <div class="section">
                 <details open>
                     <summary>🚪 Wardrobe/Door (Optional)</summary>
-                    <div class="section-content">                    <div class="checkbox-group">
-                        <input type="checkbox" id="showWardrobe" name="showWardrobe" onchange="calculateAndVisualize();">
-                        <label for="showWardrobe">Show Wardrobe/Door</label>
-                    </div>
-                    
-                    <div id="wardrobeControls" class="collapsible-content">
+                    <div class="section-content">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="showWardrobe" name="showWardrobe" onchange="calculateAndVisualize();">
+                            <label for="showWardrobe">Show Wardrobe/Door</label>
+                        </div>
+                        <div id="wardrobeControls" class="collapsible-content">
                             <div class="input-row">
                                 <div class="input-group">
                                     <label for="wardrobeWidth">Wardrobe/Door Width (cm):</label>
@@ -975,12 +975,12 @@
             <div class="section">
                 <details open>
                     <summary>🪟 Window (Optional)</summary>
-                    <div class="section-content">                    <div class="checkbox-group">
-                        <input type="checkbox" id="showWindow" name="showWindow" onchange="calculateAndVisualize();">
-                        <label for="showWindow">Show Window</label>
-                    </div>
-                    
-                    <div id="windowControls" class="collapsible-content">
+                    <div class="section-content">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="showWindow" name="showWindow" onchange="calculateAndVisualize();">
+                            <label for="showWindow">Show Window</label>
+                        </div>
+                        <div id="windowControls" class="collapsible-content">
                             <div class="input-row">
                                 <div class="input-group">
                                     <label for="windowWidth">Window Width (cm):</label>
@@ -1379,6 +1379,7 @@
                 wardrobe.style.width = `${wardrobeWidthPct}%`;
                 wardrobe.style.height = `${wardrobeHeightPct}%`;
                 wardrobe.style.backgroundColor = wardrobeColor;
+                wardrobe.style.display = 'block'; // Explicitly set display to block
                 wardrobe.className = 'visible';
                 
                 // Position with offset from the right edge
@@ -1391,6 +1392,7 @@
                 wardrobe.style.border = `2px solid ${darkerBorderColor}`;
             } else {
                 // Hide the wardrobe if checkbox is unchecked
+                wardrobe.style.display = 'none';
                 wardrobe.className = 'hidden';
             }
             
@@ -1424,6 +1426,7 @@
                 windowElement.style.width = `${windowWidthPct}%`;
                 windowElement.style.height = `${windowHeightPct}%`;
                 windowElement.style.backgroundColor = windowColor;
+                windowElement.style.display = 'block'; // Explicitly set display to block
                 windowElement.className = 'visible';
                 
                 // Position with offsets from the right edge and floor
@@ -1436,6 +1439,7 @@
                 windowElement.style.border = `2px solid ${darkerBorderColor}`;
             } else {
                 // Hide the window if checkbox is unchecked
+                windowElement.style.display = 'none';
                 windowElement.className = 'hidden';
             }
         }
