@@ -2,9 +2,105 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Wall Line Calculator and Visualizer - Calculate and visualize wall line measurements easily">
     <title>Wall Line Calculator and Visualizer</title>
     <style>
+        /* CSS Custom Properties for Theming */
+        :root {
+            /* Base theme (default - light) */
+            --primary-color: #007bff;
+            --primary-color-dark: #0056b3;
+            --primary-color-light: #e8f4fd;
+            --success-color: #28a745;
+            --success-color-dark: #1e7e34;
+            --warning-color: #ffc107;
+            --warning-color-dark: #856404;
+            --error-color: #dc3545;
+            --error-color-dark: #721c24;
+            
+            --background-color: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --container-bg: white;
+            --section-bg: #f8f9fa;
+            --text-color: #2c3e50;
+            --text-color-secondary: #495057;
+            --border-color: #e9ecef;
+            --border-color-focus: #007bff;
+            
+            --border-radius: 8px;
+            --box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            --box-shadow-hover: 0 6px 20px rgba(0,123,255,0.4);
+            --transition-speed: 0.2s;
+            
+            --button-gradient: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-dark) 100%);
+            --button-gradient-hover: linear-gradient(135deg, #0069d9 0%, #004085 100%);
+            --button-gradient-active: linear-gradient(135deg, var(--primary-color-dark) 0%, #003d7a 100%);
+            
+            --secondary-button-gradient: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            --secondary-button-gradient-hover: linear-gradient(135deg, #5a6268 0%, #3d4142 100%);
+            --secondary-button-gradient-active: linear-gradient(135deg, #495057 0%, #2d3436 100%);
+        }
+        
+        /* Adding explicit theme classes to override the media query */
+        html.theme-light {
+            --background-color: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --container-bg: white;
+            --section-bg: #f8f9fa;
+            --text-color: #2c3e50;
+            --text-color-secondary: #495057;
+            --border-color: #e9ecef;
+            --border-color-focus: #007bff;
+            
+            --primary-color-light: #e8f4fd;
+            --box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            --box-shadow-hover: 0 6px 20px rgba(0,123,255,0.4);
+            
+            --button-gradient: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-dark) 100%);
+            --button-gradient-hover: linear-gradient(135deg, #0069d9 0%, #004085 100%);
+            --button-gradient-active: linear-gradient(135deg, var(--primary-color-dark) 0%, #003d7a 100%);
+        }
+
+        html.theme-dark {
+            --background-color: linear-gradient(135deg, #2c3e50 0%, #1a2639 100%);
+            --container-bg: #283747;
+            --section-bg: #1e2b38;
+            --text-color: #ecf0f1;
+            --text-color-secondary: #d1d8e0;
+            --border-color: #4a5568;
+            --border-color-focus: #4299e1;
+            
+            --primary-color-light: #2a4365;
+            --box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            --box-shadow-hover: 0 6px 20px rgba(0,123,255,0.6);
+            
+            /* Adjust some colors for better visibility in dark mode */
+            --button-gradient: linear-gradient(135deg, #4299e1 0%, #2b6cb0 100%);
+            --button-gradient-hover: linear-gradient(135deg, #3182ce 0%, #2c5282 100%);
+            --button-gradient-active: linear-gradient(135deg, #2b6cb0 0%, #2c5282 100%);
+        }
+        
+        /* Dark theme using prefers-color-scheme media query */
+        @media (prefers-color-scheme: dark) {
+            :root:not(.theme-light):not(.theme-dark) {
+                --background-color: linear-gradient(135deg, #2c3e50 0%, #1a2639 100%);
+                --container-bg: #283747;
+                --section-bg: #1e2b38;
+                --text-color: #ecf0f1;
+                --text-color-secondary: #d1d8e0;
+                --border-color: #4a5568;
+                --border-color-focus: #4299e1;
+                
+                --primary-color-light: #2a4365;
+                --box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+                --box-shadow-hover: 0 6px 20px rgba(0,123,255,0.6);
+                
+                /* Adjust some colors for better visibility in dark mode */
+                --button-gradient: linear-gradient(135deg, #4299e1 0%, #2b6cb0 100%);
+                --button-gradient-hover: linear-gradient(135deg, #3182ce 0%, #2c5282 100%);
+                --button-gradient-active: linear-gradient(135deg, #2b6cb0 0%, #2c5282 100%);
+            }
+        }
+
         * {
             box-sizing: border-box;
         }
@@ -15,23 +111,24 @@
             flex-direction: column;
             align-items: center;
             padding: 16px;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background: var(--background-color);
             margin: 0;
             min-height: 100vh;
             line-height: 1.5;
+            color: var(--text-color);
         }
         
         .container {
-            background-color: white;
+            background-color: var(--container-bg);
             padding: 24px;
-            border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
             width: 100%;
             border: 1px solid rgba(255,255,255,0.2);
         }
         
         h1 {
-            color: #2c3e50;
+            color: var(--text-color);
             text-align: center;
             margin-bottom: 32px;
             font-size: 2rem;
@@ -41,10 +138,10 @@
         .section {
             margin-bottom: 24px;
             padding: 20px;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            border-left: 4px solid #007bff;
-            transition: all 0.2s ease;
+            background-color: var(--section-bg);
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--primary-color);
+            transition: all var(--transition-speed) ease;
         }
         
         .section:hover {
@@ -59,14 +156,14 @@
         .section details summary {
             font-size: 1.1rem;
             font-weight: 600;
-            color: #2c3e50;
+            color: var(--text-color);
             margin-bottom: 16px;
             display: flex;
             align-items: center;
             gap: 8px;
             cursor: pointer;
             user-select: none;
-            transition: color 0.2s ease;
+            transition: color var(--transition-speed) ease;
             list-style: none;
             outline: none;
         }
@@ -76,7 +173,7 @@
         }
         
         .section details summary:hover {
-            color: #007bff;
+            color: var(--primary-color);
         }
         
         .section details summary::after {
@@ -172,40 +269,41 @@
             display: block;
             margin-bottom: 6px;
             font-weight: 500;
-            color: #495057;
+            color: var(--text-color-secondary);
             font-size: 0.9rem;
         }
         
         input[type="number"], select {
             width: 100%;
             padding: 12px;
-            border: 2px solid #e9ecef;
-            border-radius: 6px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
             font-size: 16px;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-            background-color: white;
+            transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+            background-color: var(--container-bg);
+            color: var(--text-color);
         }
         
         input[type="number"]:focus, select:focus {
             outline: none;
-            border-color: #007bff;
+            border-color: var(--border-color-focus);
             box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
         }
 
         /* Validation styles for invalid inputs */
         input[type="number"]:invalid {
-            border-color: #dc3545;
+            border-color: var(--error-color);
             box-shadow: 0 0 0 3px rgba(220,53,69,0.1);
         }
 
         input[type="number"]:valid {
-            border-color: #28a745;
+            border-color: var(--success-color);
         }
 
         /* Custom validation messages */
         .validation-message {
             display: none;
-            color: #dc3545;
+            color: var(--error-color);
             font-size: 0.875rem;
             margin-top: 4px;
             padding: 4px 8px;
@@ -221,7 +319,7 @@
         /* Required field indicators */
         .required::after {
             content: " *";
-            color: #dc3545;
+            color: var(--error-color);
             font-weight: bold;
         }
 
@@ -229,10 +327,10 @@
         .form-errors {
             display: none;
             background-color: #f8d7da;
-            color: #721c24;
+            color: var(--error-color-dark);
             padding: 12px 16px;
             border: 1px solid #f5c6cb;
-            border-radius: 6px;
+            border-radius: var(--border-radius);
             margin-bottom: 20px;
         }
 
@@ -247,7 +345,7 @@
 
         /* Disable submit button when form is invalid */
         button[type="submit"]:disabled {
-            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            background: var(--secondary-button-gradient);
             cursor: not-allowed;
             opacity: 0.6;
             transform: none;
@@ -258,22 +356,22 @@
         button[type="submit"]:disabled:hover {
             transform: none;
             box-shadow: 0 2px 6px rgba(108,117,125,0.2);
-            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            background: var(--secondary-button-gradient);
         }
         
         /* Secondary button (Reset) specific styles */
         button[type="button"] {
-            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            background: var(--secondary-button-gradient);
             box-shadow: 0 4px 12px rgba(108,117,125,0.3);
         }
         
         button[type="button"]:hover {
-            background: linear-gradient(135deg, #5a6268 0%, #3d4142 100%);
+            background: var(--secondary-button-gradient-hover);
             box-shadow: 0 6px 20px rgba(108,117,125,0.4);
         }
         
         button[type="button"]:active {
-            background: linear-gradient(135deg, #495057 0%, #2d3436 100%);
+            background: var(--secondary-button-gradient-active);
         }
         
         button[type="button"]:focus {
@@ -293,31 +391,31 @@
             width: 16px;
             height: 16px;
             opacity: 0;
-            transition: opacity 0.2s ease;
+            transition: opacity var(--transition-speed) ease;
         }
 
         .input-group:has(input:valid)::after {
             content: "✓";
-            color: #28a745;
+            color: var(--success-color);
             opacity: 1;
             font-weight: bold;
         }
 
         .input-group:has(input:invalid:not(:placeholder-shown))::after {
             content: "✗";
-            color: #dc3545;
+            color: var(--error-color);
             opacity: 1;
             font-weight: bold;
         }
 
         /* Select validation styles */
         select:invalid {
-            border-color: #dc3545;
+            border-color: var(--error-color);
             box-shadow: 0 0 0 3px rgba(220,53,69,0.1);
         }
 
         select:valid {
-            border-color: #28a745;
+            border-color: var(--success-color);
         }
 
         /* Validation message styles for select elements */
@@ -337,7 +435,7 @@
             background-color: #555;
             color: white;
             text-align: center;
-            border-radius: 6px;
+            border-radius: var(--border-radius);
             padding: 5px 8px;
             position: absolute;
             z-index: 1;
@@ -386,23 +484,23 @@
 
         /* Enhanced focus states */
         input[type="number"]:focus:invalid {
-            border-color: #dc3545;
+            border-color: var(--error-color);
             box-shadow: 0 0 0 3px rgba(220,53,69,0.25);
         }
 
         input[type="number"]:focus:valid {
-            border-color: #28a745;
+            border-color: var(--success-color);
             box-shadow: 0 0 0 3px rgba(40,167,69,0.25);
         }
 
         /* CSS-only checkbox toggles */
         .collapsible-content {
             display: none;
-            background-color: white;
-            border-radius: 6px;
+            background-color: var(--container-bg);
+            border-radius: var(--border-radius);
             padding: 16px;
             margin-top: 12px;
-            border: 2px solid #e9ecef;
+            border: 2px solid var(--border-color);
             opacity: 0;
             max-height: 0;
             overflow: hidden;
@@ -421,14 +519,14 @@
         input[type="color"] {
             width: 50px;
             height: 40px;
-            border: 2px solid #e9ecef;
-            border-radius: 6px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
             cursor: pointer;
-            transition: border-color 0.2s ease;
+            transition: border-color var(--transition-speed) ease;
         }
         
         input[type="color"]:hover {
-            border-color: #007bff;
+            border-color: var(--primary-color);
         }
         
         .color-input-group {
@@ -443,17 +541,17 @@
         }
         
         button {
-            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            background: var(--button-gradient);
             color: white;
             padding: 14px 24px;
             border: none;
-            border-radius: 8px;
+            border-radius: var(--border-radius);
             cursor: pointer;
             font-size: 16px;
             font-weight: 500;
             width: 100%;
             margin-top: 16px;
-            transition: all 0.2s ease;
+            transition: all var(--transition-speed) ease;
             box-shadow: 0 4px 12px rgba(0,123,255,0.3);
             position: relative;
             overflow: hidden;
@@ -466,15 +564,15 @@
         /* Hover state */
         button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,123,255,0.4);
-            background: linear-gradient(135deg, #0069d9 0%, #004085 100%);
+            box-shadow: var(--box-shadow-hover);
+            background: var(--button-gradient-hover);
         }
         
         /* Active/pressed state */
         button:active {
             transform: translateY(1px);
             box-shadow: 0 2px 8px rgba(0,123,255,0.2);
-            background: linear-gradient(135deg, #0056b3 0%, #003d7a 100%);
+            background: var(--button-gradient-active);
             transition: all 0.1s ease;
         }
         
@@ -485,7 +583,7 @@
         }
         
         button:focus:hover {
-            box-shadow: 0 6px 20px rgba(0,123,255,0.4), 0 0 0 3px rgba(0,123,255,0.3);
+            box-shadow: var(--box-shadow-hover), 0 0 0 3px rgba(0,123,255,0.3);
         }
         
         /* Ripple effect using pseudo-element */
@@ -536,7 +634,7 @@
         
         /* Success state */
         button.success {
-            background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+            background: linear-gradient(135deg, var(--success-color) 0%, var(--success-color-dark) 100%);
             box-shadow: 0 4px 12px rgba(40,167,69,0.3);
         }
         
@@ -547,7 +645,7 @@
         
         /* Error state */
         button.error {
-            background: linear-gradient(135deg, #dc3545 0%, #bd2130 100%);
+            background: linear-gradient(135deg, var(--error-color) 0%, #bd2130 100%);
             box-shadow: 0 4px 12px rgba(220,53,69,0.3);
         }
         
@@ -561,11 +659,11 @@
             margin-top: 20px;
             padding: 16px;
             font-size: 1rem;
-            color: #2c3e50;
+            color: var(--text-color);
             text-align: center;
-            background-color: #e8f4fd;
-            border-radius: 8px;
-            border-left: 4px solid #007bff;
+            background-color: var(--primary-color-light);
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--primary-color);
             line-height: 1.6;
             opacity: 0;
             transform: translateY(-10px);
@@ -579,20 +677,20 @@
         
         .result-message.error {
             background-color: #f8d7da;
-            color: #721c24;
-            border-left-color: #dc3545;
+            color: var(--error-color-dark);
+            border-left-color: var(--error-color);
         }
         
         .result-message.warning {
             background-color: #fff3cd;
-            color: #856404;
-            border-left-color: #ffc107;
+            color: var(--warning-color-dark);
+            border-left-color: var(--warning-color);
         }
         
         .result-message.success {
             background-color: #d4edda;
             color: #155724;
-            border-left-color: #28a745;
+            border-left-color: var(--success-color);
         }
         
         /* Wall container states */
@@ -618,7 +716,7 @@
         }
         
         .form-calculating button {
-            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            background: var(--secondary-button-gradient);
             cursor: wait;
         }
         
@@ -642,11 +740,11 @@
         /* Collapsible content state improvements */
         .collapsible-content {
             display: none;
-            background-color: white;
-            border-radius: 6px;
+            background-color: var(--container-bg);
+            border-radius: var(--border-radius);
             padding: 16px;
             margin-top: 12px;
-            border: 2px solid #e9ecef;
+            border: 2px solid var(--border-color);
             opacity: 0;
             max-height: 0;
             overflow: hidden;
@@ -665,25 +763,25 @@
         #result {
             padding: 16px;
             font-size: 1rem;
-            color: #2c3e50;
+            color: var(--text-color);
             text-align: center;
-            background-color: #e8f4fd;
-            border-radius: 8px;
-            border-left: 4px solid #007bff;
+            background-color: var(--primary-color-light);
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--primary-color);
             line-height: 1.6;
             margin: 0;
             width: 100%;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            box-shadow: var(--box-shadow);
         }
         
         #wall-container {
             width: 100%;
-            border: 3px solid #2c3e50;
+            border: 3px solid var(--text-color);
             display: flex;
             overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-            background-color: #f8f9fa;
-            border-radius: 8px;
+            box-shadow: var(--box-shadow);
+            background-color: var(--section-bg);
+            border-radius: var(--border-radius);
             position: relative;
             margin: 0;
         }
@@ -754,10 +852,10 @@
             gap: 10px;
             margin-bottom: 16px;
             padding: 12px;
-            background-color: white;
-            border-radius: 6px;
-            border: 2px solid #e9ecef;
-            transition: all 0.2s ease;
+            background-color: var(--container-bg);
+            border-radius: var(--border-radius);
+            border: 2px solid var(--border-color);
+            transition: all var(--transition-speed) ease;
             cursor: pointer;
         }
         
@@ -771,8 +869,8 @@
             width: 18px;
             height: 18px;
             cursor: pointer;
-            accent-color: #007bff;
-            transition: all 0.2s ease;
+            accent-color: var(--primary-color);
+            transition: all var(--transition-speed) ease;
             position: relative;
             border-radius: 3px;
         }
@@ -794,14 +892,14 @@
         
         /* Checkbox group hover effect */
         .checkbox-group:hover {
-            background-color: #f8f9fa;
-            border-color: #007bff;
+            background-color: var(--section-bg);
+            border-color: var(--primary-color);
             transform: translateY(-1px);
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
         .checkbox-group:focus-within {
-            border-color: #007bff;
+            border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
         }
         
@@ -813,9 +911,9 @@
             margin-right: 8px;
         }
         
-        .status-success { background-color: #28a745; }
-        .status-warning { background-color: #ffc107; }
-        .status-error { background-color: #dc3545; }
+        .status-success { background-color: var(--success-color); }
+        .status-warning { background-color: var(--warning-color); }
+        .status-error { background-color: var(--error-color); }
 
         /* Enhanced wardrobe and window visibility states */
         #wardrobe, #window {
@@ -870,9 +968,9 @@
             justify-content: flex-start;
             align-items: center;
             padding: 0;
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            background-color: var(--container-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
             border: 1px solid rgba(255,255,255,0.2);
             height: fit-content;
             align-self: flex-start;
@@ -912,9 +1010,321 @@
                 overflow-y: visible;
             }
         }
+        
+        /* User theme preference toggle */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding: 4px 0;
+        }
+        
+        .theme-toggle label {
+            margin: 0;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            color: var(--text-color);
+        }
+        
+        .theme-toggle select {
+            font-size: 0.9rem;
+            padding: 8px 12px;
+            border-radius: var(--border-radius);
+            background-color: var(--section-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            flex-grow: 1;
+            transition: border-color var(--transition-speed) ease;
+        }
+        
+        .theme-toggle select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        /* Hamburger Menu Styles */
+        .hamburger-menu {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            z-index: 1001; /* Increased z-index to be above the side menu */
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--container-bg);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-speed) ease;
+        }
+        
+        .hamburger-menu:hover {
+            background-color: var(--section-bg);
+            transform: scale(1.05);
+        }
+        
+        .hamburger-menu:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px var(--primary-color-light);
+        }
+        
+        .hamburger-menu.open {
+            background-color: transparent;
+            box-shadow: none;
+            right: 20px; /* Align with the side panel padding */
+        }
+        
+        .hamburger-icon {
+            width: 20px;
+            height: 16px;
+            position: relative;
+            transform: rotate(0deg);
+            transition: .3s ease-in-out;
+        }
+
+        .hamburger-icon span {
+            display: block;
+            position: absolute;
+            height: 2px;
+            width: 100%;
+            background: var(--text-color);
+            border-radius: 4px;
+            opacity: 1;
+            left: 0;
+            transform: rotate(0deg);
+            transition: .25s ease-in-out;
+        }
+
+        .hamburger-icon span:nth-child(1) {
+            top: 0px;
+            width: 70%;
+            left: 30%;
+        }
+
+        .hamburger-icon span:nth-child(2), .hamburger-icon span:nth-child(3) {
+            top: 7px;
+        }
+
+        .hamburger-icon span:nth-child(4) {
+            top: 14px;
+            width: 70%;
+        }
+
+        /* Side menu panel */
+        .side-menu {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100vh;
+            background-color: var(--container-bg);
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            z-index: 999;
+            transition: right 0.3s ease, box-shadow 0.3s ease;
+            padding: 70px 28px 28px; /* Adjusted padding to account for hamburger button */
+            overflow-y: auto;
+            border-left: 1px solid rgba(0,0,0,0.05);
+            backdrop-filter: blur(5px);
+        }
+
+        .side-menu.open {
+            right: 0;
+            box-shadow: 0 0 30px rgba(0,0,0,0.15);
+        }
+
+        /* Menu overlay for mobile */
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .menu-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .menu-section {
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            position: relative;
+        }
+        
+        .menu-section:not(:last-child):after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--border-color);
+            opacity: 0.5;
+        }
+
+        .menu-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .menu-section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-color);
+            letter-spacing: 0.5px;
+            padding-bottom: 6px;
+            border-bottom: 1px dotted var(--border-color);
+        }
+
+        /* When hamburger icon is clicked - Transform to X icon */
+        .hamburger-menu.open .hamburger-icon span:nth-child(1) {
+            top: 7px;
+            width: 0%;
+            left: 50%;
+            opacity: 0;
+        }
+        
+        .hamburger-menu.open .hamburger-icon span:nth-child(2) {
+            transform: rotate(45deg);
+            width: 100%;
+            left: 0;
+        }
+        
+        .hamburger-menu.open .hamburger-icon span:nth-child(3) {
+            transform: rotate(-45deg);
+            width: 100%;
+            left: 0;
+        }
+        
+        .hamburger-menu.open .hamburger-icon span:nth-child(4) {
+            top: 7px;
+            width: 0%;
+            left: 50%;
+            opacity: 0;
+        }
+        
+        /* Add hover effect when menu is open */
+        .hamburger-menu.open:hover {
+            transform: scale(1.05) rotate(90deg);
+            transition: transform 0.3s ease;
+        }
+        
+        /* Mobile specific styles */
+        @media (max-width: 768px) {
+            .side-menu {
+                right: -100%;
+                width: 100%;
+                padding-top: 70px;
+                border-left: none;
+            }
+            
+            .side-menu.open {
+                right: 0;
+            }
+            
+            /* Keep hamburger menu positioned properly on mobile */
+            .hamburger-menu.open {
+                right: 15px;
+            }
+        }
+
+        /* Menu item styles - Adding these new styles for a smoother look */
+        .menu-item {
+            margin-bottom: 12px;
+            transition: transform 0.2s ease;
+        }
+        
+        .menu-item:hover {
+            transform: translateX(2px);
+        }
+        
+        /* Style for future menu items with icons */
+        .menu-item-with-icon {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* Smooth hover effects for select elements */
+        select:hover {
+            border-color: var(--primary-color);
+        }
+        
+        /* When element is active in the menu */
+        .menu-item.active {
+            color: var(--primary-color);
+        }
+
+        /* Side menu header */
+        .side-menu-header {
+            padding-bottom: 16px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+            opacity: 0.8;
+        }
+
+        /* Nice scrollbar for the menu */
+        .side-menu::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .side-menu::-webkit-scrollbar-track {
+            background: transparent; 
+        }
+        
+        .side-menu::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.1); 
+            border-radius: 10px;
+        }
+        
+        .side-menu::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color); 
+        }
     </style>
 </head>
 <body>
+    <!-- Hamburger Menu Toggle Button -->
+    <div class="hamburger-menu" id="hamburger-menu" aria-label="Open menu" role="button" tabindex="0">
+        <div class="hamburger-icon" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+    
+    <!-- Side Menu Panel -->
+    <div class="side-menu" id="side-menu" aria-hidden="true" aria-label="Settings menu">
+        <div class="menu-section">
+            <div class="menu-section-title">Appearance</div>
+            <div class="theme-toggle menu-item">
+                <label for="theme-select">Theme</label>
+                <select id="theme-select">
+                    <option value="auto">Auto (System)</option>
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                </select>
+            </div>
+        </div>
+        <!-- Additional menu items can be added here in the future -->
+    </div>
+    
+    <!-- Full screen overlay for mobile view -->
+    <div class="menu-overlay" id="menu-overlay"></div>
+    
     <div style="width: 100%; max-width: 1200px; margin-bottom: 1rem; text-align: center;">
         <h1>🏠 Wall Line Calculator & Visualizer</h1>
     </div>
@@ -1132,6 +1542,59 @@
     </div>
 
     <script>
+        // Theme toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeSelect = document.getElementById('theme-select');
+            const savedTheme = localStorage.getItem('wallCalculatorTheme') || 'auto';
+            
+            // Set initial theme from saved preference
+            themeSelect.value = savedTheme;
+            applyTheme(savedTheme);
+            
+            // Add change listener
+            themeSelect.addEventListener('change', function() {
+                const theme = themeSelect.value;
+                localStorage.setItem('wallCalculatorTheme', theme);
+                applyTheme(theme);
+            });
+            
+            // Function to apply the selected theme
+            function applyTheme(theme) {
+                const html = document.documentElement;
+                
+                // First remove all theme classes
+                html.classList.remove('theme-light', 'theme-dark');
+                
+                // Then apply the selected theme
+                if (theme === 'light') {
+                    html.classList.add('theme-light');
+                    console.log('Applied light theme');
+                } else if (theme === 'dark') {
+                    html.classList.add('theme-dark');
+                    console.log('Applied dark theme');
+                } else {
+                    console.log('Using system preference theme (auto)');
+                    // For 'auto', we don't add any class and let the media query handle it
+                }
+            }
+            
+            // Optional: Log the current theme preference
+            console.log(`Theme initialized: ${savedTheme}`);
+            
+            // Optional: Detect system preference changes
+            if (window.matchMedia) {
+                const colorSchemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+                
+                // This adds a listener for when the system theme preference changes
+                colorSchemeQuery.addEventListener('change', (e) => {
+                    if (themeSelect.value === 'auto') {
+                        console.log(`System theme preference changed to: ${e.matches ? 'dark' : 'light'}`);
+                        // No need to update classes as CSS media query handles it
+                    }
+                });
+            }
+        });
+        
         // Helper function to adjust a hex color's brightness
         function adjustColor(color, percent) {
             // Convert hex to RGB
@@ -1613,6 +2076,68 @@
             
             minThicknessInput.addEventListener('input', validateThicknessRange);
             maxThicknessInput.addEventListener('input', validateThicknessRange);
+            
+            // Hamburger Menu functionality
+            const hamburgerMenu = document.getElementById('hamburger-menu');
+            const sideMenu = document.getElementById('side-menu');
+            const menuOverlay = document.getElementById('menu-overlay');
+            
+            // Function to toggle menu state
+            function toggleMenu() {
+                const isOpen = sideMenu.classList.contains('open');
+                
+                sideMenu.classList.toggle('open');
+                menuOverlay.classList.toggle('open');
+                hamburgerMenu.classList.toggle('open');
+                
+                // Update ARIA attributes for accessibility
+                sideMenu.setAttribute('aria-hidden', isOpen ? 'true' : 'false');
+                hamburgerMenu.setAttribute('aria-expanded', !isOpen ? 'true' : 'false');
+                hamburgerMenu.setAttribute('aria-label', isOpen ? 'Open menu' : 'Close menu');
+                
+                // Store menu state in sessionStorage
+                sessionStorage.setItem('menuOpen', !isOpen ? 'true' : 'false');
+            }
+            
+            // Event Listeners for menu interactions
+            hamburgerMenu.addEventListener('click', toggleMenu);
+            menuOverlay.addEventListener('click', toggleMenu);
+            
+            // Add keyboard accessibility
+            hamburgerMenu.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleMenu();
+                }
+            });
+            
+            // Close menu when pressing Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && sideMenu.classList.contains('open')) {
+                    toggleMenu();
+                }
+            });
+            
+            // Handle menu state on page resize (ensure mobile/desktop transition is smooth)
+            window.addEventListener('resize', function() {
+                // Close the menu when resizing to avoid layout issues
+                if (sideMenu.classList.contains('open')) {
+                    toggleMenu();
+                }
+            });
+            
+            // Initialize menu state
+            function initMenuState() {
+                // Ensure hamburger menu is in normal state on page load
+                hamburgerMenu.classList.remove('open');
+                
+                // Ensure menu is closed on page load
+                sideMenu.classList.remove('open');
+                menuOverlay.classList.remove('open');
+            }
+            
+            // Initialize on page load
+            initMenuState();
         });
     </script>
 </body>
