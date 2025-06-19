@@ -91,9 +91,15 @@
     <div class="container">
         <h1>Wall Line Calculator & Visualizer</h1>
 
-        <div class="input-group">
-            <label for="wallLength">Wall Length (cm):</label>
-            <input type="number" id="wallLength" value="485.6" min="1">
+        <div class="input-group" style="display: flex; gap: 20px;">
+            <div style="flex: 1;">
+                <label for="wallLength">Wall Length (cm):</label>
+                <input type="number" id="wallLength" value="485.6" min="1">
+            </div>
+            <div style="flex: 1;">
+                <label for="wallHeight">Wall Height (cm):</label>
+                <input type="number" id="wallHeight" value="260" min="1">
+            </div>
         </div>
 
         <div class="input-group">
@@ -121,12 +127,19 @@
     <script>
         function calculateAndVisualize() {
             const wallLengthCm = parseFloat(document.getElementById('wallLength').value);
+            const wallHeightCm = parseFloat(document.getElementById('wallHeight').value);
             const lineConfigValue = document.getElementById('lineConfig').value;
             const resultDiv = document.getElementById('result');
             const wallContainer = document.getElementById('wall-container');
 
             if (isNaN(wallLengthCm) || wallLengthCm <= 0) {
                 resultDiv.textContent = 'Please enter a valid wall length.';
+                wallContainer.innerHTML = '';
+                return;
+            }
+            
+            if (isNaN(wallHeightCm) || wallHeightCm <= 0) {
+                resultDiv.textContent = 'Please enter a valid wall height.';
                 wallContainer.innerHTML = '';
                 return;
             }
@@ -154,10 +167,16 @@
                 return;
             }
 
-            resultDiv.textContent = `For ${numPink} pink and ${numWhite} white lines, each line will be approximately ${lineThicknessCm.toFixed(2)} cm thick.`;
+            resultDiv.textContent = `For a wall of ${wallLengthCm.toFixed(2)}cm × ${wallHeightCm.toFixed(2)}cm with ${numPink} pink and ${numWhite} white lines, each line will be approximately ${lineThicknessCm.toFixed(2)} cm thick.`;
 
             // Visualize the lines
             wallContainer.innerHTML = ''; // Clear previous lines
+            
+            // Adjust the wall container height based on the wall height
+            // Keep a reasonable aspect ratio (max height of 400px)
+            const maxHeight = 400;
+            const visualHeight = Math.min(wallHeightCm / 2, maxHeight);
+            wallContainer.style.height = `${visualHeight}px`;
 
             // Calculate percentage width for visualization
             const lineThicknessPercentage = (lineThicknessCm / wallLengthCm) * 100;
