@@ -2014,6 +2014,11 @@
         
         // Reset function to restore all default values
         function resetToDefaults() {
+            // Show confirmation dialog before resetting
+            if (!confirm('Are you sure you want to reset all values to defaults? This will clear all your current settings and cannot be undone.')) {
+                return; // User cancelled, don't proceed with reset
+            }
+            
             // Clear localStorage
             localStorage.removeItem('wallCalculatorInputs');
             
