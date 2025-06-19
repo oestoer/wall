@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="Wall Line Calculator and Visualizer - Calculate and visualize wall line measurements easily">
     <title>Wall Line Calculator and Visualizer</title>
+    <!-- Import the color-picker component -->
+    <script src="components/color-picker.js" defer></script>
     <style>
         /* CSS Custom Properties for Theming */
         :root {
@@ -547,30 +549,6 @@
             opacity: 1;
             max-height: 500px;
             transform: translateY(0);
-        }
-
-        input[type="color"] {
-            width: 50px;
-            height: 40px;
-            border: 2px solid var(--border-color);
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            transition: border-color var(--transition-speed) ease;
-        }
-
-        input[type="color"]:hover {
-            border-color: var(--primary-color);
-        }
-
-        .color-input-group {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .color-input-group label {
-            margin-bottom: 0;
-            min-width: 120px;
         }
 
         button {
@@ -1648,16 +1626,10 @@
                     <div class="section-content">
                         <div class="input-row">
                             <div class="input-group">
-                                <div class="color-input-group">
-                                    <label for="mainColor">Coloured Line:</label>
-                                    <input type="color" id="mainColor" name="mainColor" value="#FFEEEE" onchange="calculateAndVisualize()">
-                                </div>
+                                <color-picker id="mainColor" name="mainColor" value="#FFEEEE" label="Coloured Line:"></color-picker>
                             </div>
                             <div class="input-group">
-                                <div class="color-input-group">
-                                    <label for="whiteColor">White Line:</label>
-                                    <input type="color" id="whiteColor" name="whiteColor" value="#FFFFFF" onchange="calculateAndVisualize()">
-                                </div>
+                                <color-picker id="whiteColor" name="whiteColor" value="#FFFFFF" label="White Line:"></color-picker>
                             </div>
                         </div>
                     </div>
@@ -1694,10 +1666,7 @@
                                     <div class="help-text">Distance from right wall edge (0 = aligned to right)</div>
                                 </div>
                                 <div class="input-group">
-                                    <div class="color-input-group">
-                                        <label for="wardrobeColor">Wardrobe/Door Color:</label>
-                                        <input type="color" id="wardrobeColor" name="wardrobeColor" value="#8B4513" onchange="calculateAndVisualize()">
-                                    </div>
+                                    <color-picker id="wardrobeColor" name="wardrobeColor" value="#8B4513" label="Wardrobe/Door Color:"></color-picker>
                                 </div>
                             </div>
                         </div>
@@ -1744,10 +1713,7 @@
 
                             <div class="input-row">
                                 <div class="input-group">
-                                    <div class="color-input-group">
-                                        <label for="windowColor">Window Color:</label>
-                                        <input type="color" id="windowColor" name="windowColor" value="#87CEEB" onchange="calculateAndVisualize()">
-                                    </div>
+                                    <color-picker id="windowColor" name="windowColor" value="#87CEEB" label="Window Color:"></color-picker>
                                 </div>
                                 <div class="input-group">
                                     <!-- Empty space for alignment -->
@@ -1854,11 +1820,22 @@
 
         // Utility functions to simplify getting and setting form values
         function getValue(id) {
-            return document.getElementById(id).value;
+            const element = document.getElementById(id);
+            // Check if it's a custom color-picker element
+            if (element.tagName.toLowerCase() === 'color-picker') {
+                return element.value;
+            }
+            return element.value;
         }
 
         function setValue(id, value) {
-            document.getElementById(id).value = value;
+            const element = document.getElementById(id);
+            // Check if it's a custom color-picker element
+            if (element.tagName.toLowerCase() === 'color-picker') {
+                element.value = value;
+            } else {
+                element.value = value;
+            }
         }
 
         function getChecked(id) {
@@ -2473,6 +2450,14 @@
             loadInputsFromLocalStorage(); // Load saved inputs first
             updateLineConfigOptions();
             addSaveListeners(); // Add listeners to save inputs when they change
+
+            // Setup event listeners for color-picker custom elements
+            document.querySelectorAll('color-picker').forEach(picker => {
+                picker.addEventListener('color-changed', () => {
+                    calculateAndVisualize();
+                });
+            });
+
             calculateAndVisualize(); // Calculate with loaded values
 
             // Add form submission handler
