@@ -363,7 +363,7 @@
 
         <div class="section">
             <details open>
-                <summary>🎨 Colors</summary>
+                <summary>🎨 Colours</summary>
                 <div class="section-content">
                     <div class="input-row">
                         <div class="input-group">
@@ -704,7 +704,7 @@
             const coloredLineWidthPercentage = (coloredLineWidth / wallLengthCm) * 100;
             const whiteLineWidthPercentage = (whiteLineWidth / wallLengthCm) * 100;
 
-            // Get the selected colors
+            // Get the selected colours
             const colouredColor = document.getElementById('mainColor').value;
             const whiteColor = document.getElementById('whiteColor').value;
             
@@ -712,7 +712,7 @@
                 const lineDiv = document.createElement('div');
                 lineDiv.classList.add('line');
                 
-                // Apply the selected colors and widths based on line type
+                // Apply the selected colours and widths based on line type
                 if (i % 2 === 0) { // Even index is coloured
                     lineDiv.style.backgroundColor = colouredColor;
                     lineDiv.style.flexBasis = `${coloredLineWidthPercentage}%`;
