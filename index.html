@@ -113,7 +113,7 @@
         <div class="input-group" style="display: flex; gap: 20px;">
             <div style="flex: 1;">
                 <label for="wallLength">Wall Length (cm):</label>
-                <input type="number" id="wallLength" value="485.6" min="1" onchange="calculateAndVisualize()">
+                <input type="number" id="wallLength" value="485.6" min="1" onchange="updateLineConfigOptions(); calculateAndVisualize()">
             </div>
             <div style="flex: 1;">
                 <label for="wallHeight">Wall Height (cm):</label>
@@ -121,17 +121,21 @@
             </div>
         </div>
 
+        <div class="input-group" style="display: flex; gap: 20px;">
+            <div style="flex: 1;">
+                <label for="minThickness">Min Line Thickness (cm):</label>
+                <input type="number" id="minThickness" value="20" min="1" onchange="updateLineConfigOptions(); calculateAndVisualize()">
+            </div>
+            <div style="flex: 1;">
+                <label for="maxThickness">Max Line Thickness (cm):</label>
+                <input type="number" id="maxThickness" value="45" min="1" onchange="updateLineConfigOptions(); calculateAndVisualize()">
+            </div>
+        </div>
+
         <div class="input-group">
             <label for="lineConfig">Desired Line Configuration:</label>
             <select id="lineConfig" onchange="calculateAndVisualize()">
                 <option value="">Select a configuration</option>
-                <option value="6,5">6 Coloured, 5 White</option>
-                <option value="7,6">7 Coloured, 6 White</option>
-                <option value="8,7">8 Coloured, 7 White</option>
-                <option value="9,8">9 Coloured, 8 White</option>
-                <option value="10,9">10 Coloured, 9 White</option>
-                <option value="11,10">11 Coloured, 10 White</option>
-                <option value="12,11">12 Coloured, 11 White</option>
             </select>
         </div>
         
@@ -226,6 +230,64 @@
             }
         }
         
+        // Function to update the line configuration dropdown based on current parameters
+        function updateLineConfigOptions() {
+            const wallLengthCm = parseFloat(document.getElementById('wallLength').value);
+            const minThickness = parseFloat(document.getElementById('minThickness').value) || 20;
+            const maxThickness = parseFloat(document.getElementById('maxThickness').value) || 45;
+            const lineConfigSelect = document.getElementById('lineConfig');
+            const currentValue = lineConfigSelect.value;
+            
+            // Clear existing options except the first one
+            lineConfigSelect.innerHTML = '<option value="">Select a configuration</option>';
+            
+            if (isNaN(wallLengthCm) || wallLengthCm <= 0) {
+                return;
+            }
+            
+            // Generate configurations where colored = n+1 and white = n
+            const validOptions = [];
+            
+            for (let n = 1; n <= 15; n++) { // n from 1 to 15 (reasonable range)
+                const colored = n + 1;
+                const white = n;
+                const totalLines = colored + white;
+                const lineThickness = wallLengthCm / totalLines;
+                
+                // Check if this configuration produces a valid thickness
+                if (lineThickness >= minThickness && lineThickness <= maxThickness) {
+                    validOptions.push({
+                        colored: colored,
+                        white: white,
+                        thickness: lineThickness,
+                        total: totalLines
+                    });
+                }
+            }
+            
+            // Sort by total lines, then by colored lines
+            validOptions.sort((a, b) => {
+                if (a.total !== b.total) return a.total - b.total;
+                return a.colored - b.colored;
+            });
+            
+            // Add options to dropdown
+            validOptions.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = `${option.colored},${option.white}`;
+                optionElement.textContent = `${option.colored} Coloured, ${option.white} White (${option.thickness.toFixed(1)}cm thick)`;
+                lineConfigSelect.appendChild(optionElement);
+            });
+            
+            // Try to restore the previous selection if it's still valid
+            if (currentValue) {
+                const optionExists = Array.from(lineConfigSelect.options).some(opt => opt.value === currentValue);
+                if (optionExists) {
+                    lineConfigSelect.value = currentValue;
+                }
+            }
+        }
+        
         function calculateAndVisualize() {
             const wallLengthCm = parseFloat(document.getElementById('wallLength').value);
             const wallHeightCm = parseFloat(document.getElementById('wallHeight').value);
@@ -261,9 +323,13 @@
             const lineColorCount = (numColoured + numWhite); // Total sections (coloured and white lines)
             const lineThicknessCm = wallLengthCm / lineColorCount;
 
+            // Get the configured thickness range
+            const minThickness = parseFloat(document.getElementById('minThickness').value) || 20;
+            const maxThickness = parseFloat(document.getElementById('maxThickness').value) || 45;
+            
             // Check if the thickness is within the acceptable range
-            if (lineThicknessCm < 20 || lineThicknessCm > 45) {
-                resultDiv.textContent = `Calculated line thickness: ${lineThicknessCm.toFixed(2)} cm. This is outside the allowed range (20cm - 45cm). Please choose another configuration.`;
+            if (lineThicknessCm < minThickness || lineThicknessCm > maxThickness) {
+                resultDiv.textContent = `Calculated line thickness: ${lineThicknessCm.toFixed(2)} cm. This is outside the allowed range (${minThickness}cm - ${maxThickness}cm). Please choose another configuration.`;
                 wallContainer.innerHTML = '';
                 return;
             }
@@ -344,7 +410,10 @@
         }
         
         // Initialize controls on page load
-        document.addEventListener('DOMContentLoaded', toggleWardrobeControls);
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleWardrobeControls();
+            updateLineConfigOptions();
+        });
     </script>
 </body>
 </html>
