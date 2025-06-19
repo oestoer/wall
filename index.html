@@ -133,6 +133,14 @@
         </div>
 
         <div class="input-group">
+            <label for="lineRatio">Line Width Ratio (Coloured:White):</label>
+            <input type="number" id="lineRatio" value="1" min="0.5" max="3" step="0.5" onchange="updateLineConfigOptions(); calculateAndVisualize()">
+            <div style="font-size: 0.8em; color: #666; margin-top: 3px;">
+                1 = equal widths, 0.5 = coloured half width of white, 2 = coloured twice width of white
+            </div>
+        </div>
+        
+        <div class="input-group">
             <label for="lineConfig">Desired Line Configuration:</label>
             <select id="lineConfig" onchange="calculateAndVisualize()">
                 <option value="">Select a configuration</option>
@@ -235,6 +243,7 @@
             const wallLengthCm = parseFloat(document.getElementById('wallLength').value);
             const minThickness = parseFloat(document.getElementById('minThickness').value) || 20;
             const maxThickness = parseFloat(document.getElementById('maxThickness').value) || 45;
+            const lineRatio = parseFloat(document.getElementById('lineRatio').value) || 1;
             const lineConfigSelect = document.getElementById('lineConfig');
             const currentValue = lineConfigSelect.value;
             
@@ -251,16 +260,28 @@
             for (let n = 1; n <= 15; n++) { // n from 1 to 15 (reasonable range)
                 const colored = n + 1;
                 const white = n;
-                const totalLines = colored + white;
-                const lineThickness = wallLengthCm / totalLines;
                 
-                // Check if this configuration produces a valid thickness
-                if (lineThickness >= minThickness && lineThickness <= maxThickness) {
+                // Calculate line widths based on ratio
+                // Let w_white = white line width, w_colored = colored line width
+                // w_colored = ratio * w_white
+                // Total width = colored * w_colored + white * w_white
+                // Total width = colored * ratio * w_white + white * w_white
+                // Total width = w_white * (colored * ratio + white)
+                // w_white = wallLength / (colored * ratio + white)
+                // w_colored = ratio * w_white
+                
+                const whiteLineWidth = wallLengthCm / (colored * lineRatio + white);
+                const coloredLineWidth = lineRatio * whiteLineWidth;
+                
+                // Check if both line widths are within acceptable range
+                if (whiteLineWidth >= minThickness && whiteLineWidth <= maxThickness &&
+                    coloredLineWidth >= minThickness && coloredLineWidth <= maxThickness) {
                     validOptions.push({
                         colored: colored,
                         white: white,
-                        thickness: lineThickness,
-                        total: totalLines
+                        whiteLineWidth: whiteLineWidth,
+                        coloredLineWidth: coloredLineWidth,
+                        total: colored + white
                     });
                 }
             }
@@ -275,7 +296,13 @@
             validOptions.forEach(option => {
                 const optionElement = document.createElement('option');
                 optionElement.value = `${option.colored},${option.white}`;
-                optionElement.textContent = `${option.colored} Coloured, ${option.white} White (${option.thickness.toFixed(1)}cm thick)`;
+                
+                // Display different format based on whether ratio is 1 or not
+                if (lineRatio === 1) {
+                    optionElement.textContent = `${option.colored} Coloured, ${option.white} White (${option.whiteLineWidth.toFixed(1)}cm thick)`;
+                } else {
+                    optionElement.textContent = `${option.colored} Coloured (${option.coloredLineWidth.toFixed(1)}cm), ${option.white} White (${option.whiteLineWidth.toFixed(1)}cm)`;
+                }
                 lineConfigSelect.appendChild(optionElement);
             });
             
@@ -292,6 +319,7 @@
             const wallLengthCm = parseFloat(document.getElementById('wallLength').value);
             const wallHeightCm = parseFloat(document.getElementById('wallHeight').value);
             const lineConfigValue = document.getElementById('lineConfig').value;
+            const lineRatio = parseFloat(document.getElementById('lineRatio').value) || 1;
             const resultDiv = document.getElementById('result');
             const wallContainer = document.getElementById('wall-container');
 
@@ -317,24 +345,34 @@
             const numColoured = parseInt(numColouredStr);
             const numWhite = parseInt(numWhiteStr);
 
-            // Calculation based on the previous logic (lines of equal width)
-            // L = n_c * w + n_w * w = (n_c + n_w) * w
-            const totalLines = numColoured + numWhite;
-            const lineColorCount = (numColoured + numWhite); // Total sections (coloured and white lines)
-            const lineThicknessCm = wallLengthCm / lineColorCount;
+            // Calculate line widths based on ratio
+            // w_white = wallLength / (numColoured * ratio + numWhite)
+            // w_colored = ratio * w_white
+            const whiteLineWidth = wallLengthCm / (numColoured * lineRatio + numWhite);
+            const coloredLineWidth = lineRatio * whiteLineWidth;
 
             // Get the configured thickness range
             const minThickness = parseFloat(document.getElementById('minThickness').value) || 20;
             const maxThickness = parseFloat(document.getElementById('maxThickness').value) || 45;
             
-            // Check if the thickness is within the acceptable range
-            if (lineThicknessCm < minThickness || lineThicknessCm > maxThickness) {
-                resultDiv.textContent = `Calculated line thickness: ${lineThicknessCm.toFixed(2)} cm. This is outside the allowed range (${minThickness}cm - ${maxThickness}cm). Please choose another configuration.`;
+            // Check if both line widths are within the acceptable range
+            if (whiteLineWidth < minThickness || whiteLineWidth > maxThickness ||
+                coloredLineWidth < minThickness || coloredLineWidth > maxThickness) {
+                if (lineRatio === 1) {
+                    resultDiv.textContent = `Calculated line thickness: ${whiteLineWidth.toFixed(2)} cm. This is outside the allowed range (${minThickness}cm - ${maxThickness}cm). Please choose another configuration.`;
+                } else {
+                    resultDiv.textContent = `Calculated line thickness: Coloured ${coloredLineWidth.toFixed(2)}cm, White ${whiteLineWidth.toFixed(2)}cm. One or both are outside the allowed range (${minThickness}cm - ${maxThickness}cm). Please choose another configuration.`;
+                }
                 wallContainer.innerHTML = '';
                 return;
             }
 
-            resultDiv.textContent = `For a wall of ${wallLengthCm.toFixed(2)}cm × ${wallHeightCm.toFixed(2)}cm with ${numColoured} coloured and ${numWhite} white lines, each line will be approximately ${lineThicknessCm.toFixed(2)} cm thick.`;
+            // Display result based on whether ratio is 1 or not
+            if (lineRatio === 1) {
+                resultDiv.textContent = `For a wall of ${wallLengthCm.toFixed(2)}cm × ${wallHeightCm.toFixed(2)}cm with ${numColoured} coloured and ${numWhite} white lines, each line will be approximately ${whiteLineWidth.toFixed(2)} cm thick.`;
+            } else {
+                resultDiv.textContent = `For a wall of ${wallLengthCm.toFixed(2)}cm × ${wallHeightCm.toFixed(2)}cm with ${numColoured} coloured and ${numWhite} white lines, coloured lines will be ${coloredLineWidth.toFixed(2)} cm thick and white lines will be ${whiteLineWidth.toFixed(2)} cm thick.`;
+            }
 
             // Visualize the lines
             wallContainer.innerHTML = ''; // Clear previous lines
@@ -350,8 +388,9 @@
             const visualHeight = Math.min(wallHeightCm / 2, maxHeight);
             wallContainer.style.height = `${visualHeight}px`;
 
-            // Calculate percentage width for visualization
-            const lineThicknessPercentage = (lineThicknessCm / wallLengthCm) * 100;
+            // Calculate percentage widths for visualization
+            const coloredLineWidthPercentage = (coloredLineWidth / wallLengthCm) * 100;
+            const whiteLineWidthPercentage = (whiteLineWidth / wallLengthCm) * 100;
 
             // Get the selected colors
             const colouredColor = document.getElementById('mainColor').value;
@@ -361,15 +400,15 @@
                 const lineDiv = document.createElement('div');
                 lineDiv.classList.add('line');
                 
-                // Apply the selected colors directly using style
+                // Apply the selected colors and widths based on line type
                 if (i % 2 === 0) { // Even index is coloured
                     lineDiv.style.backgroundColor = colouredColor;
+                    lineDiv.style.flexBasis = `${coloredLineWidthPercentage}%`;
                 } else { // Odd index is white
                     lineDiv.style.backgroundColor = whiteColor;
+                    lineDiv.style.flexBasis = `${whiteLineWidthPercentage}%`;
                 }
                 
-                // Set width using flex-basis to ensure accurate proportional display
-                lineDiv.style.flexBasis = `${lineThicknessPercentage}%`;
                 wallContainer.appendChild(lineDiv);
             }
             
