@@ -113,62 +113,77 @@
         <div class="input-group" style="display: flex; gap: 20px;">
             <div style="flex: 1;">
                 <label for="wallLength">Wall Length (cm):</label>
-                <input type="number" id="wallLength" value="485.6" min="1">
+                <input type="number" id="wallLength" value="485.6" min="1" onchange="calculateAndVisualize()">
             </div>
             <div style="flex: 1;">
                 <label for="wallHeight">Wall Height (cm):</label>
-                <input type="number" id="wallHeight" value="260" min="1">
+                <input type="number" id="wallHeight" value="260" min="1" onchange="calculateAndVisualize()">
             </div>
         </div>
 
         <div class="input-group">
             <label for="lineConfig">Desired Line Configuration:</label>
-            <select id="lineConfig">
+            <select id="lineConfig" onchange="calculateAndVisualize()">
                 <option value="">Select a configuration</option>
-                <option value="6,5">6 Pink, 5 White</option>
-                <option value="7,6">7 Pink, 6 White</option>
-                <option value="8,7">8 Pink, 7 White</option>
-                <option value="9,8">9 Pink, 8 White</option>
-                <option value="10,9">10 Pink, 9 White</option>
-                <option value="11,10">11 Pink, 10 White</option>
-                <option value="12,11">12 Pink, 11 White</option>
+                <option value="6,5">6 Coloured, 5 White</option>
+                <option value="7,6">7 Coloured, 6 White</option>
+                <option value="8,7">8 Coloured, 7 White</option>
+                <option value="9,8">9 Coloured, 8 White</option>
+                <option value="10,9">10 Coloured, 9 White</option>
+                <option value="11,10">11 Coloured, 10 White</option>
+                <option value="12,11">12 Coloured, 11 White</option>
             </select>
         </div>
         
         <div class="input-group">
             <label>Line Colors:</label>
             <div style="display: flex; gap: 20px;">
-                <div style="flex: 1; display: flex; align-items: center; gap: 10px;">
-                    <label for="pinkColor" style="margin-bottom: 0;">Pink Line:</label>
-                    <input type="color" id="pinkColor" value="#FFEEEE" onchange="calculateAndVisualize()">
+                <div style="flex: 1; display: flex; justify-content: space-between; align-items: center;">
+                    <label for="mainColor" style="margin-bottom: 0; min-width: 150px;">Coloured Line:</label>
+                    <input type="color" id="mainColor" value="#FFEEEE" onchange="calculateAndVisualize()">
                 </div>
-                <div style="flex: 1; display: flex; align-items: center; gap: 10px;">
-                    <label for="whiteColor" style="margin-bottom: 0;">White Line:</label>
+                <div style="flex: 1; display: flex; justify-content: space-between; align-items: center;">
+                    <label for="whiteColor" style="margin-bottom: 0; min-width: 150px;">White Line:</label>
                     <input type="color" id="whiteColor" value="#FFFFFF" onchange="calculateAndVisualize()">
                 </div>
             </div>
         </div>
         
         <div class="input-group">
-            <div style="display: flex; align-items: center; gap: 20px;">
-                <div class="checkbox-group">
-                    <input type="checkbox" id="showWardrobe" onchange="calculateAndVisualize()">
-                    <label for="showWardrobe">Show Wardrobe</label>
-                </div>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <label for="wardrobeColor" style="margin-bottom: 0;">Wardrobe Color:</label>
-                    <input type="color" id="wardrobeColor" value="#8B4513" onchange="calculateAndVisualize()">
-                </div>
+            <div class="checkbox-group" style="margin-bottom: 10px;">
+                <input type="checkbox" id="showWardrobe" onchange="toggleWardrobeControls(); calculateAndVisualize();">
+                <label for="showWardrobe">Show Wardrobe/Door</label>
             </div>
             
-            <div style="display: flex; gap: 20px; margin-top: 10px;">
-                <div style="flex: 1;">
-                    <label for="wardrobeWidth">Wardrobe Width (cm):</label>
-                    <input type="number" id="wardrobeWidth" value="100" min="1" onchange="calculateAndVisualize()">
+            <div id="wardrobeControls" style="display: none;">
+                <div style="display: flex; gap: 20px;">
+                    <div style="flex: 1; display: flex; justify-content: space-between; align-items: center;">
+                        <label for="wardrobeColor" style="margin-bottom: 0; min-width: 150px;">Wardrobe/Door Color:</label>
+                        <input type="color" id="wardrobeColor" value="#8B4513" onchange="calculateAndVisualize()">
+                    </div>
+                    <div style="flex: 1;"></div>
                 </div>
-                <div style="flex: 1;">
-                    <label for="wardrobeHeight">Wardrobe Height (cm):</label>
-                    <input type="number" id="wardrobeHeight" value="220" min="1" onchange="calculateAndVisualize()">
+                
+                <div style="display: flex; gap: 20px; margin-top: 15px;">
+                    <div style="flex: 1;">
+                        <label for="wardrobeWidth">Wardrobe/Door Width (cm):</label>
+                        <input type="number" id="wardrobeWidth" value="64" min="1" onchange="calculateAndVisualize()">
+                    </div>
+                    <div style="flex: 1;">
+                        <label for="wardrobeHeight">Wardrobe/Door Height (cm):</label>
+                        <input type="number" id="wardrobeHeight" value="200" min="1" onchange="calculateAndVisualize()">
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 20px; margin-top: 15px;">
+                    <div style="flex: 1;">
+                        <label for="wardrobeOffset">Right Side Offset (cm):</label>
+                        <input type="number" id="wardrobeOffset" value="0" min="0" onchange="calculateAndVisualize()">
+                        <div style="font-size: 0.8em; color: #666; margin-top: 3px;">
+                            Distance from right wall edge (0 = aligned to right)
+                        </div>
+                    </div>
+                    <div style="flex: 1;"></div>
                 </div>
             </div>
         </div>
@@ -199,6 +214,18 @@
             return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
         }
         
+        // Function to toggle the visibility of wardrobe controls
+        function toggleWardrobeControls() {
+            const showWardrobe = document.getElementById('showWardrobe').checked;
+            const wardrobeControls = document.getElementById('wardrobeControls');
+            
+            if (showWardrobe) {
+                wardrobeControls.style.display = 'block';
+            } else {
+                wardrobeControls.style.display = 'none';
+            }
+        }
+        
         function calculateAndVisualize() {
             const wallLengthCm = parseFloat(document.getElementById('wallLength').value);
             const wallHeightCm = parseFloat(document.getElementById('wallHeight').value);
@@ -224,14 +251,14 @@
                 return;
             }
 
-            const [numPinkStr, numWhiteStr] = lineConfigValue.split(',');
-            const numPink = parseInt(numPinkStr);
+            const [numColouredStr, numWhiteStr] = lineConfigValue.split(',');
+            const numColoured = parseInt(numColouredStr);
             const numWhite = parseInt(numWhiteStr);
 
             // Calculation based on the previous logic (lines of equal width)
-            // L = n_p * w + n_w * w = (n_p + n_w) * w
-            const totalLines = numPink + numWhite;
-            const lineColorCount = (numPink + numWhite); // Total sections (pink and white lines)
+            // L = n_c * w + n_w * w = (n_c + n_w) * w
+            const totalLines = numColoured + numWhite;
+            const lineColorCount = (numColoured + numWhite); // Total sections (coloured and white lines)
             const lineThicknessCm = wallLengthCm / lineColorCount;
 
             // Check if the thickness is within the acceptable range
@@ -241,7 +268,7 @@
                 return;
             }
 
-            resultDiv.textContent = `For a wall of ${wallLengthCm.toFixed(2)}cm × ${wallHeightCm.toFixed(2)}cm with ${numPink} pink and ${numWhite} white lines, each line will be approximately ${lineThicknessCm.toFixed(2)} cm thick.`;
+            resultDiv.textContent = `For a wall of ${wallLengthCm.toFixed(2)}cm × ${wallHeightCm.toFixed(2)}cm with ${numColoured} coloured and ${numWhite} white lines, each line will be approximately ${lineThicknessCm.toFixed(2)} cm thick.`;
 
             // Visualize the lines
             wallContainer.innerHTML = ''; // Clear previous lines
@@ -261,16 +288,16 @@
             const lineThicknessPercentage = (lineThicknessCm / wallLengthCm) * 100;
 
             // Get the selected colors
-            const pinkColor = document.getElementById('pinkColor').value;
+            const colouredColor = document.getElementById('mainColor').value;
             const whiteColor = document.getElementById('whiteColor').value;
             
-            for (let i = 0; i < numPink + numWhite; i++) {
+            for (let i = 0; i < numColoured + numWhite; i++) {
                 const lineDiv = document.createElement('div');
                 lineDiv.classList.add('line');
                 
                 // Apply the selected colors directly using style
-                if (i % 2 === 0) { // Even index is pink
-                    lineDiv.style.backgroundColor = pinkColor;
+                if (i % 2 === 0) { // Even index is coloured
+                    lineDiv.style.backgroundColor = colouredColor;
                 } else { // Odd index is white
                     lineDiv.style.backgroundColor = whiteColor;
                 }
@@ -288,9 +315,13 @@
             const wardrobeColor = document.getElementById('wardrobeColor').value;
             
             if (showWardrobe && !isNaN(wardrobeWidth) && !isNaN(wardrobeHeight) && wardrobeWidth > 0 && wardrobeHeight > 0) {
+                // Get the offset from right side
+                const wardrobeOffset = parseFloat(document.getElementById('wardrobeOffset').value) || 0;
+                
                 // Calculate wardrobe dimensions relative to wall visualization
                 const wardrobeWidthPct = (wardrobeWidth / wallLengthCm) * 100;
                 const wardrobeHeightPct = (wardrobeHeight / wallHeightCm) * 100;
+                const offsetPct = (wardrobeOffset / wallLengthCm) * 100;
                 
                 // Set wardrobe dimensions and display it
                 wardrobe.style.width = `${wardrobeWidthPct}%`;
@@ -298,10 +329,10 @@
                 wardrobe.style.backgroundColor = wardrobeColor;
                 wardrobe.style.display = 'block';
                 
-                // Make sure it's properly positioned in the lower right corner
+                // Position with offset from the right edge
                 wardrobe.style.position = 'absolute';
                 wardrobe.style.bottom = '0';
-                wardrobe.style.right = '0';
+                wardrobe.style.right = `${offsetPct}%`;
                 
                 // Darker border based on the selected color
                 const darkerBorderColor = adjustColor(wardrobeColor, -30); // Darken the color by 30%
@@ -311,6 +342,9 @@
                 wardrobe.style.display = 'none';
             }
         }
+        
+        // Initialize controls on page load
+        document.addEventListener('DOMContentLoaded', toggleWardrobeControls);
     </script>
 </body>
 </html>
