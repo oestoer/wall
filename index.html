@@ -48,7 +48,11 @@
             border-left: 4px solid #007bff;
         }
         
-        .section-title {
+        .section details {
+            margin: 0;
+        }
+        
+        .section details summary {
             font-size: 1.1rem;
             font-weight: 600;
             color: #2c3e50;
@@ -56,6 +60,49 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            cursor: pointer;
+            user-select: none;
+            transition: color 0.2s ease;
+            list-style: none;
+            outline: none;
+        }
+        
+        .section details summary::-webkit-details-marker {
+            display: none;
+        }
+        
+        .section details summary:hover {
+            color: #007bff;
+        }
+        
+        .section details summary::after {
+            content: '▼';
+            font-size: 0.8rem;
+            margin-left: auto;
+            transition: transform 0.2s ease;
+        }
+        
+        .section details:not([open]) summary::after {
+            transform: rotate(-90deg);
+        }
+        
+        .section details[open] summary {
+            margin-bottom: 16px;
+        }
+        
+        .section-content {
+            animation: slideDown 0.3s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         .input-group {
@@ -264,99 +311,115 @@
         <h1>🏠 Wall Line Calculator & Visualizer</h1>
 
         <div class="section">
-            <div class="section-title">📏 Wall Dimensions</div>
-            <div class="input-row">
-                <div class="input-group">
-                    <label for="wallLength">Wall Length (cm):</label>
-                    <input type="number" id="wallLength" value="485.6" min="1" onchange="updateLineConfigOptions(); calculateAndVisualize()">
-                </div>
-                <div class="input-group">
-                    <label for="wallHeight">Wall Height (cm):</label>
-                    <input type="number" id="wallHeight" value="260" min="1" onchange="calculateAndVisualize()">
-                </div>
-            </div>
-        </div>
-
-        <div class="section">
-            <div class="section-title">📐 Line Configuration</div>
-            <div class="input-row">
-                <div class="input-group">
-                    <label for="minThickness">Min Line Thickness (cm):</label>
-                    <input type="number" id="minThickness" value="20" min="1" onchange="updateLineConfigOptions(); calculateAndVisualize()">
-                </div>
-                <div class="input-group">
-                    <label for="maxThickness">Max Line Thickness (cm):</label>
-                    <input type="number" id="maxThickness" value="45" min="1" onchange="updateLineConfigOptions(); calculateAndVisualize()">
-                </div>
-            </div>
-
-            <div class="input-group">
-                <label for="lineRatio">Line Width Ratio (Coloured:White):</label>
-                <input type="number" id="lineRatio" value="1" min="0.5" max="3" step="0.5" onchange="updateLineConfigOptions(); calculateAndVisualize()">
-                <div class="help-text">
-                    1 = equal widths, 0.5 = coloured half width of white, 2 = coloured twice width of white
-                </div>
-            </div>
-            
-            <div class="input-group">
-                <label for="lineConfig">Desired Line Configuration:</label>
-                <select id="lineConfig" onchange="calculateAndVisualize()">
-                    <option value="">Select a configuration</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="section">
-            <div class="section-title">🎨 Colors</div>
-            <div class="input-row">
-                <div class="input-group">
-                    <div class="color-input-group">
-                        <label for="mainColor">Coloured Line:</label>
-                        <input type="color" id="mainColor" value="#FFEEEE" onchange="calculateAndVisualize()">
-                    </div>
-                </div>
-                <div class="input-group">
-                    <div class="color-input-group">
-                        <label for="whiteColor">White Line:</label>
-                        <input type="color" id="whiteColor" value="#FFFFFF" onchange="calculateAndVisualize()">
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="section">
-            <div class="section-title">🚪 Wardrobe/Door (Optional)</div>
-            <div class="checkbox-group">
-                <input type="checkbox" id="showWardrobe" onchange="toggleWardrobeControls(); calculateAndVisualize();">
-                <label for="showWardrobe">Show Wardrobe/Door</label>
-            </div>
-            
-            <div id="wardrobeControls" class="collapsible-content" style="display: none;">
-                <div class="input-row">
-                    <div class="input-group">
-                        <label for="wardrobeWidth">Wardrobe/Door Width (cm):</label>
-                        <input type="number" id="wardrobeWidth" value="64" min="1" onchange="calculateAndVisualize()">
-                    </div>
-                    <div class="input-group">
-                        <label for="wardrobeHeight">Wardrobe/Door Height (cm):</label>
-                        <input type="number" id="wardrobeHeight" value="200" min="1" onchange="calculateAndVisualize()">
-                    </div>
-                </div>
-                
-                <div class="input-row">
-                    <div class="input-group">
-                        <label for="wardrobeOffset">Right Side Offset (cm):</label>
-                        <input type="number" id="wardrobeOffset" value="0" min="0" onchange="calculateAndVisualize()">
-                        <div class="help-text">Distance from right wall edge (0 = aligned to right)</div>
-                    </div>
-                    <div class="input-group">
-                        <div class="color-input-group">
-                            <label for="wardrobeColor">Wardrobe/Door Color:</label>
-                            <input type="color" id="wardrobeColor" value="#8B4513" onchange="calculateAndVisualize()">
+            <details open>
+                <summary>📏 Wall Dimensions</summary>
+                <div class="section-content">
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="wallLength">Wall Length (cm):</label>
+                            <input type="number" id="wallLength" value="485.6" min="1" onchange="updateLineConfigOptions(); calculateAndVisualize()">
+                        </div>
+                        <div class="input-group">
+                            <label for="wallHeight">Wall Height (cm):</label>
+                            <input type="number" id="wallHeight" value="260" min="1" onchange="calculateAndVisualize()">
                         </div>
                     </div>
                 </div>
-            </div>
+            </details>
+        </div>
+
+        <div class="section">
+            <details open>
+                <summary>📐 Line Configuration</summary>
+                <div class="section-content">
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="minThickness">Min Line Thickness (cm):</label>
+                            <input type="number" id="minThickness" value="20" min="1" onchange="updateLineConfigOptions(); calculateAndVisualize()">
+                        </div>
+                        <div class="input-group">
+                            <label for="maxThickness">Max Line Thickness (cm):</label>
+                            <input type="number" id="maxThickness" value="45" min="1" onchange="updateLineConfigOptions(); calculateAndVisualize()">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="lineRatio">Line Width Ratio (Coloured:White):</label>
+                        <input type="number" id="lineRatio" value="1" min="0.5" max="3" step="0.5" onchange="updateLineConfigOptions(); calculateAndVisualize()">
+                        <div class="help-text">
+                            1 = equal widths, 0.5 = coloured half width of white, 2 = coloured twice width of white
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="lineConfig">Desired Line Configuration:</label>
+                        <select id="lineConfig" onchange="calculateAndVisualize()">
+                            <option value="">Select a configuration</option>
+                        </select>
+                    </div>
+                </div>
+            </details>
+        </div>
+
+        <div class="section">
+            <details open>
+                <summary>🎨 Colors</summary>
+                <div class="section-content">
+                    <div class="input-row">
+                        <div class="input-group">
+                            <div class="color-input-group">
+                                <label for="mainColor">Coloured Line:</label>
+                                <input type="color" id="mainColor" value="#FFEEEE" onchange="calculateAndVisualize()">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <div class="color-input-group">
+                                <label for="whiteColor">White Line:</label>
+                                <input type="color" id="whiteColor" value="#FFFFFF" onchange="calculateAndVisualize()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </details>
+        </div>
+        
+        <div class="section">
+            <details open>
+                <summary>🚪 Wardrobe/Door (Optional)</summary>
+                <div class="section-content">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="showWardrobe" onchange="toggleWardrobeControls(); calculateAndVisualize();">
+                        <label for="showWardrobe">Show Wardrobe/Door</label>
+                    </div>
+                    
+                    <div id="wardrobeControls" class="collapsible-content" style="display: none;">
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label for="wardrobeWidth">Wardrobe/Door Width (cm):</label>
+                                <input type="number" id="wardrobeWidth" value="64" min="1" onchange="calculateAndVisualize()">
+                            </div>
+                            <div class="input-group">
+                                <label for="wardrobeHeight">Wardrobe/Door Height (cm):</label>
+                                <input type="number" id="wardrobeHeight" value="200" min="1" onchange="calculateAndVisualize()">
+                            </div>
+                        </div>
+                        
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label for="wardrobeOffset">Right Side Offset (cm):</label>
+                                <input type="number" id="wardrobeOffset" value="0" min="0" onchange="calculateAndVisualize()">
+                                <div class="help-text">Distance from right wall edge (0 = aligned to right)</div>
+                            </div>
+                            <div class="input-group">
+                                <div class="color-input-group">
+                                    <label for="wardrobeColor">Wardrobe/Door Color:</label>
+                                    <input type="color" id="wardrobeColor" value="#8B4513" onchange="calculateAndVisualize()">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </details>
         </div>
 
         <div style="display: flex; gap: 12px; margin-top: 16px;">
