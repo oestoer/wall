@@ -359,7 +359,10 @@
             </div>
         </div>
 
-        <button onclick="calculateAndVisualize()">🔍 Calculate and Visualize</button>
+        <div style="display: flex; gap: 12px; margin-top: 16px;">
+            <button onclick="calculateAndVisualize()" style="flex: 1;">🔍 Calculate and Visualize</button>
+            <button onclick="resetToDefaults()" style="flex: .3; background: linear-gradient(135deg, #6c757d 0%, #495057 100%); box-shadow: 0 4px 12px rgba(108,117,125,0.3);">🔄 Reset to Defaults</button>
+        </div>
 
         <div id="result"></div>
     </div>
@@ -474,6 +477,86 @@
             }
         }
         
+        // LocalStorage functions to save and restore user inputs
+        function saveInputsToLocalStorage() {
+            const inputs = {
+                wallLength: document.getElementById('wallLength').value,
+                wallHeight: document.getElementById('wallHeight').value,
+                minThickness: document.getElementById('minThickness').value,
+                maxThickness: document.getElementById('maxThickness').value,
+                lineRatio: document.getElementById('lineRatio').value,
+                lineConfig: document.getElementById('lineConfig').value,
+                mainColor: document.getElementById('mainColor').value,
+                whiteColor: document.getElementById('whiteColor').value,
+                showWardrobe: document.getElementById('showWardrobe').checked,
+                wardrobeWidth: document.getElementById('wardrobeWidth').value,
+                wardrobeHeight: document.getElementById('wardrobeHeight').value,
+                wardrobeOffset: document.getElementById('wardrobeOffset').value,
+                wardrobeColor: document.getElementById('wardrobeColor').value
+            };
+            
+            localStorage.setItem('wallCalculatorInputs', JSON.stringify(inputs));
+        }
+        
+        function loadInputsFromLocalStorage() {
+            const savedInputs = localStorage.getItem('wallCalculatorInputs');
+            if (savedInputs) {
+                try {
+                    const inputs = JSON.parse(savedInputs);
+                    
+                    // Restore text/number inputs
+                    if (inputs.wallLength) document.getElementById('wallLength').value = inputs.wallLength;
+                    if (inputs.wallHeight) document.getElementById('wallHeight').value = inputs.wallHeight;
+                    if (inputs.minThickness) document.getElementById('minThickness').value = inputs.minThickness;
+                    if (inputs.maxThickness) document.getElementById('maxThickness').value = inputs.maxThickness;
+                    if (inputs.lineRatio) document.getElementById('lineRatio').value = inputs.lineRatio;
+                    if (inputs.mainColor) document.getElementById('mainColor').value = inputs.mainColor;
+                    if (inputs.whiteColor) document.getElementById('whiteColor').value = inputs.whiteColor;
+                    if (inputs.wardrobeWidth) document.getElementById('wardrobeWidth').value = inputs.wardrobeWidth;
+                    if (inputs.wardrobeHeight) document.getElementById('wardrobeHeight').value = inputs.wardrobeHeight;
+                    if (inputs.wardrobeOffset) document.getElementById('wardrobeOffset').value = inputs.wardrobeOffset;
+                    if (inputs.wardrobeColor) document.getElementById('wardrobeColor').value = inputs.wardrobeColor;
+                    
+                    // Restore checkbox
+                    if (inputs.showWardrobe !== undefined) {
+                        document.getElementById('showWardrobe').checked = inputs.showWardrobe;
+                        toggleWardrobeControls(); // Update visibility of wardrobe controls
+                    }
+                    
+                    // Update line config options first, then restore selection
+                    updateLineConfigOptions();
+                    if (inputs.lineConfig) {
+                        document.getElementById('lineConfig').value = inputs.lineConfig;
+                    }
+                    
+                } catch (error) {
+                    console.warn('Error loading saved inputs:', error);
+                }
+            }
+        }
+        
+        // Add event listeners to save inputs when they change
+        function addSaveListeners() {
+            const inputElements = [
+                'wallLength', 'wallHeight', 'minThickness', 'maxThickness', 
+                'lineRatio', 'lineConfig', 'mainColor', 'whiteColor',
+                'showWardrobe', 'wardrobeWidth', 'wardrobeHeight', 
+                'wardrobeOffset', 'wardrobeColor'
+            ];
+            
+            inputElements.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    if (element.type === 'checkbox') {
+                        element.addEventListener('change', saveInputsToLocalStorage);
+                    } else {
+                        element.addEventListener('input', saveInputsToLocalStorage);
+                        element.addEventListener('change', saveInputsToLocalStorage);
+                    }
+                }
+            });
+        }
+
         function calculateAndVisualize() {
             const wallLengthCm = parseFloat(document.getElementById('wallLength').value);
             const wallHeightCm = parseFloat(document.getElementById('wallHeight').value);
@@ -622,10 +705,39 @@
             }
         }
         
+        // Reset function to restore all default values
+        function resetToDefaults() {
+            // Clear localStorage
+            localStorage.removeItem('wallCalculatorInputs');
+            
+            // Set all inputs back to their default values
+            document.getElementById('wallLength').value = '485.6';
+            document.getElementById('wallHeight').value = '260';
+            document.getElementById('minThickness').value = '20';
+            document.getElementById('maxThickness').value = '45';
+            document.getElementById('lineRatio').value = '1';
+            document.getElementById('lineConfig').value = '';
+            document.getElementById('mainColor').value = '#FFEEEE';
+            document.getElementById('whiteColor').value = '#FFFFFF';
+            document.getElementById('showWardrobe').checked = false;
+            document.getElementById('wardrobeWidth').value = '64';
+            document.getElementById('wardrobeHeight').value = '200';
+            document.getElementById('wardrobeOffset').value = '0';
+            document.getElementById('wardrobeColor').value = '#8B4513';
+            
+            // Update UI state
+            toggleWardrobeControls(); // Hide wardrobe controls since checkbox is unchecked
+            updateLineConfigOptions(); // Refresh line configuration dropdown
+            calculateAndVisualize(); // Recalculate with default values
+        }
+
         // Initialize controls on page load
         document.addEventListener('DOMContentLoaded', function() {
+            loadInputsFromLocalStorage(); // Load saved inputs first
             toggleWardrobeControls();
             updateLineConfigOptions();
+            addSaveListeners(); // Add listeners to save inputs when they change
+            calculateAndVisualize(); // Calculate with loaded values
         });
     </script>
 </body>
