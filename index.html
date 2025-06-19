@@ -1362,6 +1362,114 @@
         .side-menu::-webkit-scrollbar-thumb:hover {
             background: var(--primary-color); 
         }
+        
+        /* Room Configuration Styles */
+        .room-input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            gap: 8px;
+        }
+        
+        .room-input {
+            flex-grow: 1;
+            padding: 8px 12px;
+            border-radius: var(--border-radius);
+            background-color: var(--container-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            font-size: 0.9rem;
+            transition: all var(--transition-speed) ease;
+        }
+        
+        .room-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+        }
+        
+        .room-save-btn,
+        .room-delete-btn {
+            padding: 8px 12px;
+            border-radius: var(--border-radius);
+            border: none;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all var(--transition-speed) ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            color: white;
+        }
+        
+        .room-save-btn {
+            background: var(--button-gradient);
+        }
+        
+        .room-save-btn:hover {
+            background: var(--button-gradient-hover);
+            transform: translateY(-1px);
+        }
+        
+        .room-delete-btn {
+            background: var(--secondary-button-gradient);
+            padding: 6px 10px;
+            min-width: 36px;
+        }
+        
+        .room-delete-btn:hover {
+            background: linear-gradient(135deg, var(--error-color) 0%, var(--error-color-dark) 100%);
+            transform: translateY(-1px);
+        }
+        
+        .saved-rooms-list {
+            margin-top: 16px;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+        
+        .saved-room-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background-color: var(--section-bg);
+            border-radius: var(--border-radius);
+            margin-bottom: 8px;
+            border-left: 3px solid var(--primary-color);
+            transition: all var(--transition-speed) ease;
+            cursor: pointer;
+        }
+        
+        .saved-room-item:hover {
+            background-color: var(--primary-color-light);
+            transform: translateX(2px);
+        }
+        
+        .saved-room-name {
+            font-weight: 500;
+            color: var(--text-color);
+        }
+        
+        .saved-room-dimensions {
+            font-size: 0.8rem;
+            color: var(--text-color-secondary);
+            margin-top: 4px;
+        }
+        
+        .room-actions {
+            display: flex;
+            gap: 6px;
+        }
+        
+        .no-rooms-message {
+            text-align: center;
+            color: var(--text-color-secondary);
+            font-style: italic;
+            padding: 12px 0;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
@@ -1386,6 +1494,31 @@
                     <option value="light">Light</option>
                     <option value="dark">Dark</option>
                 </select>
+            </div>
+        </div>
+        
+        <div class="menu-section">
+            <div class="menu-section-title">Room Configurations</div>
+            <div class="room-input-group">
+                <input type="text" id="room-name-input" class="room-input" placeholder="Room name" maxlength="10">
+                <button id="save-room-btn" class="room-save-btn">Save</button>
+            </div>
+            <div class="saved-rooms-list" id="saved-rooms-list">
+                <div class="no-rooms-message">No saved rooms yet</div>
+                <!-- Sample room item for UI display (will be hidden when no saved rooms) -->
+                <div class="saved-room-item" style="display: none;">
+                    <div>
+                        <div class="saved-room-name">Living Room</div>
+                        <div class="saved-room-dimensions">486cm × 260cm</div>
+                    </div>
+                    <div class="room-actions">
+                        <button class="room-delete-btn" title="Delete room">×</button>
+                    </div>
+                </div>
+            </div>
+            <div class="help-text" style="margin-top: 12px; text-align: center;">
+                Click on a room to load its configuration.<br>
+                You can save up to 10 rooms.
             </div>
         </div>
         <!-- Additional menu items can be added here in the future -->
@@ -2117,7 +2250,18 @@
                 return; // User cancelled, don't proceed with reset
             }
             
-            // Clear localStorage
+            // Ask if user wants to clear saved rooms as well
+            const clearRooms = confirm('Would you also like to clear all saved rooms?');
+            if (clearRooms) {
+                // Clear saved rooms
+                localStorage.removeItem('wallCalculatorRooms');
+                // Refresh the saved rooms list
+                if (typeof initRoomConfigurations === 'function') {
+                    initRoomConfigurations();
+                }
+            }
+            
+            // Clear localStorage inputs
             localStorage.removeItem('wallCalculatorInputs');
             
             // Set all inputs back to their default values
@@ -2144,8 +2288,126 @@
             // Update UI state - CSS handles visibility now
             updateLineConfigOptions(); // Refresh line configuration dropdown
             calculateAndVisualize(); // Recalculate with default values
+            
+            // Show success message
+            showResultMessage('All values reset to defaults', 'success');
+            setTimeout(() => hideResultMessage(), 3000);
         }
 
+        // Room configuration management functions
+        function saveRoomToLocalStorage(roomName, config) {
+            // Get existing rooms from localStorage
+            const savedRooms = getRoomsFromLocalStorage();
+            
+            // Check if we already have 10 rooms
+            if (Object.keys(savedRooms).length >= 10 && !savedRooms[roomName]) {
+                return false; // Limit reached
+            }
+            
+            // Add or update the room
+            savedRooms[roomName] = config;
+            
+            // Save back to localStorage
+            localStorage.setItem('wallCalculatorRooms', JSON.stringify(savedRooms));
+            return true;
+        }
+        
+        function getRoomsFromLocalStorage() {
+            const savedRoomsJson = localStorage.getItem('wallCalculatorRooms');
+            return savedRoomsJson ? JSON.parse(savedRoomsJson) : {};
+        }
+        
+        function deleteRoomFromLocalStorage(roomName) {
+            const savedRooms = getRoomsFromLocalStorage();
+            
+            // Check if room exists
+            if (savedRooms[roomName]) {
+                // Delete the room
+                delete savedRooms[roomName];
+                
+                // Save back to localStorage
+                localStorage.setItem('wallCalculatorRooms', JSON.stringify(savedRooms));
+                return true;
+            }
+            
+            return false; // Room not found
+        }
+        
+        function getCurrentRoomConfig() {
+            // Get all the current form values
+            const config = {
+                // Basic dimensions
+                wallLength: document.getElementById('wallLength').value,
+                wallHeight: document.getElementById('wallHeight').value,
+                minThickness: document.getElementById('minThickness').value,
+                maxThickness: document.getElementById('maxThickness').value,
+                lineRatio: document.getElementById('lineRatio').value,
+                lineConfig: document.getElementById('lineConfig').value,
+                
+                // Colors
+                mainColor: document.getElementById('mainColor').value,
+                whiteColor: document.getElementById('whiteColor').value,
+                
+                // Wardrobe settings
+                showWardrobe: document.getElementById('showWardrobe').checked,
+                wardrobeWidth: document.getElementById('wardrobeWidth').value,
+                wardrobeHeight: document.getElementById('wardrobeHeight').value,
+                wardrobeOffset: document.getElementById('wardrobeOffset').value,
+                wardrobeColor: document.getElementById('wardrobeColor').value,
+                
+                // Window settings
+                showWindow: document.getElementById('showWindow').checked,
+                windowWidth: document.getElementById('windowWidth').value,
+                windowHeight: document.getElementById('windowHeight').value,
+                windowRightOffset: document.getElementById('windowRightOffset').value,
+                windowFloorOffset: document.getElementById('windowFloorOffset').value,
+                windowColor: document.getElementById('windowColor').value
+            };
+            
+            return config;
+        }
+        
+        function applyRoomConfig(config) {
+            // Apply all configuration values to the form
+            
+            // Basic dimensions
+            document.getElementById('wallLength').value = config.wallLength;
+            document.getElementById('wallHeight').value = config.wallHeight;
+            document.getElementById('minThickness').value = config.minThickness;
+            document.getElementById('maxThickness').value = config.maxThickness;
+            document.getElementById('lineRatio').value = config.lineRatio;
+            document.getElementById('lineConfig').value = config.lineConfig;
+            
+            // Colors
+            document.getElementById('mainColor').value = config.mainColor;
+            document.getElementById('whiteColor').value = config.whiteColor;
+            
+            // Wardrobe settings
+            document.getElementById('showWardrobe').checked = config.showWardrobe;
+            document.getElementById('wardrobeWidth').value = config.wardrobeWidth;
+            document.getElementById('wardrobeHeight').value = config.wardrobeHeight;
+            document.getElementById('wardrobeOffset').value = config.wardrobeOffset;
+            document.getElementById('wardrobeColor').value = config.wardrobeColor;
+            
+            // Window settings
+            document.getElementById('showWindow').checked = config.showWindow;
+            document.getElementById('windowWidth').value = config.windowWidth;
+            document.getElementById('windowHeight').value = config.windowHeight;
+            document.getElementById('windowRightOffset').value = config.windowRightOffset;
+            document.getElementById('windowFloorOffset').value = config.windowFloorOffset;
+            document.getElementById('windowColor').value = config.windowColor;
+            
+            // Update dependent UI elements
+            updateLineConfigOptions();
+            
+            // Trigger wardrobe and window visibility updates
+            document.getElementById('showWardrobe').dispatchEvent(new Event('change'));
+            document.getElementById('showWindow').dispatchEvent(new Event('change'));
+            
+            // Calculate and visualize with the new values
+            calculateAndVisualize();
+        }
+        
         // Initialize controls on page load
         document.addEventListener('DOMContentLoaded', function() {
             loadInputsFromLocalStorage(); // Load saved inputs first
@@ -2250,11 +2512,166 @@
                 // Ensure menu is closed on page load
                 sideMenu.classList.remove('open');
                 menuOverlay.classList.remove('open');
+                
+                // Initialize room configurations
+                initRoomConfigurations();
             }
             
             // Initialize on page load
             initMenuState();
         });
+        
+        // Initialize room configurations functionality
+        function initRoomConfigurations() {
+            const saveRoomBtn = document.getElementById('save-room-btn');
+            const roomNameInput = document.getElementById('room-name-input');
+            const savedRoomsList = document.getElementById('saved-rooms-list');
+            const noRoomsMessage = savedRoomsList.querySelector('.no-rooms-message');
+            
+            // Create a room item template
+            function createRoomItemTemplate(roomName, config) {
+                const wallWidth = config.wallLength;
+                const wallHeight = config.wallHeight;
+                
+                const roomItem = document.createElement('div');
+                roomItem.className = 'saved-room-item';
+                roomItem.dataset.roomName = roomName;
+                roomItem.innerHTML = `
+                    <div>
+                        <div class="saved-room-name">${roomName}</div>
+                        <div class="saved-room-dimensions">${wallWidth}cm × ${wallHeight}cm</div>
+                    </div>
+                    <div class="room-actions">
+                        <button class="room-delete-btn" title="Delete room">×</button>
+                    </div>
+                `;
+                
+                // Add event listeners for the room item
+                roomItem.querySelector('.room-delete-btn').addEventListener('click', function(e) {
+                    e.stopPropagation(); // Prevent triggering room selection
+                    if (confirm(`Delete room "${roomName}"?`)) {
+                        // Delete from localStorage
+                        if (deleteRoomFromLocalStorage(roomName)) {
+                            // Remove from UI
+                            roomItem.remove();
+                            
+                            // Show "No rooms" message if this was the last room
+                            if (savedRoomsList.querySelectorAll('.saved-room-item:not([style*="display: none"])').length === 0) {
+                                noRoomsMessage.style.display = 'block';
+                            }
+                        }
+                    }
+                });
+                
+                // Add click event to load the room configuration
+                roomItem.addEventListener('click', function() {
+                    // Load the configuration
+                    const rooms = getRoomsFromLocalStorage();
+                    if (rooms[roomName]) {
+                        // Apply the configuration to the form
+                        applyRoomConfig(rooms[roomName]);
+                        
+                        // Close the side menu
+                        const sideMenu = document.getElementById('side-menu');
+                        const menuOverlay = document.getElementById('menu-overlay');
+                        const hamburgerMenu = document.getElementById('hamburger-menu');
+                        
+                        sideMenu.classList.remove('open');
+                        menuOverlay.classList.remove('open');
+                        hamburgerMenu.classList.remove('open');
+                        
+                        // Show a success message
+                        showResultMessage(`Room "${roomName}" loaded successfully`, 'success');
+                        setTimeout(() => hideResultMessage(), 3000);
+                    }
+                });
+                
+                return roomItem;
+            }
+            
+            // Add event listener to the save button
+            saveRoomBtn.addEventListener('click', function() {
+                const roomName = roomNameInput.value.trim();
+                if (!roomName) return;
+                
+                // Get current configuration
+                const currentConfig = getCurrentRoomConfig();
+                
+                // Save to localStorage
+                const success = saveRoomToLocalStorage(roomName, currentConfig);
+                
+                if (!success) {
+                    alert("You've reached the maximum limit of 10 saved rooms. Please delete some rooms before adding new ones.");
+                    return;
+                }
+                
+                // Check if this room already exists in the UI
+                const existingRoom = savedRoomsList.querySelector(`.saved-room-item[data-room-name="${roomName}"]`);
+                if (existingRoom) {
+                    // Update the existing room item
+                    existingRoom.remove();
+                }
+                
+                // Create a new room item for display
+                const roomItem = createRoomItemTemplate(roomName, currentConfig);
+                
+                // Hide the "No rooms" message if this is the first room
+                if (savedRoomsList.querySelectorAll('.saved-room-item:not([style*="display: none"])').length === 0) {
+                    noRoomsMessage.style.display = 'none';
+                }
+                
+                // Add the new room to the list
+                savedRoomsList.appendChild(roomItem);
+                
+                // Clear the input field
+                roomNameInput.value = '';
+                roomNameInput.dispatchEvent(new Event('input'));
+                
+                // Show success message
+                showResultMessage(`Room "${roomName}" saved successfully`, 'success');
+                setTimeout(() => hideResultMessage(), 3000);
+            });
+            
+            // Add input validation for room name
+            roomNameInput.addEventListener('input', function() {
+                // Limit to 10 characters
+                if (this.value.length > 10) {
+                    this.value = this.value.substring(0, 10);
+                }
+                
+                // Enable/disable save button based on input
+                saveRoomBtn.disabled = this.value.trim() === '';
+            });
+            
+            // Load saved rooms from localStorage
+            function loadSavedRooms() {
+                const rooms = getRoomsFromLocalStorage();
+                const roomNames = Object.keys(rooms);
+                
+                // Clear existing room items (except the template)
+                const existingRooms = savedRoomsList.querySelectorAll('.saved-room-item:not([style*="display: none"])');
+                existingRooms.forEach(room => room.remove());
+                
+                // Show or hide the "No rooms" message based on the number of rooms
+                if (roomNames.length === 0) {
+                    noRoomsMessage.style.display = 'block';
+                } else {
+                    noRoomsMessage.style.display = 'none';
+                    
+                    // Add each room to the list
+                    roomNames.forEach(roomName => {
+                        const roomItem = createRoomItemTemplate(roomName, rooms[roomName]);
+                        savedRoomsList.appendChild(roomItem);
+                    });
+                }
+            }
+            
+            // Load existing saved rooms
+            loadSavedRooms();
+            
+            // Trigger input event to set initial state
+            roomNameInput.dispatchEvent(new Event('input'));
+        }
     </script>
 </body>
 </html>
