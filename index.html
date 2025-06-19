@@ -157,6 +157,181 @@
             border-color: #007bff;
             box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
         }
+
+        /* Validation styles for invalid inputs */
+        input[type="number"]:invalid {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 3px rgba(220,53,69,0.1);
+        }
+
+        input[type="number"]:valid {
+            border-color: #28a745;
+        }
+
+        /* Custom validation messages */
+        .validation-message {
+            display: none;
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 4px;
+            padding: 4px 8px;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 4px;
+        }
+
+        input[type="number"]:invalid + .validation-message {
+            display: block;
+        }
+
+        /* Required field indicators */
+        .required::after {
+            content: " *";
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        /* Form validation summary */
+        .form-errors {
+            display: none;
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 12px 16px;
+            border: 1px solid #f5c6cb;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        form:invalid .form-errors {
+            display: block;
+        }
+
+        .form-errors ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        /* Disable submit button when form is invalid */
+        button[type="submit"]:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        /* Show validation state with icons */
+        .input-group {
+            position: relative;
+        }
+
+        .input-group::after {
+            content: "";
+            position: absolute;
+            right: 12px;
+            top: 40px;
+            width: 16px;
+            height: 16px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .input-group:has(input:valid)::after {
+            content: "✓";
+            color: #28a745;
+            opacity: 1;
+            font-weight: bold;
+        }
+
+        .input-group:has(input:invalid:not(:placeholder-shown))::after {
+            content: "✗";
+            color: #dc3545;
+            opacity: 1;
+            font-weight: bold;
+        }
+
+        /* Select validation styles */
+        select:invalid {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 3px rgba(220,53,69,0.1);
+        }
+
+        select:valid {
+            border-color: #28a745;
+        }
+
+        /* Validation message styles for select elements */
+        select:invalid + .validation-message {
+            display: block;
+        }
+
+        /* Custom validation tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #555;
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Animate validation messages */
+        .validation-message {
+            animation: slideIn 0.3s ease-in-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Improved form error styling */
+        .form-errors {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 20%, 40%, 60%, 80% {
+                transform: translateX(0);
+            }
+            10%, 30%, 50%, 70%, 90% {
+                transform: translateX(-5px);
+            }
+        }
+
+        /* Enhanced focus states */
+        input[type="number"]:focus:invalid {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 3px rgba(220,53,69,0.25);
+        }
+
+        input[type="number"]:focus:valid {
+            border-color: #28a745;
+            box-shadow: 0 0 0 3px rgba(40,167,69,0.25);
+        }
         
         input[type="color"] {
             width: 50px;
@@ -320,172 +495,198 @@
     <div class="container">
         <h1>🏠 Wall Line Calculator & Visualizer</h1>
 
-        <div class="section">
-            <details open>
-                <summary>📏 Wall Dimensions</summary>
-                <div class="section-content">
-                    <div class="input-row">
-                        <div class="input-group">
-                            <label for="wallLength">Wall Length (cm):</label>
-                            <input type="number" id="wallLength" value="485.6" min="1" onchange="updateLineConfigOptions(); calculateAndVisualize()">
-                        </div>
-                        <div class="input-group">
-                            <label for="wallHeight">Wall Height (cm):</label>
-                            <input type="number" id="wallHeight" value="260" min="1" onchange="calculateAndVisualize()">
-                        </div>
-                    </div>
-                </div>
-            </details>
-        </div>
+        <form id="wallForm" novalidate>
+            <div class="form-errors">
+                <strong>Please fix the following errors:</strong>
+                <ul>
+                    <li>All fields marked with * are required</li>
+                    <li>Wall dimensions must be between 1 and 10000 cm</li>
+                    <li>Line thickness must be between 1 and 200 cm</li>
+                    <li>Line ratio must be between 0.1 and 10</li>
+                    <li>Wardrobe/Window dimensions must be positive numbers</li>
+                </ul>
+            </div>
 
-        <div class="section">
-            <details open>
-                <summary>📐 Line Configuration</summary>
-                <div class="section-content">
-                    <div class="input-row">
-                        <div class="input-group">
-                            <label for="minThickness">Min Line Thickness (cm):</label>
-                            <input type="number" id="minThickness" value="20" min="1" onchange="updateLineConfigOptions(); calculateAndVisualize()">
-                        </div>
-                        <div class="input-group">
-                            <label for="maxThickness">Max Line Thickness (cm):</label>
-                            <input type="number" id="maxThickness" value="45" min="1" onchange="updateLineConfigOptions(); calculateAndVisualize()">
-                        </div>
-                    </div>
-
-                    <div class="input-group">
-                        <label for="lineRatio">Line Width Ratio (Coloured:White):</label>
-                        <input type="number" id="lineRatio" value="1" min="0.5" max="3" step="0.5" onchange="updateLineConfigOptions(); calculateAndVisualize()">
-                        <div class="help-text">
-                            1 = equal widths, 0.5 = coloured half width of white, 2 = coloured twice width of white
-                        </div>
-                    </div>
-                    
-                    <div class="input-group">
-                        <label for="lineConfig">Desired Line Configuration:</label>
-                        <select id="lineConfig" onchange="calculateAndVisualize()">
-                            <option value="">Select a configuration</option>
-                        </select>
-                    </div>
-                </div>
-            </details>
-        </div>
-
-        <div class="section">
-            <details open>
-                <summary>🎨 Colours</summary>
-                <div class="section-content">
-                    <div class="input-row">
-                        <div class="input-group">
-                            <div class="color-input-group">
-                                <label for="mainColor">Coloured Line:</label>
-                                <input type="color" id="mainColor" value="#FFEEEE" onchange="calculateAndVisualize()">
-                            </div>
-                        </div>
-                        <div class="input-group">
-                            <div class="color-input-group">
-                                <label for="whiteColor">White Line:</label>
-                                <input type="color" id="whiteColor" value="#FFFFFF" onchange="calculateAndVisualize()">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </details>
-        </div>
-        
-        <div class="section">
-            <details open>
-                <summary>🚪 Wardrobe/Door (Optional)</summary>
-                <div class="section-content">
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="showWardrobe" onchange="toggleWardrobeControls(); calculateAndVisualize();">
-                        <label for="showWardrobe">Show Wardrobe/Door</label>
-                    </div>
-                    
-                    <div id="wardrobeControls" class="collapsible-content" style="display: none;">
+            <div class="section">
+                <details open>
+                    <summary>📏 Wall Dimensions</summary>
+                    <div class="section-content">
                         <div class="input-row">
                             <div class="input-group">
-                                <label for="wardrobeWidth">Wardrobe/Door Width (cm):</label>
-                                <input type="number" id="wardrobeWidth" value="64" min="1" onchange="calculateAndVisualize()">
+                                <label for="wallLength" class="required">Wall Length (cm):</label>
+                                <input type="number" id="wallLength" name="wallLength" value="485.6" min="1" max="10000" step="0.1" required onchange="updateLineConfigOptions(); calculateAndVisualize()">
+                                <div class="validation-message">Please enter a wall length between 1 and 10000 cm</div>
                             </div>
                             <div class="input-group">
-                                <label for="wardrobeHeight">Wardrobe/Door Height (cm):</label>
-                                <input type="number" id="wardrobeHeight" value="200" min="1" onchange="calculateAndVisualize()">
+                                <label for="wallHeight" class="required">Wall Height (cm):</label>
+                                <input type="number" id="wallHeight" name="wallHeight" value="260" min="1" max="10000" step="0.1" required onchange="calculateAndVisualize()">
+                                <div class="validation-message">Please enter a wall height between 1 and 10000 cm</div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+
+            <div class="section">
+                <details open>
+                    <summary>📐 Line Configuration</summary>
+                    <div class="section-content">
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label for="minThickness" class="required">Min Line Thickness (cm):</label>
+                                <input type="number" id="minThickness" name="minThickness" value="20" min="1" max="200" step="0.1" required onchange="updateLineConfigOptions(); calculateAndVisualize()">
+                                <div class="validation-message">Please enter a minimum thickness between 1 and 200 cm</div>
+                            </div>
+                            <div class="input-group">
+                                <label for="maxThickness" class="required">Max Line Thickness (cm):</label>
+                                <input type="number" id="maxThickness" name="maxThickness" value="45" min="1" max="200" step="0.1" required onchange="updateLineConfigOptions(); calculateAndVisualize()">
+                                <div class="validation-message">Please enter a maximum thickness between 1 and 200 cm</div>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="lineRatio" class="required">Line Width Ratio (Coloured:White):</label>
+                            <input type="number" id="lineRatio" name="lineRatio" value="1" min="0.1" max="10" step="0.1" required onchange="updateLineConfigOptions(); calculateAndVisualize()">
+                            <div class="validation-message">Please enter a ratio between 0.1 and 10</div>
+                            <div class="help-text">
+                                1 = equal widths, 0.5 = coloured half width of white, 2 = coloured twice width of white
                             </div>
                         </div>
                         
+                        <div class="input-group">
+                            <label for="lineConfig" class="required">Desired Line Configuration:</label>
+                            <select id="lineConfig" name="lineConfig" required onchange="calculateAndVisualize()">
+                                <option value="">Select a configuration</option>
+                            </select>
+                            <div class="validation-message">Please select a line configuration</div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+
+            <div class="section">
+                <details open>
+                    <summary>🎨 Colours</summary>
+                    <div class="section-content">
                         <div class="input-row">
                             <div class="input-group">
-                                <label for="wardrobeOffset">Right Side Offset (cm):</label>
-                                <input type="number" id="wardrobeOffset" value="0" min="0" onchange="calculateAndVisualize()">
-                                <div class="help-text">Distance from right wall edge (0 = aligned to right)</div>
+                                <div class="color-input-group">
+                                    <label for="mainColor">Coloured Line:</label>
+                                    <input type="color" id="mainColor" name="mainColor" value="#FFEEEE" onchange="calculateAndVisualize()">
+                                </div>
                             </div>
                             <div class="input-group">
                                 <div class="color-input-group">
-                                    <label for="wardrobeColor">Wardrobe/Door Color:</label>
-                                    <input type="color" id="wardrobeColor" value="#8B4513" onchange="calculateAndVisualize()">
+                                    <label for="whiteColor">White Line:</label>
+                                    <input type="color" id="whiteColor" name="whiteColor" value="#FFFFFF" onchange="calculateAndVisualize()">
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </details>
-        </div>
-
-        <div class="section">
-            <details open>
-                <summary>🪟 Window (Optional)</summary>
-                <div class="section-content">
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="showWindow" onchange="toggleWindowControls(); calculateAndVisualize();">
-                        <label for="showWindow">Show Window</label>
-                    </div>
-                    
-                    <div id="windowControls" class="collapsible-content" style="display: none;">
-                        <div class="input-row">
-                            <div class="input-group">
-                                <label for="windowWidth">Window Width (cm):</label>
-                                <input type="number" id="windowWidth" value="120" min="1" onchange="calculateAndVisualize()">
-                            </div>
-                            <div class="input-group">
-                                <label for="windowHeight">Window Height (cm):</label>
-                                <input type="number" id="windowHeight" value="120" min="1" onchange="calculateAndVisualize()">
-                            </div>
+                </details>
+            </div>
+            
+            <div class="section">
+                <details open>
+                    <summary>🚪 Wardrobe/Door (Optional)</summary>
+                    <div class="section-content">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="showWardrobe" name="showWardrobe" onchange="toggleWardrobeControls(); calculateAndVisualize();">
+                            <label for="showWardrobe">Show Wardrobe/Door</label>
                         </div>
                         
-                        <div class="input-row">
-                            <div class="input-group">
-                                <label for="windowRightOffset">Right Side Offset (cm):</label>
-                                <input type="number" id="windowRightOffset" value="100" min="0" onchange="calculateAndVisualize()">
-                                <div class="help-text">Distance from right wall edge</div>
-                            </div>
-                            <div class="input-group">
-                                <label for="windowFloorOffset">Floor Offset (cm):</label>
-                                <input type="number" id="windowFloorOffset" value="100" min="0" onchange="calculateAndVisualize()">
-                                <div class="help-text">Distance from floor (0 = on floor)</div>
-                            </div>
-                        </div>
-                        
-                        <div class="input-row">
-                            <div class="input-group">
-                                <div class="color-input-group">
-                                    <label for="windowColor">Window Color:</label>
-                                    <input type="color" id="windowColor" value="#87CEEB" onchange="calculateAndVisualize()">
+                        <div id="wardrobeControls" class="collapsible-content" style="display: none;">
+                            <div class="input-row">
+                                <div class="input-group">
+                                    <label for="wardrobeWidth">Wardrobe/Door Width (cm):</label>
+                                    <input type="number" id="wardrobeWidth" name="wardrobeWidth" value="64" min="1" max="10000" step="0.1" onchange="calculateAndVisualize()">
+                                    <div class="validation-message">Please enter a width between 1 and 10000 cm</div>
+                                </div>
+                                <div class="input-group">
+                                    <label for="wardrobeHeight">Wardrobe/Door Height (cm):</label>
+                                    <input type="number" id="wardrobeHeight" name="wardrobeHeight" value="200" min="1" max="10000" step="0.1" onchange="calculateAndVisualize()">
+                                    <div class="validation-message">Please enter a height between 1 and 10000 cm</div>
                                 </div>
                             </div>
-                            <div class="input-group">
-                                <!-- Empty space for alignment -->
+                            
+                            <div class="input-row">
+                                <div class="input-group">
+                                    <label for="wardrobeOffset">Right Side Offset (cm):</label>
+                                    <input type="number" id="wardrobeOffset" name="wardrobeOffset" value="0" min="0" max="10000" step="0.1" onchange="calculateAndVisualize()">
+                                    <div class="validation-message">Please enter a positive offset value</div>
+                                    <div class="help-text">Distance from right wall edge (0 = aligned to right)</div>
+                                </div>
+                                <div class="input-group">
+                                    <div class="color-input-group">
+                                        <label for="wardrobeColor">Wardrobe/Door Color:</label>
+                                        <input type="color" id="wardrobeColor" name="wardrobeColor" value="#8B4513" onchange="calculateAndVisualize()">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </details>
-        </div>
+                </details>
+            </div>
 
-        <div style="display: flex; gap: 12px; margin-top: 16px;">
-            <button onclick="calculateAndVisualize()" style="flex: 1;">🔍 Calculate and Visualize</button>
-            <button onclick="resetToDefaults()" style="flex: .3; background: linear-gradient(135deg, #6c757d 0%, #495057 100%); box-shadow: 0 4px 12px rgba(108,117,125,0.3);">🔄 Reset to Defaults</button>
-        </div>
+            <div class="section">
+                <details open>
+                    <summary>🪟 Window (Optional)</summary>
+                    <div class="section-content">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="showWindow" name="showWindow" onchange="toggleWindowControls(); calculateAndVisualize();">
+                            <label for="showWindow">Show Window</label>
+                        </div>
+                        
+                        <div id="windowControls" class="collapsible-content" style="display: none;">
+                            <div class="input-row">
+                                <div class="input-group">
+                                    <label for="windowWidth">Window Width (cm):</label>
+                                    <input type="number" id="windowWidth" name="windowWidth" value="120" min="1" max="10000" step="0.1" onchange="calculateAndVisualize()">
+                                    <div class="validation-message">Please enter a width between 1 and 10000 cm</div>
+                                </div>
+                                <div class="input-group">
+                                    <label for="windowHeight">Window Height (cm):</label>
+                                    <input type="number" id="windowHeight" name="windowHeight" value="120" min="1" max="10000" step="0.1" onchange="calculateAndVisualize()">
+                                    <div class="validation-message">Please enter a height between 1 and 10000 cm</div>
+                                </div>
+                            </div>
+                            
+                            <div class="input-row">
+                                <div class="input-group">
+                                    <label for="windowRightOffset">Right Side Offset (cm):</label>
+                                    <input type="number" id="windowRightOffset" name="windowRightOffset" value="100" min="0" max="10000" step="0.1" onchange="calculateAndVisualize()">
+                                    <div class="validation-message">Please enter a positive offset value</div>
+                                    <div class="help-text">Distance from right wall edge</div>
+                                </div>
+                                <div class="input-group">
+                                    <label for="windowFloorOffset">Floor Offset (cm):</label>
+                                    <input type="number" id="windowFloorOffset" name="windowFloorOffset" value="100" min="0" max="10000" step="0.1" onchange="calculateAndVisualize()">
+                                    <div class="validation-message">Please enter a positive offset value</div>
+                                    <div class="help-text">Distance from floor (0 = on floor)</div>
+                                </div>
+                            </div>
+                            
+                            <div class="input-row">
+                                <div class="input-group">
+                                    <div class="color-input-group">
+                                        <label for="windowColor">Window Color:</label>
+                                        <input type="color" id="windowColor" name="windowColor" value="#87CEEB" onchange="calculateAndVisualize()">
+                                    </div>
+                                </div>
+                                <div class="input-group">
+                                    <!-- Empty space for alignment -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+
+            <div style="display: flex; gap: 12px; margin-top: 16px;">
+                <button type="submit" style="flex: 1;">🔍 Calculate and Visualize</button>
+                <button type="button" onclick="resetToDefaults()" style="flex: .3; background: linear-gradient(135deg, #6c757d 0%, #495057 100%); box-shadow: 0 4px 12px rgba(108,117,125,0.3);">🔄 Reset to Defaults</button>
+            </div>
+        </form>
 
         <div id="result"></div>
     </div>
@@ -948,6 +1149,39 @@
             updateLineConfigOptions();
             addSaveListeners(); // Add listeners to save inputs when they change
             calculateAndVisualize(); // Calculate with loaded values
+            
+            // Add form submission handler
+            const form = document.getElementById('wallForm');
+            form.addEventListener('submit', function(e) {
+                e.preventDefault(); // Prevent default form submission
+                
+                if (form.checkValidity()) {
+                    calculateAndVisualize();
+                } else {
+                    // Form is invalid, show validation messages
+                    form.reportValidity();
+                }
+            });
+            
+            // Add real-time validation for min/max thickness relationship
+            const minThicknessInput = document.getElementById('minThickness');
+            const maxThicknessInput = document.getElementById('maxThickness');
+            
+            function validateThicknessRange() {
+                const minVal = parseFloat(minThicknessInput.value);
+                const maxVal = parseFloat(maxThicknessInput.value);
+                
+                if (minVal && maxVal && minVal > maxVal) {
+                    maxThicknessInput.setCustomValidity('Maximum thickness must be greater than or equal to minimum thickness');
+                    minThicknessInput.setCustomValidity('Minimum thickness must be less than or equal to maximum thickness');
+                } else {
+                    maxThicknessInput.setCustomValidity('');
+                    minThicknessInput.setCustomValidity('');
+                }
+            }
+            
+            minThicknessInput.addEventListener('input', validateThicknessRange);
+            maxThicknessInput.addEventListener('input', validateThicknessRange);
         });
     </script>
 </body>
