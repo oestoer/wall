@@ -85,6 +85,31 @@
         .white {
             background-color: white;
         }
+        #wall-container {
+            position: relative;
+        }
+        #wardrobe {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background-color: #8B4513; /* Brown color for wardrobe */
+            border: 2px solid #5D2906;
+            z-index: 10;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+            display: none; /* Hidden by default */
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .checkbox-group label {
+            margin-bottom: 0;
+        }
+        input[type="checkbox"] {
+            width: auto;
+        }
     </style>
 </head>
 <body>
@@ -115,6 +140,24 @@
                 <option value="12,11">12 Pink, 11 White</option>
             </select>
         </div>
+        
+        <div class="input-group">
+            <div class="checkbox-group">
+                <input type="checkbox" id="showWardrobe" onchange="calculateAndVisualize()">
+                <label for="showWardrobe">Show Wardrobe</label>
+            </div>
+            
+            <div style="display: flex; gap: 20px;">
+                <div style="flex: 1;">
+                    <label for="wardrobeWidth">Wardrobe Width (cm):</label>
+                    <input type="number" id="wardrobeWidth" value="100" min="1" onchange="calculateAndVisualize()">
+                </div>
+                <div style="flex: 1;">
+                    <label for="wardrobeHeight">Wardrobe Height (cm):</label>
+                    <input type="number" id="wardrobeHeight" value="220" min="1" onchange="calculateAndVisualize()">
+                </div>
+            </div>
+        </div>
 
         <button onclick="calculateAndVisualize()">Calculate and Visualize</button>
 
@@ -122,7 +165,8 @@
     </div>
 
     <div id="wall-container">
-        </div>
+        <div id="wardrobe"></div>
+    </div>
 
     <script>
         function calculateAndVisualize() {
@@ -172,6 +216,11 @@
             // Visualize the lines
             wallContainer.innerHTML = ''; // Clear previous lines
             
+            // Add the wardrobe element back after clearing the container
+            const wardrobeElement = document.createElement('div');
+            wardrobeElement.id = 'wardrobe';
+            wallContainer.appendChild(wardrobeElement);
+            
             // Adjust the wall container height based on the wall height
             // Keep a reasonable aspect ratio (max height of 400px)
             const maxHeight = 400;
@@ -193,6 +242,31 @@
                 // Set width using flex-basis to ensure accurate proportional display
                 lineDiv.style.flexBasis = `${lineThicknessPercentage}%`;
                 wallContainer.appendChild(lineDiv);
+            }
+            
+            // Handle the wardrobe
+            const showWardrobe = document.getElementById('showWardrobe').checked;
+            const wardrobe = document.getElementById('wardrobe'); // Now using the recreated element
+            const wardrobeWidth = parseFloat(document.getElementById('wardrobeWidth').value);
+            const wardrobeHeight = parseFloat(document.getElementById('wardrobeHeight').value);
+            
+            if (showWardrobe && !isNaN(wardrobeWidth) && !isNaN(wardrobeHeight) && wardrobeWidth > 0 && wardrobeHeight > 0) {
+                // Calculate wardrobe dimensions relative to wall visualization
+                const wardrobeWidthPct = (wardrobeWidth / wallLengthCm) * 100;
+                const wardrobeHeightPct = (wardrobeHeight / wallHeightCm) * 100;
+                
+                // Set wardrobe dimensions and display it
+                wardrobe.style.width = `${wardrobeWidthPct}%`;
+                wardrobe.style.height = `${wardrobeHeightPct}%`;
+                wardrobe.style.display = 'block';
+                
+                // Make sure it's properly positioned in the lower right corner
+                wardrobe.style.position = 'absolute';
+                wardrobe.style.bottom = '0';
+                wardrobe.style.right = '0';
+            } else {
+                // Hide the wardrobe if checkbox is unchecked
+                wardrobe.style.display = 'none';
             }
         }
     </script>
