@@ -804,17 +804,21 @@
 
         .line {
             height: 100%;
+            width: 100%;
             flex-shrink: 0;
             transition: all 0.3s ease;
             opacity: 0;
-            transform: scaleX(0);
             animation: lineAppear 0.4s ease-out forwards;
         }
 
         @keyframes lineAppear {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
             to {
                 opacity: 1;
-                transform: scaleX(1);
+                transform: scale(1);
             }
         }
 
@@ -835,7 +839,7 @@
 
         .line:hover {
             filter: brightness(1.1);
-            transform: scaleY(1.02);
+            transform: scale(1.02);
             z-index: 5;
             position: relative;
         }
@@ -1614,7 +1618,15 @@
                             <select id="lineConfig" name="lineConfig" required onchange="calculateAndVisualize()">
                                 <option value="">Select a configuration</option>
                             </select>
-                            <div class="validation-message">Please select a line configuration</div>
+                            <div class="validation-message">Please select a valid line configuration.</div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="lineDirection">Line Direction:</label>
+                            <select id="lineDirection" name="lineDirection" onchange="updateLineConfigOptions(); calculateAndVisualize()">
+                                <option value="vertical">Vertical</option>
+                                <option value="horizontal">Horizontal</option>
+                            </select>
                         </div>
                     </div>
                 </details>
@@ -1853,9 +1865,11 @@
         // Function to update the line configuration dropdown based on current parameters
         function updateLineConfigOptions() {
             const wallLengthCm = getFloat('wallLength');
+            const wallHeightCm = getFloat('wallHeight');
             const minThickness = getFloat('minThickness') || 20;
             const maxThickness = getFloat('maxThickness') || 45;
             const lineRatio = getFloat('lineRatio') || 1;
+            const lineDirection = getValue('lineDirection') || 'vertical';
             const lineConfigSelect = document.getElementById('lineConfig');
             const currentValue = lineConfigSelect.value;
 
@@ -1873,16 +1887,19 @@
                 const colored = n + 1;
                 const white = n;
 
+                // Choose the correct dimension based on line direction
+                const wallDimension = lineDirection === 'vertical' ? wallLengthCm : wallHeightCm;
+
                 // Calculate line widths based on ratio
                 // Let w_white = white line width, w_colored = colored line width
                 // w_colored = ratio * w_white
                 // Total width = colored * w_colored + white * w_white
                 // Total width = colored * ratio * w_white + white * w_white
                 // Total width = w_white * (colored * ratio + white)
-                // w_white = wallLength / (colored * ratio + white)
+                // w_white = wallDimension / (colored * ratio + white)
                 // w_colored = ratio * w_white
 
-                const whiteLineWidth = wallLengthCm / (colored * lineRatio + white);
+                const whiteLineWidth = wallDimension / (colored * lineRatio + white);
                 const coloredLineWidth = lineRatio * whiteLineWidth;
 
                 // Check if both line widths are within acceptable range
@@ -1936,6 +1953,7 @@
                 maxThickness: getValue('maxThickness'),
                 lineRatio: getValue('lineRatio'),
                 lineConfig: getValue('lineConfig'),
+                lineDirection: getValue('lineDirection'),
                 mainColor: getValue('mainColor'),
                 whiteColor: getValue('whiteColor'),
                 showWardrobe: getChecked('showWardrobe'),
@@ -1992,6 +2010,11 @@
                         setValue('lineConfig', inputs.lineConfig);
                     }
 
+                    // Restore line direction
+                    if (inputs.lineDirection) {
+                        setValue('lineDirection', inputs.lineDirection);
+                    }
+
                 } catch (error) {
                     console.warn('Error loading saved inputs:', error);
                 }
@@ -2038,6 +2061,7 @@
             const wallHeightCm = getFloat('wallHeight');
             const lineConfigValue = getValue('lineConfig');
             const lineRatio = getFloat('lineRatio') || 1;
+            const lineDirection = getValue('lineDirection') || 'vertical';
             const wallContainer = document.getElementById('wall-container');
 
             if (isNaN(wallLengthCm) || wallLengthCm <= 0) {
@@ -2062,10 +2086,13 @@
             const numColoured = parseInt(numColouredStr);
             const numWhite = parseInt(numWhiteStr);
 
+            // Choose the correct dimension based on line direction
+            const wallDimension = lineDirection === 'vertical' ? wallLengthCm : wallHeightCm;
+
             // Calculate line widths based on ratio
-            // w_white = wallLength / (numColoured * ratio + numWhite)
+            // w_white = wallDimension / (numColoured * ratio + numWhite)
             // w_colored = ratio * w_white
-            const whiteLineWidth = wallLengthCm / (numColoured * lineRatio + numWhite);
+            const whiteLineWidth = wallDimension / (numColoured * lineRatio + numWhite);
             const coloredLineWidth = lineRatio * whiteLineWidth;
 
             // Get the configured thickness range
@@ -2088,11 +2115,12 @@
 
             // Display result based on whether ratio is 1 or not
             let statusText = '';
+            const directionText = lineDirection === 'vertical' ? 'vertical' : 'horizontal';
 
             if (lineRatio === 1) {
-                statusText = `For a wall of ${wallLengthCm.toFixed(1)}cm × ${wallHeightCm.toFixed(1)}cm with ${numColoured} coloured and ${numWhite} white lines, each line will be approximately ${whiteLineWidth.toFixed(1)}cm thick.`;
+                statusText = `For a wall of ${wallLengthCm.toFixed(1)}cm × ${wallHeightCm.toFixed(1)}cm with ${numColoured} coloured and ${numWhite} white ${directionText} lines, each line will be approximately ${whiteLineWidth.toFixed(1)}cm thick.`;
             } else {
-                statusText = `For a wall of ${wallLengthCm.toFixed(1)}cm × ${wallHeightCm.toFixed(1)}cm with ${numColoured} coloured and ${numWhite} white lines, coloured lines will be ${coloredLineWidth.toFixed(1)}cm thick and white lines will be ${whiteLineWidth.toFixed(1)}cm thick.`;
+                statusText = `For a wall of ${wallLengthCm.toFixed(1)}cm × ${wallHeightCm.toFixed(1)}cm with ${numColoured} coloured and ${numWhite} white ${directionText} lines, coloured lines will be ${coloredLineWidth.toFixed(1)}cm thick and white lines will be ${whiteLineWidth.toFixed(1)}cm thick.`;
             }
 
             showResultMessage(statusText, 'success');
@@ -2163,9 +2191,27 @@
             windowElementDiv.id = 'window';
             wallContainer.appendChild(windowElementDiv);
 
-            // Calculate percentage widths for visualization
-            const coloredLineWidthPercentage = (coloredLineWidth / wallLengthCm) * 100;
-            const whiteLineWidthPercentage = (whiteLineWidth / wallLengthCm) * 100;
+            // Line direction is already defined at the top of the function
+
+            // Create a container for lines that will use flexbox appropriately
+            const linesContainer = document.createElement('div');
+            linesContainer.style.display = 'flex';
+            linesContainer.style.width = '100%';
+            linesContainer.style.height = '100%';
+
+            // Set flex direction based on selected orientation
+            if (lineDirection === 'vertical') {
+                linesContainer.style.flexDirection = 'row';
+            } else {
+                linesContainer.style.flexDirection = 'column';
+            }
+
+            wallContainer.appendChild(linesContainer);
+
+            // For visualization, we already use the correct dimension when calculating the line widths
+            // so we can directly calculate the percentages based on the dimension used
+            const coloredLineDimensionPercentage = (coloredLineWidth / wallDimension) * 100;
+            const whiteLineDimensionPercentage = (whiteLineWidth / wallDimension) * 100;
 
             // Get the selected colours
             const colouredColor = getValue('mainColor');
@@ -2175,16 +2221,16 @@
                 const lineDiv = document.createElement('div');
                 lineDiv.classList.add('line');
 
-                // Apply the selected colours and widths based on line type
+                // Apply the selected colours and dimensions based on line type
                 if (i % 2 === 0) { // Even index is coloured
                     lineDiv.style.backgroundColor = colouredColor;
-                    lineDiv.style.flexBasis = `${coloredLineWidthPercentage}%`;
+                    lineDiv.style.flexBasis = `${coloredLineDimensionPercentage}%`;
                 } else { // Odd index is white
                     lineDiv.style.backgroundColor = whiteColor;
-                    lineDiv.style.flexBasis = `${whiteLineWidthPercentage}%`;
+                    lineDiv.style.flexBasis = `${whiteLineDimensionPercentage}%`;
                 }
 
-                wallContainer.appendChild(lineDiv);
+                linesContainer.appendChild(lineDiv);
             }
 
             // Handle the wardrobe
@@ -2380,6 +2426,7 @@
                 maxThickness: getValue('maxThickness'),
                 lineRatio: getValue('lineRatio'),
                 lineConfig: getValue('lineConfig'),
+                lineDirection: getValue('lineDirection'),
 
                 // Colors
                 mainColor: getValue('mainColor'),
@@ -2414,6 +2461,9 @@
             setValue('maxThickness', config.maxThickness);
             setValue('lineRatio', config.lineRatio);
             setValue('lineConfig', config.lineConfig);
+            if (config.lineDirection) {
+                setValue('lineDirection', config.lineDirection);
+            }
 
             // Colors
             setValue('mainColor', config.mainColor);
