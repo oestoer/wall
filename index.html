@@ -27,8 +27,6 @@
             border-radius: 12px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.12);
             width: 100%;
-            max-width: 800px;
-            margin-bottom: 24px;
             border: 1px solid rgba(255,255,255,0.2);
         }
         
@@ -637,9 +635,9 @@
         }
         
         /* Dynamic wall height classes */
-        .wall-container[data-height="small"] { height: 200px; }
-        .wall-container[data-height="medium"] { height: 300px; }
-        .wall-container[data-height="large"] { height: 400px; }
+        .wall-container[data-height="small"] { height: 200px; max-height: 200px; }
+        .wall-container[data-height="medium"] { height: 300px; max-height: 300px; }
+        .wall-container[data-height="large"] { height: 400px; max-height: 400px; }
         
         /* Collapsible content state improvements */
         .collapsible-content {
@@ -665,7 +663,6 @@
         }
         
         #result {
-            margin-top: 20px;
             padding: 16px;
             font-size: 1rem;
             color: #2c3e50;
@@ -674,20 +671,20 @@
             border-radius: 8px;
             border-left: 4px solid #007bff;
             line-height: 1.6;
+            margin: 0;
+            width: 100%;
         }
         
         #wall-container {
             width: 100%;
-            max-width: 800px;
-            min-height: 200px;
             border: 3px solid #2c3e50;
-            margin-top: 32px;
             display: flex;
             overflow: hidden;
             box-shadow: 0 8px 32px rgba(0,0,0,0.15);
             background-color: #f8f9fa;
             border-radius: 8px;
             position: relative;
+            margin: 0;
         }
         
         .line {
@@ -834,23 +831,93 @@
         #wardrobe.hidden, #window.hidden {
             display: none !important;
         }
+        
+        /* Better layout structure - Grid Layout */
+        .calculator-grid {
+            display: grid;
+            grid-template-areas: 
+                "controls visualization"
+                "results results";
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto auto;
+            align-items: start;
+            gap: 2rem;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .calculator-controls {
+            grid-area: controls;
+            height: fit-content;
+            overflow-y: visible;
+        }
+        
+        .calculator-visualization {
+            grid-area: visualization;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 0;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            border: 1px solid rgba(255,255,255,0.2);
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+            align-self: flex-start;
+        }
+        
+        .calculator-results {
+            grid-area: results;
+            margin-top: 1rem;
+            padding: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .calculator-grid {
+                grid-template-areas: 
+                    "controls"
+                    "visualization" 
+                    "results";
+                grid-template-columns: 1fr;
+            }
+            
+            .calculator-visualization {
+                position: static;
+                margin-top: 2rem;
+                margin-bottom: 2rem;
+                padding: 1rem;
+            }
+            
+            .calculator-controls {
+                height: auto;
+                overflow-y: visible;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div style="width: 100%; max-width: 1200px; margin-bottom: 1rem; text-align: center;">
         <h1>🏠 Wall Line Calculator & Visualizer</h1>
-
-        <form id="wallForm" novalidate>
-            <div class="form-errors">
-                <strong>Please fix the following errors:</strong>
-                <ul>
-                    <li>All fields marked with * are required</li>
-                    <li>Wall dimensions must be between 1 and 10000 cm</li>
-                    <li>Line thickness must be between 1 and 200 cm</li>
-                    <li>Line ratio must be between 0.1 and 10</li>
-                    <li>Wardrobe/Window dimensions must be positive numbers</li>
-                </ul>
-            </div>
+    </div>
+    
+    <div class="calculator-grid">
+        <!-- Controls Section -->
+        <div class="calculator-controls container">
+            <form id="wallForm" novalidate>
+                <div class="form-errors">
+                    <strong>Please fix the following errors:</strong>
+                    <ul>
+                        <li>All fields marked with * are required</li>
+                        <li>Wall dimensions must be between 1 and 10000 cm</li>
+                        <li>Line thickness must be between 1 and 200 cm</li>
+                        <li>Line ratio must be between 0.1 and 10</li>
+                        <li>Wardrobe/Window dimensions must be positive numbers</li>
+                    </ul>
+                </div>
 
             <div class="section">
                 <details open>
@@ -1030,13 +1097,20 @@
                 <button type="button" onclick="resetToDefaults()" style="flex: .3; background: linear-gradient(135deg, #6c757d 0%, #495057 100%); box-shadow: 0 4px 12px rgba(108,117,125,0.3);">🔄 Reset to Defaults</button>
             </div>
         </form>
-
-        <div id="result" class="result-message"></div>
-    </div>
-
-    <div id="wall-container" class="wall-container" data-height="medium">
-        <div id="wardrobe"></div>
-        <div id="window"></div>
+        </div>
+        
+        <!-- Visualization Section -->
+        <div class="calculator-visualization">
+            <div id="wall-container" class="wall-container" data-height="medium">
+                <div id="wardrobe"></div>
+                <div id="window"></div>
+            </div>
+        </div>
+        
+        <!-- Results Section -->
+        <div class="calculator-results">
+            <div id="result" class="result-message"></div>
+        </div>
     </div>
 
     <script>
