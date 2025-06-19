@@ -5,202 +5,361 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wall Line Calculator and Visualizer</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px;
-            background-color: #f4f4f4;
+            padding: 16px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0;
+            min-height: 100vh;
+            line-height: 1.5;
         }
+        
         .container {
             background-color: white;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            width: 90%;
-            max-width: 700px;
-            margin-bottom: 20px;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255,255,255,0.2);
         }
+        
         h1 {
-            color: #333;
+            color: #2c3e50;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 32px;
+            font-size: 2rem;
+            font-weight: 600;
         }
+        
+        .section {
+            margin-bottom: 24px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
         .input-group {
-            margin-bottom: 15px;
+            margin-bottom: 16px;
         }
+        
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        
+        @media (max-width: 600px) {
+            .input-row {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            body {
+                padding: 12px;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+        
         label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #555;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #495057;
+            font-size: 0.9rem;
         }
+        
         input[type="number"], select {
-            width: calc(100% - 22px);
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
-        }
-        button {
-            background-color: #007bff;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 18px;
             width: 100%;
-            margin-top: 10px;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            background-color: white;
         }
+        
+        input[type="number"]:focus, select:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+        }
+        
+        input[type="color"] {
+            width: 50px;
+            height: 40px;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: border-color 0.2s ease;
+        }
+        
+        input[type="color"]:hover {
+            border-color: #007bff;
+        }
+        
+        .color-input-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .color-input-group label {
+            margin-bottom: 0;
+            min-width: 120px;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            width: 100%;
+            margin-top: 16px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+        }
+        
         button:hover {
-            background-color: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,123,255,0.4);
         }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
         #result {
             margin-top: 20px;
-            font-size: 1.1em;
-            color: #333;
+            padding: 16px;
+            font-size: 1rem;
+            color: #2c3e50;
             text-align: center;
-            font-weight: bold;
+            background-color: #e8f4fd;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+            line-height: 1.6;
         }
+        
         #wall-container {
-            width: 90%;
-            max-width: 700px; /* Max width for visualization */
-            height: 200px; /* Fixed height for the wall visualization */
-            border: 2px solid #333;
-            margin-top: 30px;
+            width: 100%;
+            max-width: 800px;
+            min-height: 200px;
+            border: 3px solid #2c3e50;
+            margin-top: 32px;
             display: flex;
-            overflow: hidden; /* Important to prevent horizontal scroll */
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
-            background-color: #eee; /* Default background for wall */
-        }
-        .line {
-            height: 100%;
-            flex-shrink: 0; /* Prevent lines from shrinking */
-        }
-        #wall-container {
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            background-color: #f8f9fa;
+            border-radius: 8px;
             position: relative;
         }
+        
+        .line {
+            height: 100%;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .line:hover {
+            filter: brightness(1.1);
+        }
+        
         #wardrobe {
             position: absolute;
             bottom: 0;
             right: 0;
-            background-color: #8B4513; /* Brown color for wardrobe */
+            background-color: #8B4513;
             border: 2px solid #5D2906;
             z-index: 10;
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
-            display: none; /* Hidden by default */
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+            display: none;
+            border-radius: 4px 4px 0 0;
         }
+        
         .checkbox-group {
             display: flex;
             align-items: center;
-            gap: 8px;
-            margin-bottom: 15px;
+            gap: 10px;
+            margin-bottom: 16px;
+            padding: 12px;
+            background-color: white;
+            border-radius: 6px;
+            border: 2px solid #e9ecef;
         }
+        
         .checkbox-group label {
             margin-bottom: 0;
+            font-weight: 500;
+            cursor: pointer;
         }
+        
         input[type="checkbox"] {
-            width: auto;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #007bff;
         }
+        
+        .help-text {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 4px;
+            font-style: italic;
+        }
+        
+        .collapsible-content {
+            background-color: white;
+            border-radius: 6px;
+            padding: 16px;
+            margin-top: 12px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-success { background-color: #28a745; }
+        .status-warning { background-color: #ffc107; }
+        .status-error { background-color: #dc3545; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Wall Line Calculator & Visualizer</h1>
+        <h1>🏠 Wall Line Calculator & Visualizer</h1>
 
-        <div class="input-group" style="display: flex; gap: 20px;">
-            <div style="flex: 1;">
-                <label for="wallLength">Wall Length (cm):</label>
-                <input type="number" id="wallLength" value="485.6" min="1" onchange="updateLineConfigOptions(); calculateAndVisualize()">
-            </div>
-            <div style="flex: 1;">
-                <label for="wallHeight">Wall Height (cm):</label>
-                <input type="number" id="wallHeight" value="260" min="1" onchange="calculateAndVisualize()">
-            </div>
-        </div>
-
-        <div class="input-group" style="display: flex; gap: 20px;">
-            <div style="flex: 1;">
-                <label for="minThickness">Min Line Thickness (cm):</label>
-                <input type="number" id="minThickness" value="20" min="1" onchange="updateLineConfigOptions(); calculateAndVisualize()">
-            </div>
-            <div style="flex: 1;">
-                <label for="maxThickness">Max Line Thickness (cm):</label>
-                <input type="number" id="maxThickness" value="45" min="1" onchange="updateLineConfigOptions(); calculateAndVisualize()">
-            </div>
-        </div>
-
-        <div class="input-group">
-            <label for="lineRatio">Line Width Ratio (Coloured:White):</label>
-            <input type="number" id="lineRatio" value="1" min="0.5" max="3" step="0.5" onchange="updateLineConfigOptions(); calculateAndVisualize()">
-            <div style="font-size: 0.8em; color: #666; margin-top: 3px;">
-                1 = equal widths, 0.5 = coloured half width of white, 2 = coloured twice width of white
-            </div>
-        </div>
-        
-        <div class="input-group">
-            <label for="lineConfig">Desired Line Configuration:</label>
-            <select id="lineConfig" onchange="calculateAndVisualize()">
-                <option value="">Select a configuration</option>
-            </select>
-        </div>
-        
-        <div class="input-group">
-            <label>Line Colors:</label>
-            <div style="display: flex; gap: 20px;">
-                <div style="flex: 1; display: flex; justify-content: space-between; align-items: center;">
-                    <label for="mainColor" style="margin-bottom: 0; min-width: 150px;">Coloured Line:</label>
-                    <input type="color" id="mainColor" value="#FFEEEE" onchange="calculateAndVisualize()">
+        <div class="section">
+            <div class="section-title">📏 Wall Dimensions</div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label for="wallLength">Wall Length (cm):</label>
+                    <input type="number" id="wallLength" value="485.6" min="1" onchange="updateLineConfigOptions(); calculateAndVisualize()">
                 </div>
-                <div style="flex: 1; display: flex; justify-content: space-between; align-items: center;">
-                    <label for="whiteColor" style="margin-bottom: 0; min-width: 150px;">White Line:</label>
-                    <input type="color" id="whiteColor" value="#FFFFFF" onchange="calculateAndVisualize()">
+                <div class="input-group">
+                    <label for="wallHeight">Wall Height (cm):</label>
+                    <input type="number" id="wallHeight" value="260" min="1" onchange="calculateAndVisualize()">
                 </div>
             </div>
         </div>
+
+        <div class="section">
+            <div class="section-title">📐 Line Configuration</div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label for="minThickness">Min Line Thickness (cm):</label>
+                    <input type="number" id="minThickness" value="20" min="1" onchange="updateLineConfigOptions(); calculateAndVisualize()">
+                </div>
+                <div class="input-group">
+                    <label for="maxThickness">Max Line Thickness (cm):</label>
+                    <input type="number" id="maxThickness" value="45" min="1" onchange="updateLineConfigOptions(); calculateAndVisualize()">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="lineRatio">Line Width Ratio (Coloured:White):</label>
+                <input type="number" id="lineRatio" value="1" min="0.5" max="3" step="0.5" onchange="updateLineConfigOptions(); calculateAndVisualize()">
+                <div class="help-text">
+                    1 = equal widths, 0.5 = coloured half width of white, 2 = coloured twice width of white
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label for="lineConfig">Desired Line Configuration:</label>
+                <select id="lineConfig" onchange="calculateAndVisualize()">
+                    <option value="">Select a configuration</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">🎨 Colors</div>
+            <div class="input-row">
+                <div class="input-group">
+                    <div class="color-input-group">
+                        <label for="mainColor">Coloured Line:</label>
+                        <input type="color" id="mainColor" value="#FFEEEE" onchange="calculateAndVisualize()">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <div class="color-input-group">
+                        <label for="whiteColor">White Line:</label>
+                        <input type="color" id="whiteColor" value="#FFFFFF" onchange="calculateAndVisualize()">
+                    </div>
+                </div>
+            </div>
+        </div>
         
-        <div class="input-group">
-            <div class="checkbox-group" style="margin-bottom: 10px;">
+        <div class="section">
+            <div class="section-title">🚪 Wardrobe/Door (Optional)</div>
+            <div class="checkbox-group">
                 <input type="checkbox" id="showWardrobe" onchange="toggleWardrobeControls(); calculateAndVisualize();">
                 <label for="showWardrobe">Show Wardrobe/Door</label>
             </div>
             
-            <div id="wardrobeControls" style="display: none;">
-                <div style="display: flex; gap: 20px;">
-                    <div style="flex: 1; display: flex; justify-content: space-between; align-items: center;">
-                        <label for="wardrobeColor" style="margin-bottom: 0; min-width: 150px;">Wardrobe/Door Color:</label>
-                        <input type="color" id="wardrobeColor" value="#8B4513" onchange="calculateAndVisualize()">
-                    </div>
-                    <div style="flex: 1;"></div>
-                </div>
-                
-                <div style="display: flex; gap: 20px; margin-top: 15px;">
-                    <div style="flex: 1;">
+            <div id="wardrobeControls" class="collapsible-content" style="display: none;">
+                <div class="input-row">
+                    <div class="input-group">
                         <label for="wardrobeWidth">Wardrobe/Door Width (cm):</label>
                         <input type="number" id="wardrobeWidth" value="64" min="1" onchange="calculateAndVisualize()">
                     </div>
-                    <div style="flex: 1;">
+                    <div class="input-group">
                         <label for="wardrobeHeight">Wardrobe/Door Height (cm):</label>
                         <input type="number" id="wardrobeHeight" value="200" min="1" onchange="calculateAndVisualize()">
                     </div>
                 </div>
                 
-                <div style="display: flex; gap: 20px; margin-top: 15px;">
-                    <div style="flex: 1;">
+                <div class="input-row">
+                    <div class="input-group">
                         <label for="wardrobeOffset">Right Side Offset (cm):</label>
                         <input type="number" id="wardrobeOffset" value="0" min="0" onchange="calculateAndVisualize()">
-                        <div style="font-size: 0.8em; color: #666; margin-top: 3px;">
-                            Distance from right wall edge (0 = aligned to right)
+                        <div class="help-text">Distance from right wall edge (0 = aligned to right)</div>
+                    </div>
+                    <div class="input-group">
+                        <div class="color-input-group">
+                            <label for="wardrobeColor">Wardrobe/Door Color:</label>
+                            <input type="color" id="wardrobeColor" value="#8B4513" onchange="calculateAndVisualize()">
                         </div>
                     </div>
-                    <div style="flex: 1;"></div>
                 </div>
             </div>
         </div>
 
-        <button onclick="calculateAndVisualize()">Calculate and Visualize</button>
+        <button onclick="calculateAndVisualize()">🔍 Calculate and Visualize</button>
 
         <div id="result"></div>
     </div>
@@ -324,20 +483,20 @@
             const wallContainer = document.getElementById('wall-container');
 
             if (isNaN(wallLengthCm) || wallLengthCm <= 0) {
-                resultDiv.textContent = 'Please enter a valid wall length.';
-                wallContainer.innerHTML = '';
+                resultDiv.innerHTML = '<span class="status-indicator status-error"></span>Please enter a valid wall length.';
+                wallContainer.innerHTML = '<div id="wardrobe"></div>';
                 return;
             }
             
             if (isNaN(wallHeightCm) || wallHeightCm <= 0) {
-                resultDiv.textContent = 'Please enter a valid wall height.';
-                wallContainer.innerHTML = '';
+                resultDiv.innerHTML = '<span class="status-indicator status-error"></span>Please enter a valid wall height.';
+                wallContainer.innerHTML = '<div id="wardrobe"></div>';
                 return;
             }
 
             if (!lineConfigValue) {
-                resultDiv.textContent = 'Please select a line configuration.';
-                wallContainer.innerHTML = '';
+                resultDiv.innerHTML = '<span class="status-indicator status-warning"></span>Please select a line configuration.';
+                wallContainer.innerHTML = '<div id="wardrobe"></div>';
                 return;
             }
 
@@ -358,21 +517,28 @@
             // Check if both line widths are within the acceptable range
             if (whiteLineWidth < minThickness || whiteLineWidth > maxThickness ||
                 coloredLineWidth < minThickness || coloredLineWidth > maxThickness) {
+                let errorMessage = '';
                 if (lineRatio === 1) {
-                    resultDiv.textContent = `Calculated line thickness: ${whiteLineWidth.toFixed(2)} cm. This is outside the allowed range (${minThickness}cm - ${maxThickness}cm). Please choose another configuration.`;
+                    errorMessage = `Calculated line thickness: ${whiteLineWidth.toFixed(1)}cm. This is outside the allowed range (${minThickness}cm - ${maxThickness}cm). Please choose another configuration.`;
                 } else {
-                    resultDiv.textContent = `Calculated line thickness: Coloured ${coloredLineWidth.toFixed(2)}cm, White ${whiteLineWidth.toFixed(2)}cm. One or both are outside the allowed range (${minThickness}cm - ${maxThickness}cm). Please choose another configuration.`;
+                    errorMessage = `Calculated line thickness: Coloured ${coloredLineWidth.toFixed(1)}cm, White ${whiteLineWidth.toFixed(1)}cm. One or both are outside the allowed range (${minThickness}cm - ${maxThickness}cm). Please choose another configuration.`;
                 }
-                wallContainer.innerHTML = '';
+                resultDiv.innerHTML = `<span class="status-indicator status-error"></span>${errorMessage}`;
+                wallContainer.innerHTML = '<div id="wardrobe"></div>';
                 return;
             }
 
             // Display result based on whether ratio is 1 or not
+            let statusClass = 'status-success';
+            let statusText = '';
+            
             if (lineRatio === 1) {
-                resultDiv.textContent = `For a wall of ${wallLengthCm.toFixed(2)}cm × ${wallHeightCm.toFixed(2)}cm with ${numColoured} coloured and ${numWhite} white lines, each line will be approximately ${whiteLineWidth.toFixed(2)} cm thick.`;
+                statusText = `For a wall of ${wallLengthCm.toFixed(1)}cm × ${wallHeightCm.toFixed(1)}cm with ${numColoured} coloured and ${numWhite} white lines, each line will be approximately ${whiteLineWidth.toFixed(1)}cm thick.`;
             } else {
-                resultDiv.textContent = `For a wall of ${wallLengthCm.toFixed(2)}cm × ${wallHeightCm.toFixed(2)}cm with ${numColoured} coloured and ${numWhite} white lines, coloured lines will be ${coloredLineWidth.toFixed(2)} cm thick and white lines will be ${whiteLineWidth.toFixed(2)} cm thick.`;
+                statusText = `For a wall of ${wallLengthCm.toFixed(1)}cm × ${wallHeightCm.toFixed(1)}cm with ${numColoured} coloured and ${numWhite} white lines, coloured lines will be ${coloredLineWidth.toFixed(1)}cm thick and white lines will be ${whiteLineWidth.toFixed(1)}cm thick.`;
             }
+            
+            resultDiv.innerHTML = `<span class="status-indicator ${statusClass}"></span>${statusText}`;
 
             // Visualize the lines
             wallContainer.innerHTML = ''; // Clear previous lines
@@ -420,12 +586,20 @@
             const wardrobeColor = document.getElementById('wardrobeColor').value;
             
             if (showWardrobe && !isNaN(wardrobeWidth) && !isNaN(wardrobeHeight) && wardrobeWidth > 0 && wardrobeHeight > 0) {
+                // Validate wardrobe dimensions don't exceed wall dimensions
+                if (wardrobeWidth > wallLengthCm) {
+                    console.warn(`Wardrobe width (${wardrobeWidth}cm) exceeds wall length (${wallLengthCm}cm)`);
+                }
+                if (wardrobeHeight > wallHeightCm) {
+                    console.warn(`Wardrobe height (${wardrobeHeight}cm) exceeds wall height (${wallHeightCm}cm)`);
+                }
+                
                 // Get the offset from right side
                 const wardrobeOffset = parseFloat(document.getElementById('wardrobeOffset').value) || 0;
                 
                 // Calculate wardrobe dimensions relative to wall visualization
-                const wardrobeWidthPct = (wardrobeWidth / wallLengthCm) * 100;
-                const wardrobeHeightPct = (wardrobeHeight / wallHeightCm) * 100;
+                const wardrobeWidthPct = Math.min((wardrobeWidth / wallLengthCm) * 100, 100);
+                const wardrobeHeightPct = Math.min((wardrobeHeight / wallHeightCm) * 100, 100);
                 const offsetPct = (wardrobeOffset / wallLengthCm) * 100;
                 
                 // Set wardrobe dimensions and display it
@@ -440,7 +614,7 @@
                 wardrobe.style.right = `${offsetPct}%`;
                 
                 // Darker border based on the selected color
-                const darkerBorderColor = adjustColor(wardrobeColor, -30); // Darken the color by 30%
+                const darkerBorderColor = adjustColor(wardrobeColor, -30);
                 wardrobe.style.border = `2px solid ${darkerBorderColor}`;
             } else {
                 // Hide the wardrobe if checkbox is unchecked
