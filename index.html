@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wall Line Calculator and Visualizer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 700px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="number"], select {
+            width: calc(100% - 22px);
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            width: 100%;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 1.1em;
+            color: #333;
+            text-align: center;
+            font-weight: bold;
+        }
+        #wall-container {
+            width: 90%;
+            max-width: 700px; /* Max width for visualization */
+            height: 200px; /* Fixed height for the wall visualization */
+            border: 2px solid #333;
+            margin-top: 30px;
+            display: flex;
+            overflow: hidden; /* Important to prevent horizontal scroll */
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+            background-color: #eee; /* Default background for wall */
+        }
+        .line {
+            height: 100%;
+            flex-shrink: 0; /* Prevent lines from shrinking */
+        }
+        .pink {
+            background-color: #FFEEEE; /* Pink Blush */
+        }
+        .white {
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Wall Line Calculator & Visualizer</h1>
+
+        <div class="input-group">
+            <label for="wallLength">Wall Length (cm):</label>
+            <input type="number" id="wallLength" value="485.6" min="1">
+        </div>
+
+        <div class="input-group">
+            <label for="lineConfig">Desired Line Configuration:</label>
+            <select id="lineConfig">
+                <option value="">Select a configuration</option>
+                <option value="6,5">6 Pink, 5 White</option>
+                <option value="7,6">7 Pink, 6 White</option>
+                <option value="8,7">8 Pink, 7 White</option>
+                <option value="9,8">9 Pink, 8 White</option>
+                <option value="10,9">10 Pink, 9 White</option>
+                <option value="11,10">11 Pink, 10 White</option>
+                <option value="12,11">12 Pink, 11 White</option>
+            </select>
+        </div>
+
+        <button onclick="calculateAndVisualize()">Calculate and Visualize</button>
+
+        <div id="result"></div>
+    </div>
+
+    <div id="wall-container">
+        </div>
+
+    <script>
+        function calculateAndVisualize() {
+            const wallLengthCm = parseFloat(document.getElementById('wallLength').value);
+            const lineConfigValue = document.getElementById('lineConfig').value;
+            const resultDiv = document.getElementById('result');
+            const wallContainer = document.getElementById('wall-container');
+
+            if (isNaN(wallLengthCm) || wallLengthCm <= 0) {
+                resultDiv.textContent = 'Please enter a valid wall length.';
+                wallContainer.innerHTML = '';
+                return;
+            }
+
+            if (!lineConfigValue) {
+                resultDiv.textContent = 'Please select a line configuration.';
+                wallContainer.innerHTML = '';
+                return;
+            }
+
+            const [numPinkStr, numWhiteStr] = lineConfigValue.split(',');
+            const numPink = parseInt(numPinkStr);
+            const numWhite = parseInt(numWhiteStr);
+
+            // Calculation based on the previous logic (lines of equal width)
+            // L = n_p * w + n_w * w = (n_p + n_w) * w
+            const totalLines = numPink + numWhite;
+            const lineColorCount = (numPink + numWhite); // Total sections (pink and white lines)
+            const lineThicknessCm = wallLengthCm / lineColorCount;
+
+            // Check if the thickness is within the acceptable range
+            if (lineThicknessCm < 20 || lineThicknessCm > 45) {
+                resultDiv.textContent = `Calculated line thickness: ${lineThicknessCm.toFixed(2)} cm. This is outside the allowed range (20cm - 45cm). Please choose another configuration.`;
+                wallContainer.innerHTML = '';
+                return;
+            }
+
+            resultDiv.textContent = `For ${numPink} pink and ${numWhite} white lines, each line will be approximately ${lineThicknessCm.toFixed(2)} cm thick.`;
+
+            // Visualize the lines
+            wallContainer.innerHTML = ''; // Clear previous lines
+
+            // Calculate percentage width for visualization
+            const lineThicknessPercentage = (lineThicknessCm / wallLengthCm) * 100;
+
+            for (let i = 0; i < numPink + numWhite; i++) {
+                const lineDiv = document.createElement('div');
+                lineDiv.classList.add('line');
+                // Determine color: starts with pink, alternates
+                if (i % 2 === 0) { // Even index is pink
+                    lineDiv.classList.add('pink');
+                } else { // Odd index is white
+                    lineDiv.classList.add('white');
+                }
+                // Set width using flex-basis to ensure accurate proportional display
+                lineDiv.style.flexBasis = `${lineThicknessPercentage}%`;
+                wallContainer.appendChild(lineDiv);
+            }
+        }
+    </script>
+</body>
+</html>
