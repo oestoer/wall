@@ -1852,12 +1852,33 @@
             return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
         }
         
+        // Utility functions to simplify getting and setting form values
+        function getValue(id) {
+            return document.getElementById(id).value;
+        }
+        
+        function setValue(id, value) {
+            document.getElementById(id).value = value;
+        }
+        
+        function getChecked(id) {
+            return document.getElementById(id).checked;
+        }
+        
+        function setChecked(id, value) {
+            document.getElementById(id).checked = value;
+        }
+        
+        function getFloat(id) {
+            return parseFloat(getValue(id));
+        }
+        
         // Function to update the line configuration dropdown based on current parameters
         function updateLineConfigOptions() {
-            const wallLengthCm = parseFloat(document.getElementById('wallLength').value);
-            const minThickness = parseFloat(document.getElementById('minThickness').value) || 20;
-            const maxThickness = parseFloat(document.getElementById('maxThickness').value) || 45;
-            const lineRatio = parseFloat(document.getElementById('lineRatio').value) || 1;
+            const wallLengthCm = getFloat('wallLength');
+            const minThickness = getFloat('minThickness') || 20;
+            const maxThickness = getFloat('maxThickness') || 45;
+            const lineRatio = getFloat('lineRatio') || 1;
             const lineConfigSelect = document.getElementById('lineConfig');
             const currentValue = lineConfigSelect.value;
             
@@ -1932,25 +1953,25 @@
         // LocalStorage functions to save and restore user inputs
         function saveInputsToLocalStorage() {
             const inputs = {
-                wallLength: document.getElementById('wallLength').value,
-                wallHeight: document.getElementById('wallHeight').value,
-                minThickness: document.getElementById('minThickness').value,
-                maxThickness: document.getElementById('maxThickness').value,
-                lineRatio: document.getElementById('lineRatio').value,
-                lineConfig: document.getElementById('lineConfig').value,
-                mainColor: document.getElementById('mainColor').value,
-                whiteColor: document.getElementById('whiteColor').value,
-                showWardrobe: document.getElementById('showWardrobe').checked,
-                wardrobeWidth: document.getElementById('wardrobeWidth').value,
-                wardrobeHeight: document.getElementById('wardrobeHeight').value,
-                wardrobeOffset: document.getElementById('wardrobeOffset').value,
-                wardrobeColor: document.getElementById('wardrobeColor').value,
-                showWindow: document.getElementById('showWindow').checked,
-                windowWidth: document.getElementById('windowWidth').value,
-                windowHeight: document.getElementById('windowHeight').value,
-                windowRightOffset: document.getElementById('windowRightOffset').value,
-                windowFloorOffset: document.getElementById('windowFloorOffset').value,
-                windowColor: document.getElementById('windowColor').value
+                wallLength: getValue('wallLength'),
+                wallHeight: getValue('wallHeight'),
+                minThickness: getValue('minThickness'),
+                maxThickness: getValue('maxThickness'),
+                lineRatio: getValue('lineRatio'),
+                lineConfig: getValue('lineConfig'),
+                mainColor: getValue('mainColor'),
+                whiteColor: getValue('whiteColor'),
+                showWardrobe: getChecked('showWardrobe'),
+                wardrobeWidth: getValue('wardrobeWidth'),
+                wardrobeHeight: getValue('wardrobeHeight'),
+                wardrobeOffset: getValue('wardrobeOffset'),
+                wardrobeColor: getValue('wardrobeColor'),
+                showWindow: getChecked('showWindow'),
+                windowWidth: getValue('windowWidth'),
+                windowHeight: getValue('windowHeight'),
+                windowRightOffset: getValue('windowRightOffset'),
+                windowFloorOffset: getValue('windowFloorOffset'),
+                windowColor: getValue('windowColor')
             };
             
             localStorage.setItem('wallCalculatorInputs', JSON.stringify(inputs));
@@ -1963,35 +1984,35 @@
                     const inputs = JSON.parse(savedInputs);
                     
                     // Restore text/number inputs
-                    if (inputs.wallLength) document.getElementById('wallLength').value = inputs.wallLength;
-                    if (inputs.wallHeight) document.getElementById('wallHeight').value = inputs.wallHeight;
-                    if (inputs.minThickness) document.getElementById('minThickness').value = inputs.minThickness;
-                    if (inputs.maxThickness) document.getElementById('maxThickness').value = inputs.maxThickness;
-                    if (inputs.lineRatio) document.getElementById('lineRatio').value = inputs.lineRatio;
-                    if (inputs.mainColor) document.getElementById('mainColor').value = inputs.mainColor;
-                    if (inputs.whiteColor) document.getElementById('whiteColor').value = inputs.whiteColor;
-                    if (inputs.wardrobeWidth) document.getElementById('wardrobeWidth').value = inputs.wardrobeWidth;
-                    if (inputs.wardrobeHeight) document.getElementById('wardrobeHeight').value = inputs.wardrobeHeight;
-                    if (inputs.wardrobeOffset) document.getElementById('wardrobeOffset').value = inputs.wardrobeOffset;
-                    if (inputs.wardrobeColor) document.getElementById('wardrobeColor').value = inputs.wardrobeColor;
-                    if (inputs.windowWidth) document.getElementById('windowWidth').value = inputs.windowWidth;
-                    if (inputs.windowHeight) document.getElementById('windowHeight').value = inputs.windowHeight;
-                    if (inputs.windowRightOffset) document.getElementById('windowRightOffset').value = inputs.windowRightOffset;
-                    if (inputs.windowFloorOffset) document.getElementById('windowFloorOffset').value = inputs.windowFloorOffset;
-                    if (inputs.windowColor) document.getElementById('windowColor').value = inputs.windowColor;
+                    if (inputs.wallLength) setValue('wallLength', inputs.wallLength);
+                    if (inputs.wallHeight) setValue('wallHeight', inputs.wallHeight);
+                    if (inputs.minThickness) setValue('minThickness', inputs.minThickness);
+                    if (inputs.maxThickness) setValue('maxThickness', inputs.maxThickness);
+                    if (inputs.lineRatio) setValue('lineRatio', inputs.lineRatio);
+                    if (inputs.mainColor) setValue('mainColor', inputs.mainColor);
+                    if (inputs.whiteColor) setValue('whiteColor', inputs.whiteColor);
+                    if (inputs.wardrobeWidth) setValue('wardrobeWidth', inputs.wardrobeWidth);
+                    if (inputs.wardrobeHeight) setValue('wardrobeHeight', inputs.wardrobeHeight);
+                    if (inputs.wardrobeOffset) setValue('wardrobeOffset', inputs.wardrobeOffset);
+                    if (inputs.wardrobeColor) setValue('wardrobeColor', inputs.wardrobeColor);
+                    if (inputs.windowWidth) setValue('windowWidth', inputs.windowWidth);
+                    if (inputs.windowHeight) setValue('windowHeight', inputs.windowHeight);
+                    if (inputs.windowRightOffset) setValue('windowRightOffset', inputs.windowRightOffset);
+                    if (inputs.windowFloorOffset) setValue('windowFloorOffset', inputs.windowFloorOffset);
+                    if (inputs.windowColor) setValue('windowColor', inputs.windowColor);
                     
                     // Restore checkboxes - CSS will handle the visibility
                     if (inputs.showWardrobe !== undefined) {
-                        document.getElementById('showWardrobe').checked = inputs.showWardrobe;
+                        setChecked('showWardrobe', inputs.showWardrobe);
                     }
                     if (inputs.showWindow !== undefined) {
-                        document.getElementById('showWindow').checked = inputs.showWindow;
+                        setChecked('showWindow', inputs.showWindow);
                     }
                     
                     // Update line config options first, then restore selection
                     updateLineConfigOptions();
                     if (inputs.lineConfig) {
-                        document.getElementById('lineConfig').value = inputs.lineConfig;
+                        setValue('lineConfig', inputs.lineConfig);
                     }
                     
                 } catch (error) {
@@ -2036,10 +2057,10 @@
         }
 
         function calculateAndVisualize() {
-            const wallLengthCm = parseFloat(document.getElementById('wallLength').value);
-            const wallHeightCm = parseFloat(document.getElementById('wallHeight').value);
-            const lineConfigValue = document.getElementById('lineConfig').value;
-            const lineRatio = parseFloat(document.getElementById('lineRatio').value) || 1;
+            const wallLengthCm = getFloat('wallLength');
+            const wallHeightCm = getFloat('wallHeight');
+            const lineConfigValue = getValue('lineConfig');
+            const lineRatio = getFloat('lineRatio') || 1;
             const wallContainer = document.getElementById('wall-container');
 
             if (isNaN(wallLengthCm) || wallLengthCm <= 0) {
@@ -2071,8 +2092,8 @@
             const coloredLineWidth = lineRatio * whiteLineWidth;
 
             // Get the configured thickness range
-            const minThickness = parseFloat(document.getElementById('minThickness').value) || 20;
-            const maxThickness = parseFloat(document.getElementById('maxThickness').value) || 45;
+            const minThickness = getFloat('minThickness') || 20;
+            const maxThickness = getFloat('maxThickness') || 45;
             
             // Check if both line widths are within the acceptable range
             if (whiteLineWidth < minThickness || whiteLineWidth > maxThickness ||
@@ -2170,8 +2191,8 @@
             const whiteLineWidthPercentage = (whiteLineWidth / wallLengthCm) * 100;
 
             // Get the selected colours
-            const colouredColor = document.getElementById('mainColor').value;
-            const whiteColor = document.getElementById('whiteColor').value;
+            const colouredColor = getValue('mainColor');
+            const whiteColor = getValue('whiteColor');
             
             for (let i = 0; i < numColoured + numWhite; i++) {
                 const lineDiv = document.createElement('div');
@@ -2190,11 +2211,11 @@
             }
             
             // Handle the wardrobe
-            const showWardrobe = document.getElementById('showWardrobe').checked;
+            const showWardrobe = getChecked('showWardrobe');
             const wardrobe = document.getElementById('wardrobe'); // Now using the recreated element
-            const wardrobeWidth = parseFloat(document.getElementById('wardrobeWidth').value);
-            const wardrobeHeight = parseFloat(document.getElementById('wardrobeHeight').value);
-            const wardrobeColor = document.getElementById('wardrobeColor').value;
+            const wardrobeWidth = getFloat('wardrobeWidth');
+            const wardrobeHeight = getFloat('wardrobeHeight');
+            const wardrobeColor = getValue('wardrobeColor');
             
             if (showWardrobe && !isNaN(wardrobeWidth) && !isNaN(wardrobeHeight) && wardrobeWidth > 0 && wardrobeHeight > 0) {
                 // Validate wardrobe dimensions don't exceed wall dimensions
@@ -2206,7 +2227,7 @@
                 }
                 
                 // Get the offset from right side
-                const wardrobeOffset = parseFloat(document.getElementById('wardrobeOffset').value) || 0;
+                const wardrobeOffset = getFloat('wardrobeOffset') || 0;
                 
                 // Calculate wardrobe dimensions relative to wall visualization
                 const wardrobeWidthPct = Math.min((wardrobeWidth / wallLengthCm) * 100, 100);
@@ -2235,11 +2256,11 @@
             }
             
             // Handle the window
-            const showWindow = document.getElementById('showWindow').checked;
+            const showWindow = getChecked('showWindow');
             const windowElement = document.getElementById('window'); // Now using the recreated element
-            const windowWidth = parseFloat(document.getElementById('windowWidth').value);
-            const windowHeight = parseFloat(document.getElementById('windowHeight').value);
-            const windowColor = document.getElementById('windowColor').value;
+            const windowWidth = getFloat('windowWidth');
+            const windowHeight = getFloat('windowHeight');
+            const windowColor = getValue('windowColor');
             
             if (showWindow && !isNaN(windowWidth) && !isNaN(windowHeight) && windowWidth > 0 && windowHeight > 0) {
                 // Validate window dimensions don't exceed wall dimensions
@@ -2251,8 +2272,8 @@
                 }
                 
                 // Get the offsets from right side and floor
-                const windowRightOffset = parseFloat(document.getElementById('windowRightOffset').value) || 0;
-                const windowFloorOffset = parseFloat(document.getElementById('windowFloorOffset').value) || 0;
+                const windowRightOffset = getFloat('windowRightOffset') || 0;
+                const windowFloorOffset = getFloat('windowFloorOffset') || 0;
                 
                 // Calculate window dimensions relative to wall visualization
                 const windowWidthPct = Math.min((windowWidth / wallLengthCm) * 100, 100);
@@ -2304,25 +2325,25 @@
             localStorage.removeItem('wallCalculatorInputs');
             
             // Set all inputs back to their default values
-            document.getElementById('wallLength').value = '485.6';
-            document.getElementById('wallHeight').value = '260';
-            document.getElementById('minThickness').value = '20';
-            document.getElementById('maxThickness').value = '45';
-            document.getElementById('lineRatio').value = '1';
-            document.getElementById('lineConfig').value = '';
-            document.getElementById('mainColor').value = '#FFEEEE';
-            document.getElementById('whiteColor').value = '#FFFFFF';
-            document.getElementById('showWardrobe').checked = false;
-            document.getElementById('wardrobeWidth').value = '64';
-            document.getElementById('wardrobeHeight').value = '200';
-            document.getElementById('wardrobeOffset').value = '0';
-            document.getElementById('wardrobeColor').value = '#8B4513';
-            document.getElementById('showWindow').checked = false;
-            document.getElementById('windowWidth').value = '120';
-            document.getElementById('windowHeight').value = '120';
-            document.getElementById('windowRightOffset').value = '100';
-            document.getElementById('windowFloorOffset').value = '100';
-            document.getElementById('windowColor').value = '#87CEEB';
+            setValue('wallLength', '485.6');
+            setValue('wallHeight', '260');
+            setValue('minThickness', '20');
+            setValue('maxThickness', '45');
+            setValue('lineRatio', '1');
+            setValue('lineConfig', '');
+            setValue('mainColor', '#FFEEEE');
+            setValue('whiteColor', '#FFFFFF');
+            setChecked('showWardrobe', false);
+            setValue('wardrobeWidth', '64');
+            setValue('wardrobeHeight', '200');
+            setValue('wardrobeOffset', '0');
+            setValue('wardrobeColor', '#8B4513');
+            setChecked('showWindow', false);
+            setValue('windowWidth', '120');
+            setValue('windowHeight', '120');
+            setValue('windowRightOffset', '100');
+            setValue('windowFloorOffset', '100');
+            setValue('windowColor', '#87CEEB');
             
             // Update UI state - CSS handles visibility now
             updateLineConfigOptions(); // Refresh line configuration dropdown
@@ -2376,31 +2397,31 @@
             // Get all the current form values
             const config = {
                 // Basic dimensions
-                wallLength: document.getElementById('wallLength').value,
-                wallHeight: document.getElementById('wallHeight').value,
-                minThickness: document.getElementById('minThickness').value,
-                maxThickness: document.getElementById('maxThickness').value,
-                lineRatio: document.getElementById('lineRatio').value,
-                lineConfig: document.getElementById('lineConfig').value,
+                wallLength: getValue('wallLength'),
+                wallHeight: getValue('wallHeight'),
+                minThickness: getValue('minThickness'),
+                maxThickness: getValue('maxThickness'),
+                lineRatio: getValue('lineRatio'),
+                lineConfig: getValue('lineConfig'),
                 
                 // Colors
-                mainColor: document.getElementById('mainColor').value,
-                whiteColor: document.getElementById('whiteColor').value,
+                mainColor: getValue('mainColor'),
+                whiteColor: getValue('whiteColor'),
                 
                 // Wardrobe settings
-                showWardrobe: document.getElementById('showWardrobe').checked,
-                wardrobeWidth: document.getElementById('wardrobeWidth').value,
-                wardrobeHeight: document.getElementById('wardrobeHeight').value,
-                wardrobeOffset: document.getElementById('wardrobeOffset').value,
-                wardrobeColor: document.getElementById('wardrobeColor').value,
+                showWardrobe: getChecked('showWardrobe'),
+                wardrobeWidth: getValue('wardrobeWidth'),
+                wardrobeHeight: getValue('wardrobeHeight'),
+                wardrobeOffset: getValue('wardrobeOffset'),
+                wardrobeColor: getValue('wardrobeColor'),
                 
                 // Window settings
-                showWindow: document.getElementById('showWindow').checked,
-                windowWidth: document.getElementById('windowWidth').value,
-                windowHeight: document.getElementById('windowHeight').value,
-                windowRightOffset: document.getElementById('windowRightOffset').value,
-                windowFloorOffset: document.getElementById('windowFloorOffset').value,
-                windowColor: document.getElementById('windowColor').value
+                showWindow: getChecked('showWindow'),
+                windowWidth: getValue('windowWidth'),
+                windowHeight: getValue('windowHeight'),
+                windowRightOffset: getValue('windowRightOffset'),
+                windowFloorOffset: getValue('windowFloorOffset'),
+                windowColor: getValue('windowColor')
             };
             
             return config;
@@ -2410,31 +2431,31 @@
             // Apply all configuration values to the form
             
             // Basic dimensions
-            document.getElementById('wallLength').value = config.wallLength;
-            document.getElementById('wallHeight').value = config.wallHeight;
-            document.getElementById('minThickness').value = config.minThickness;
-            document.getElementById('maxThickness').value = config.maxThickness;
-            document.getElementById('lineRatio').value = config.lineRatio;
-            document.getElementById('lineConfig').value = config.lineConfig;
+            setValue('wallLength', config.wallLength);
+            setValue('wallHeight', config.wallHeight);
+            setValue('minThickness', config.minThickness);
+            setValue('maxThickness', config.maxThickness);
+            setValue('lineRatio', config.lineRatio);
+            setValue('lineConfig', config.lineConfig);
             
             // Colors
-            document.getElementById('mainColor').value = config.mainColor;
-            document.getElementById('whiteColor').value = config.whiteColor;
+            setValue('mainColor', config.mainColor);
+            setValue('whiteColor', config.whiteColor);
             
             // Wardrobe settings
-            document.getElementById('showWardrobe').checked = config.showWardrobe;
-            document.getElementById('wardrobeWidth').value = config.wardrobeWidth;
-            document.getElementById('wardrobeHeight').value = config.wardrobeHeight;
-            document.getElementById('wardrobeOffset').value = config.wardrobeOffset;
-            document.getElementById('wardrobeColor').value = config.wardrobeColor;
+            setChecked('showWardrobe', config.showWardrobe);
+            setValue('wardrobeWidth', config.wardrobeWidth);
+            setValue('wardrobeHeight', config.wardrobeHeight);
+            setValue('wardrobeOffset', config.wardrobeOffset);
+            setValue('wardrobeColor', config.wardrobeColor);
             
             // Window settings
-            document.getElementById('showWindow').checked = config.showWindow;
-            document.getElementById('windowWidth').value = config.windowWidth;
-            document.getElementById('windowHeight').value = config.windowHeight;
-            document.getElementById('windowRightOffset').value = config.windowRightOffset;
-            document.getElementById('windowFloorOffset').value = config.windowFloorOffset;
-            document.getElementById('windowColor').value = config.windowColor;
+            setChecked('showWindow', config.showWindow);
+            setValue('windowWidth', config.windowWidth);
+            setValue('windowHeight', config.windowHeight);
+            setValue('windowRightOffset', config.windowRightOffset);
+            setValue('windowFloorOffset', config.windowFloorOffset);
+            setValue('windowColor', config.windowColor);
             
             // Update dependent UI elements
             updateLineConfigOptions();
