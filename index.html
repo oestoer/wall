@@ -254,6 +254,16 @@
             border-radius: 4px 4px 0 0;
         }
         
+        #window {
+            position: absolute;
+            background-color: #87CEEB;
+            border: 2px solid #4682B4;
+            z-index: 10;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+            display: none;
+            border-radius: 4px;
+        }
+        
         .checkbox-group {
             display: flex;
             align-items: center;
@@ -422,6 +432,56 @@
             </details>
         </div>
 
+        <div class="section">
+            <details open>
+                <summary>🪟 Window (Optional)</summary>
+                <div class="section-content">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="showWindow" onchange="toggleWindowControls(); calculateAndVisualize();">
+                        <label for="showWindow">Show Window</label>
+                    </div>
+                    
+                    <div id="windowControls" class="collapsible-content" style="display: none;">
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label for="windowWidth">Window Width (cm):</label>
+                                <input type="number" id="windowWidth" value="120" min="1" onchange="calculateAndVisualize()">
+                            </div>
+                            <div class="input-group">
+                                <label for="windowHeight">Window Height (cm):</label>
+                                <input type="number" id="windowHeight" value="120" min="1" onchange="calculateAndVisualize()">
+                            </div>
+                        </div>
+                        
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label for="windowRightOffset">Right Side Offset (cm):</label>
+                                <input type="number" id="windowRightOffset" value="100" min="0" onchange="calculateAndVisualize()">
+                                <div class="help-text">Distance from right wall edge</div>
+                            </div>
+                            <div class="input-group">
+                                <label for="windowFloorOffset">Floor Offset (cm):</label>
+                                <input type="number" id="windowFloorOffset" value="100" min="0" onchange="calculateAndVisualize()">
+                                <div class="help-text">Distance from floor (0 = on floor)</div>
+                            </div>
+                        </div>
+                        
+                        <div class="input-row">
+                            <div class="input-group">
+                                <div class="color-input-group">
+                                    <label for="windowColor">Window Color:</label>
+                                    <input type="color" id="windowColor" value="#87CEEB" onchange="calculateAndVisualize()">
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <!-- Empty space for alignment -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </details>
+        </div>
+
         <div style="display: flex; gap: 12px; margin-top: 16px;">
             <button onclick="calculateAndVisualize()" style="flex: 1;">🔍 Calculate and Visualize</button>
             <button onclick="resetToDefaults()" style="flex: .3; background: linear-gradient(135deg, #6c757d 0%, #495057 100%); box-shadow: 0 4px 12px rgba(108,117,125,0.3);">🔄 Reset to Defaults</button>
@@ -432,6 +492,7 @@
 
     <div id="wall-container">
         <div id="wardrobe"></div>
+        <div id="window"></div>
     </div>
 
     <script>
@@ -460,6 +521,18 @@
                 wardrobeControls.style.display = 'block';
             } else {
                 wardrobeControls.style.display = 'none';
+            }
+        }
+        
+        // Function to toggle the visibility of window controls
+        function toggleWindowControls() {
+            const showWindow = document.getElementById('showWindow').checked;
+            const windowControls = document.getElementById('windowControls');
+            
+            if (showWindow) {
+                windowControls.style.display = 'block';
+            } else {
+                windowControls.style.display = 'none';
             }
         }
         
@@ -555,7 +628,13 @@
                 wardrobeWidth: document.getElementById('wardrobeWidth').value,
                 wardrobeHeight: document.getElementById('wardrobeHeight').value,
                 wardrobeOffset: document.getElementById('wardrobeOffset').value,
-                wardrobeColor: document.getElementById('wardrobeColor').value
+                wardrobeColor: document.getElementById('wardrobeColor').value,
+                showWindow: document.getElementById('showWindow').checked,
+                windowWidth: document.getElementById('windowWidth').value,
+                windowHeight: document.getElementById('windowHeight').value,
+                windowRightOffset: document.getElementById('windowRightOffset').value,
+                windowFloorOffset: document.getElementById('windowFloorOffset').value,
+                windowColor: document.getElementById('windowColor').value
             };
             
             localStorage.setItem('wallCalculatorInputs', JSON.stringify(inputs));
@@ -579,11 +658,20 @@
                     if (inputs.wardrobeHeight) document.getElementById('wardrobeHeight').value = inputs.wardrobeHeight;
                     if (inputs.wardrobeOffset) document.getElementById('wardrobeOffset').value = inputs.wardrobeOffset;
                     if (inputs.wardrobeColor) document.getElementById('wardrobeColor').value = inputs.wardrobeColor;
+                    if (inputs.windowWidth) document.getElementById('windowWidth').value = inputs.windowWidth;
+                    if (inputs.windowHeight) document.getElementById('windowHeight').value = inputs.windowHeight;
+                    if (inputs.windowRightOffset) document.getElementById('windowRightOffset').value = inputs.windowRightOffset;
+                    if (inputs.windowFloorOffset) document.getElementById('windowFloorOffset').value = inputs.windowFloorOffset;
+                    if (inputs.windowColor) document.getElementById('windowColor').value = inputs.windowColor;
                     
-                    // Restore checkbox
+                    // Restore checkboxes
                     if (inputs.showWardrobe !== undefined) {
                         document.getElementById('showWardrobe').checked = inputs.showWardrobe;
                         toggleWardrobeControls(); // Update visibility of wardrobe controls
+                    }
+                    if (inputs.showWindow !== undefined) {
+                        document.getElementById('showWindow').checked = inputs.showWindow;
+                        toggleWindowControls(); // Update visibility of window controls
                     }
                     
                     // Update line config options first, then restore selection
@@ -604,7 +692,9 @@
                 'wallLength', 'wallHeight', 'minThickness', 'maxThickness', 
                 'lineRatio', 'lineConfig', 'mainColor', 'whiteColor',
                 'showWardrobe', 'wardrobeWidth', 'wardrobeHeight', 
-                'wardrobeOffset', 'wardrobeColor'
+                'wardrobeOffset', 'wardrobeColor', 'showWindow', 
+                'windowWidth', 'windowHeight', 'windowRightOffset', 
+                'windowFloorOffset', 'windowColor'
             ];
             
             inputElements.forEach(id => {
@@ -689,10 +779,14 @@
             // Visualize the lines
             wallContainer.innerHTML = ''; // Clear previous lines
             
-            // Add the wardrobe element back after clearing the container
+            // Add the wardrobe and window elements back after clearing the container
             const wardrobeElement = document.createElement('div');
             wardrobeElement.id = 'wardrobe';
             wallContainer.appendChild(wardrobeElement);
+            
+            const windowElementDiv = document.createElement('div');
+            windowElementDiv.id = 'window';
+            wallContainer.appendChild(windowElementDiv);
             
             // Adjust the wall container height based on the wall height
             // Keep a reasonable aspect ratio (max height of 400px)
@@ -766,6 +860,51 @@
                 // Hide the wardrobe if checkbox is unchecked
                 wardrobe.style.display = 'none';
             }
+            
+            // Handle the window
+            const showWindow = document.getElementById('showWindow').checked;
+            const windowElement = document.getElementById('window'); // Now using the recreated element
+            const windowWidth = parseFloat(document.getElementById('windowWidth').value);
+            const windowHeight = parseFloat(document.getElementById('windowHeight').value);
+            const windowColor = document.getElementById('windowColor').value;
+            
+            if (showWindow && !isNaN(windowWidth) && !isNaN(windowHeight) && windowWidth > 0 && windowHeight > 0) {
+                // Validate window dimensions don't exceed wall dimensions
+                if (windowWidth > wallLengthCm) {
+                    console.warn(`Window width (${windowWidth}cm) exceeds wall length (${wallLengthCm}cm)`);
+                }
+                if (windowHeight > wallHeightCm) {
+                    console.warn(`Window height (${windowHeight}cm) exceeds wall height (${wallHeightCm}cm)`);
+                }
+                
+                // Get the offsets from right side and floor
+                const windowRightOffset = parseFloat(document.getElementById('windowRightOffset').value) || 0;
+                const windowFloorOffset = parseFloat(document.getElementById('windowFloorOffset').value) || 0;
+                
+                // Calculate window dimensions relative to wall visualization
+                const windowWidthPct = Math.min((windowWidth / wallLengthCm) * 100, 100);
+                const windowHeightPct = Math.min((windowHeight / wallHeightCm) * 100, 100);
+                const rightOffsetPct = (windowRightOffset / wallLengthCm) * 100;
+                const floorOffsetPct = (windowFloorOffset / wallHeightCm) * 100;
+                
+                // Set window dimensions and display it
+                windowElement.style.width = `${windowWidthPct}%`;
+                windowElement.style.height = `${windowHeightPct}%`;
+                windowElement.style.backgroundColor = windowColor;
+                windowElement.style.display = 'block';
+                
+                // Position with offsets from the right edge and floor
+                windowElement.style.position = 'absolute';
+                windowElement.style.bottom = `${floorOffsetPct}%`;
+                windowElement.style.right = `${rightOffsetPct}%`;
+                
+                // Darker border based on the selected color
+                const darkerBorderColor = adjustColor(windowColor, -30);
+                windowElement.style.border = `2px solid ${darkerBorderColor}`;
+            } else {
+                // Hide the window if checkbox is unchecked
+                windowElement.style.display = 'none';
+            }
         }
         
         // Reset function to restore all default values
@@ -787,9 +926,16 @@
             document.getElementById('wardrobeHeight').value = '200';
             document.getElementById('wardrobeOffset').value = '0';
             document.getElementById('wardrobeColor').value = '#8B4513';
+            document.getElementById('showWindow').checked = false;
+            document.getElementById('windowWidth').value = '120';
+            document.getElementById('windowHeight').value = '120';
+            document.getElementById('windowRightOffset').value = '100';
+            document.getElementById('windowFloorOffset').value = '100';
+            document.getElementById('windowColor').value = '#87CEEB';
             
             // Update UI state
             toggleWardrobeControls(); // Hide wardrobe controls since checkbox is unchecked
+            toggleWindowControls(); // Hide window controls since checkbox is unchecked
             updateLineConfigOptions(); // Refresh line configuration dropdown
             calculateAndVisualize(); // Recalculate with default values
         }
@@ -798,6 +944,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             loadInputsFromLocalStorage(); // Load saved inputs first
             toggleWardrobeControls();
+            toggleWindowControls();
             updateLineConfigOptions();
             addSaveListeners(); // Add listeners to save inputs when they change
             calculateAndVisualize(); // Calculate with loaded values
