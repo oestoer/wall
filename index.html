@@ -673,6 +673,7 @@
             line-height: 1.6;
             margin: 0;
             width: 100%;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
         }
         
         #wall-container {
@@ -836,10 +837,9 @@
         .calculator-grid {
             display: grid;
             grid-template-areas: 
-                "controls visualization"
-                "results results";
+                "controls right-column";
             grid-template-columns: 1fr 1fr;
-            grid-template-rows: auto auto;
+            grid-template-rows: auto;
             align-items: start;
             gap: 2rem;
             width: 100%;
@@ -853,8 +853,18 @@
             overflow-y: visible;
         }
         
+        /* Container for visualization and results to handle sticky behavior together */
+        .calculator-right-column {
+            grid-area: right-column;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 2rem;
+            height: fit-content;
+            align-self: flex-start;
+        }
+        
         .calculator-visualization {
-            grid-area: visualization;
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
@@ -865,30 +875,35 @@
             box-shadow: 0 8px 32px rgba(0,0,0,0.12);
             border: 1px solid rgba(255,255,255,0.2);
             height: fit-content;
-            position: sticky;
-            top: 2rem;
             align-self: flex-start;
+            width: 100%;
         }
         
         .calculator-results {
             grid-area: results;
             margin-top: 1rem;
             padding: 0;
+            align-self: flex-start;
+            width: 100%;
         }
         
         @media (max-width: 768px) {
             .calculator-grid {
                 grid-template-areas: 
                     "controls"
-                    "visualization" 
-                    "results";
+                    "right-column";
                 grid-template-columns: 1fr;
+                grid-template-rows: auto auto;
+            }
+            
+            .calculator-right-column {
+                position: static;
+                flex-direction: column;
+                margin-top: 2rem;
             }
             
             .calculator-visualization {
-                position: static;
-                margin-top: 2rem;
-                margin-bottom: 2rem;
+                margin-bottom: 1rem;
                 padding: 1rem;
             }
             
@@ -1099,17 +1114,20 @@
         </form>
         </div>
         
-        <!-- Visualization Section -->
-        <div class="calculator-visualization">
-            <div id="wall-container" class="wall-container" data-height="medium">
-                <div id="wardrobe"></div>
-                <div id="window"></div>
+        <!-- Right Column: Contains both visualization and results -->
+        <div class="calculator-right-column">
+            <!-- Visualization Section -->
+            <div class="calculator-visualization">
+                <div id="wall-container" class="wall-container" data-height="medium">
+                    <div id="wardrobe"></div>
+                    <div id="window"></div>
+                </div>
             </div>
-        </div>
-        
-        <!-- Results Section -->
-        <div class="calculator-results">
-            <div id="result" class="result-message"></div>
+            
+            <!-- Results Section -->
+            <div class="calculator-results">
+                <div id="result" class="result-message"></div>
+            </div>
         </div>
     </div>
 
