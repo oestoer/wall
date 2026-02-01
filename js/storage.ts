@@ -8,19 +8,31 @@ const STORAGE_KEYS = {
     THEME: 'wallCalculatorTheme'
 };
 
+export interface SavedInputs {
+    [key: string]: any;
+}
+
+export interface RoomConfig {
+    [key: string]: any;
+    wallLength: string | number;
+    wallHeight: string | number;
+}
+
+export interface SavedRooms {
+    [roomName: string]: RoomConfig;
+}
+
 /**
  * Save current inputs to localStorage
- * @param {Object} inputs - The input values to save
  */
-export function saveInputs(inputs) {
+export function saveInputs(inputs: SavedInputs): void {
     localStorage.setItem(STORAGE_KEYS.INPUTS, JSON.stringify(inputs));
 }
 
 /**
  * Load inputs from localStorage
- * @returns {Object|null} - The saved inputs or null if none
  */
-export function loadInputs() {
+export function loadInputs(): SavedInputs | null {
     const savedInputs = localStorage.getItem(STORAGE_KEYS.INPUTS);
     return savedInputs ? JSON.parse(savedInputs) : null;
 }
@@ -28,17 +40,14 @@ export function loadInputs() {
 /**
  * Clear saved inputs
  */
-export function clearInputs() {
+export function clearInputs(): void {
     localStorage.removeItem(STORAGE_KEYS.INPUTS);
 }
 
 /**
  * Save room configuration to localStorage
- * @param {string} roomName - The name of the room
- * @param {Object} config - The configuration object
- * @returns {boolean} - True if saved successfully, false if limit reached
  */
-export function saveRoom(roomName, config) {
+export function saveRoom(roomName: string, config: RoomConfig): boolean {
     const savedRooms = getRooms();
 
     // Check if we already have 10 rooms and this is a new room
@@ -56,19 +65,16 @@ export function saveRoom(roomName, config) {
 
 /**
  * Get all saved rooms from localStorage
- * @returns {Object} - Map of room names to configurations
  */
-export function getRooms() {
+export function getRooms(): SavedRooms {
     const savedRoomsJson = localStorage.getItem(STORAGE_KEYS.ROOMS);
     return savedRoomsJson ? JSON.parse(savedRoomsJson) : {};
 }
 
 /**
  * Delete room from localStorage
- * @param {string} roomName - The name of the room to delete
- * @returns {boolean} - True if deleted, false if not found
  */
-export function deleteRoom(roomName) {
+export function deleteRoom(roomName: string): boolean {
     const savedRooms = getRooms();
 
     if (savedRooms[roomName]) {
@@ -83,22 +89,20 @@ export function deleteRoom(roomName) {
 /**
  * Clear all saved rooms
  */
-export function clearRooms() {
+export function clearRooms(): void {
     localStorage.removeItem(STORAGE_KEYS.ROOMS);
 }
 
 /**
  * Save theme preference
- * @param {string} theme - 'light', 'dark', or 'auto'
  */
-export function saveTheme(theme) {
+export function saveTheme(theme: string): void {
     localStorage.setItem(STORAGE_KEYS.THEME, theme);
 }
 
 /**
  * Load theme preference
- * @returns {string} - 'light', 'dark', or 'auto' (default)
  */
-export function loadTheme() {
+export function loadTheme(): string {
     return localStorage.getItem(STORAGE_KEYS.THEME) || 'auto';
 }

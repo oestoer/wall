@@ -3,16 +3,40 @@
  * Handles DOM events, form inputs, and coordination between modules
  */
 
-import { debounce } from './utils.js';
-import { saveInputs, loadInputs, saveRoom, deleteRoom, getRooms, clearRooms } from './storage.js';
-import { calculateLineConfigs, calculateWallDimensions } from './wall-model.js';
-import { renderWall, setVisualizerError } from './visualizer.js';
+import { debounce } from './utils';
+import { saveInputs, loadInputs, saveRoom, deleteRoom, getRooms, clearRooms, clearInputs, SavedInputs, RoomConfig } from './storage';
+import { calculateLineConfigs, calculateWallDimensions } from './wall-model';
+import { renderWall, setVisualizerError } from './visualizer';
+
+interface RenderConfig {
+    mainColor: string;
+    whiteColor: string;
+    showWardrobe: boolean;
+    wardrobeWidth: number;
+    wardrobeHeight: number;
+    wardrobeOffset: number;
+    wardrobeColor: string;
+    showWindow: boolean;
+    windowWidth: number;
+    windowHeight: number;
+    windowRightOffset: number;
+    windowFloorOffset: number;
+    windowColor: string;
+}
 
 export class UIManager {
+    private form: HTMLFormElement;
+    private resultDiv: HTMLElement;
+    private lineConfigSelect: HTMLSelectElement;
+    private inputIds: string[];
+    private debouncedCalculate: () => void;
+    private closeMenu?: () => void;
+    private loadSavedRooms?: () => void;
+
     constructor() {
-        this.form = document.getElementById('wallForm');
-        this.resultDiv = document.getElementById('result');
-        this.lineConfigSelect = document.getElementById('lineConfig');
+        this.form = document.getElementById('wallForm') as HTMLFormElement;
+        this.resultDiv = document.getElementById('result') as HTMLElement;
+        this.lineConfigSelect = document.getElementById('lineConfig') as HTMLSelectElement;
 
         // Inputs that trigger recalculation
         this.inputIds = [
@@ -31,7 +55,7 @@ export class UIManager {
         this.init();
     }
 
-    init() {
+    init(): void {
         this.loadSavedInputs();
         this.setupEventListeners();
         this.setupMenu();
@@ -42,8 +66,8 @@ export class UIManager {
     /**
      * Get value from form element
      */
-    getValue(id) {
-        const element = document.getElementById(id);
+    getValue(id: string): string | null {
+        const element = document.getElementById(id) as HTMLInputElement | HTMLSelectElement | null;
         if (!element) return null;
         return element.value;
     }
@@ -51,8 +75,8 @@ export class UIManager {
     /**
      * Set value to form element
      */
-    setValue(id, value) {
-        const element = document.getElementById(id);
+    setValue(id: string, value: string): void {
+        const element = document.getElementById(id) as HTMLInputElement | HTMLSelectElement | null;
         if (!element) return;
         element.value = value;
     }
@@ -60,36 +84,36 @@ export class UIManager {
     /**
      * Get checked state
      */
-    getChecked(id) {
-        const element = document.getElementById(id);
+    getChecked(id: string): boolean {
+        const element = document.getElementById(id) as HTMLInputElement | null;
         return element ? element.checked : false;
     }
 
     /**
      * Set checked state
      */
-    setChecked(id, value) {
-        const element = document.getElementById(id);
+    setChecked(id: string, value: boolean): void {
+        const element = document.getElementById(id) as HTMLInputElement | null;
         if (element) element.checked = value;
     }
 
     /**
      * Get float value
      */
-    getFloat(id) {
-        return parseFloat(this.getValue(id));
+    getFloat(id: string): number {
+        return parseFloat(this.getValue(id) || '0');
     }
 
     /**
      * Collect all current form values
      */
-    getAllValues() {
-        const values = {};
+    getAllValues(): SavedInputs {
+        const values: SavedInputs = {};
         this.inputIds.forEach(id => {
-            const element = document.getElementById(id);
+            const element = document.getElementById(id) as HTMLInputElement | HTMLSelectElement | null;
             if (element) {
                 if (element.type === 'checkbox') {
-                    values[id] = element.checked;
+                    values[id] = (element as HTMLInputElement).checked;
                 } else {
                     values[id] = element.value;
                 }
@@ -101,19 +125,19 @@ export class UIManager {
     /**
      * Apply values to form
      */
-    applyValues(values) {
+    applyValues(values: SavedInputs | null): void {
         if (!values) return;
 
         Object.entries(values).forEach(([key, value]) => {
             if (this.inputIds.includes(key)) {
-                const element = document.getElementById(key);
+                const element = document.getElementById(key) as HTMLElement;
                 if (element) {
-                    if (element.type === 'checkbox') {
-                        element.checked = value;
+                    if ((element as HTMLInputElement).type === 'checkbox') {
+                        (element as HTMLInputElement).checked = value;
                         // Trigger change event for checkboxes to update visibility
                         element.dispatchEvent(new Event('change'));
                     } else {
-                        element.value = value;
+                        (element as HTMLInputElement).value = value;
                         // For custom color picker
                         if (element.tagName.toLowerCase() === 'color-picker') {
                             element.setAttribute('value', value);
@@ -126,7 +150,7 @@ export class UIManager {
         this.updateLineConfigOptions();
     }
 
-    loadSavedInputs() {
+    loadSavedInputs(): void {
         const savedInputs = loadInputs();
         if (savedInputs) {
             this.applyValues(savedInputs);
@@ -140,10 +164,10 @@ export class UIManager {
         }
     }
 
-    setupEventListeners() {
+    setupEventListeners(): void {
         // Save inputs on change
         this.inputIds.forEach(id => {
-            const element = document.getElementById(id);
+            const element = document.getElementById(id) as HTMLInputElement | HTMLSelectElement | null;
             if (element) {
                 const eventType = element.type === 'checkbox' ? 'change' : 'input';
                 element.addEventListener(eventType, () => {
@@ -165,7 +189,7 @@ export class UIManager {
 
         // Color pickers custom event
         document.querySelectorAll('color-picker').forEach(picker => {
-            picker.addEventListener('color-changed', (e) => {
+            picker.addEventListener('color-changed', () => {
                 saveInputs(this.getAllValues());
                 this.debouncedCalculate();
             });
@@ -194,8 +218,8 @@ export class UIManager {
         }
 
         // Thickness validation
-        const minThickness = document.getElementById('minThickness');
-        const maxThickness = document.getElementById('maxThickness');
+        const minThickness = document.getElementById('minThickness') as HTMLInputElement;
+        const maxThickness = document.getElementById('maxThickness') as HTMLInputElement;
 
         const validateThickness = () => {
             const minVal = parseFloat(minThickness.value);
@@ -214,14 +238,14 @@ export class UIManager {
         maxThickness.addEventListener('input', validateThickness);
     }
 
-    updateLineConfigOptions() {
+    updateLineConfigOptions(): void {
         const configs = calculateLineConfigs(
             this.getFloat('wallLength'),
             this.getFloat('wallHeight'),
             this.getFloat('minThickness'),
             this.getFloat('maxThickness'),
             this.getFloat('lineRatio'),
-            this.getValue('lineDirection')
+            this.getValue('lineDirection') || 'vertical'
         );
 
         const currentValue = this.lineConfigSelect.value;
@@ -229,7 +253,7 @@ export class UIManager {
 
         this.lineConfigSelect.innerHTML = '<option value="">Select a configuration</option>';
 
-        configs.forEach(config => {
+        configs.forEach((config) => {
             const option = document.createElement('option');
             option.value = `${config.colored},${config.white}`;
 
@@ -250,56 +274,56 @@ export class UIManager {
         }
     }
 
-    calculateAndVisualize() {
+    calculateAndVisualize(): void {
         const result = calculateWallDimensions({
             wallLengthCm: this.getFloat('wallLength'),
             wallHeightCm: this.getFloat('wallHeight'),
-            lineConfigValue: this.getValue('lineConfig'),
+            lineConfigValue: this.getValue('lineConfig') || '',
             lineRatio: this.getFloat('lineRatio'),
-            lineDirection: this.getValue('lineDirection'),
+            lineDirection: this.getValue('lineDirection') || 'vertical',
             minThickness: this.getFloat('minThickness'),
             maxThickness: this.getFloat('maxThickness')
         });
 
-        if (!result.success) {
-            this.showResultMessage(result.error, result.type);
+        if (!result.success || !result.data) {
+            this.showResultMessage(result.error || 'Unknown error', result.type || 'error');
             setVisualizerError(true);
             return;
         }
 
-        this.showResultMessage(result.message, 'success');
+        this.showResultMessage(result.message || 'Success', 'success');
         setVisualizerError(false);
 
         // Prepare config for render
-        const renderConfig = {
-            mainColor: this.getValue('mainColor'),
-            whiteColor: this.getValue('whiteColor'),
+        const renderConfig: RenderConfig = {
+            mainColor: this.getValue('mainColor') || '#FFEEEE',
+            whiteColor: this.getValue('whiteColor') || '#FFFFFF',
             showWardrobe: this.getChecked('showWardrobe'),
             wardrobeWidth: this.getFloat('wardrobeWidth'),
             wardrobeHeight: this.getFloat('wardrobeHeight'),
             wardrobeOffset: this.getFloat('wardrobeOffset'),
-            wardrobeColor: this.getValue('wardrobeColor'),
+            wardrobeColor: this.getValue('wardrobeColor') || '#8B4513',
             showWindow: this.getChecked('showWindow'),
             windowWidth: this.getFloat('windowWidth'),
             windowHeight: this.getFloat('windowHeight'),
             windowRightOffset: this.getFloat('windowRightOffset'),
             windowFloorOffset: this.getFloat('windowFloorOffset'),
-            windowColor: this.getValue('windowColor')
+            windowColor: this.getValue('windowColor') || '#87CEEB'
         };
 
         renderWall(result.data, renderConfig);
     }
 
-    showResultMessage(message, type = 'success') {
+    showResultMessage(message: string, type: string = 'success'): void {
         this.resultDiv.textContent = message;
         this.resultDiv.className = `result-message show ${type}`;
     }
 
-    hideResultMessage() {
+    hideResultMessage(): void {
         this.resultDiv.className = 'result-message';
     }
 
-    resetToDefaults() {
+    resetToDefaults(): void {
         if (!confirm('Are you sure you want to reset all values to defaults? This will clear all your current settings and cannot be undone.')) {
             return;
         }
@@ -307,7 +331,7 @@ export class UIManager {
         const clearSaved = confirm('Would you also like to clear all saved rooms?');
         if (clearSaved) {
             clearRooms();
-            this.loadSavedRooms(); // Refresh list
+            if (this.loadSavedRooms) this.loadSavedRooms(); // Refresh list
         }
 
         clearInputs();
@@ -335,8 +359,12 @@ export class UIManager {
         this.setValue('windowColor', '#87CEEB');
 
         // Trigger updates
-        document.getElementById('showWardrobe').dispatchEvent(new Event('change'));
-        document.getElementById('showWindow').dispatchEvent(new Event('change'));
+        const showWardrobe = document.getElementById('showWardrobe');
+        if (showWardrobe) showWardrobe.dispatchEvent(new Event('change'));
+
+        const showWindow = document.getElementById('showWindow');
+        if (showWindow) showWindow.dispatchEvent(new Event('change'));
+
         this.updateLineConfigOptions();
         this.calculateAndVisualize();
 
@@ -344,10 +372,10 @@ export class UIManager {
         setTimeout(() => this.hideResultMessage(), 3000);
     }
 
-    setupMenu() {
-        const hamburgerMenu = document.getElementById('hamburger-menu');
-        const sideMenu = document.getElementById('side-menu');
-        const menuOverlay = document.getElementById('menu-overlay');
+    setupMenu(): void {
+        const hamburgerMenu = document.getElementById('hamburger-menu') as HTMLElement;
+        const sideMenu = document.getElementById('side-menu') as HTMLElement;
+        const menuOverlay = document.getElementById('menu-overlay') as HTMLElement;
 
         const toggleMenu = () => {
             const isOpen = sideMenu.classList.contains('open');
@@ -389,10 +417,12 @@ export class UIManager {
         };
     }
 
-    setupRoomManagement() {
-        const saveRoomBtn = document.getElementById('save-room-btn');
-        const roomNameInput = document.getElementById('room-name-input');
+    setupRoomManagement(): void {
+        const saveRoomBtn = document.getElementById('save-room-btn') as HTMLButtonElement | null;
+        const roomNameInput = document.getElementById('room-name-input') as HTMLInputElement | null;
         const savedRoomsList = document.getElementById('saved-rooms-list');
+
+        if (!saveRoomBtn || !roomNameInput || !savedRoomsList) return;
 
         this.loadSavedRooms = () => {
             const rooms = getRooms();
@@ -400,7 +430,7 @@ export class UIManager {
 
             // Clear list
             savedRoomsList.innerHTML = '<div class="no-rooms-message">No saved rooms yet</div>';
-            const noRoomsMessage = savedRoomsList.querySelector('.no-rooms-message');
+            const noRoomsMessage = savedRoomsList.querySelector('.no-rooms-message') as HTMLElement;
 
             if (roomNames.length === 0) {
                 noRoomsMessage.style.display = 'block';
@@ -418,12 +448,12 @@ export class UIManager {
             if (!name) return;
 
             const config = this.getAllValues();
-            if (!saveRoom(name, config)) {
+            if (config && !saveRoom(name, config as RoomConfig)) {
                 alert("You've reached the maximum limit of 10 saved rooms.");
                 return;
             }
 
-            this.loadSavedRooms();
+            if (this.loadSavedRooms) this.loadSavedRooms();
             roomNameInput.value = '';
             roomNameInput.dispatchEvent(new Event('input'));
 
@@ -431,9 +461,10 @@ export class UIManager {
             setTimeout(() => this.hideResultMessage(), 3000);
         });
 
-        roomNameInput.addEventListener('input', (e) => {
-            if (e.target.value.length > 10) e.target.value = e.target.value.substring(0, 10);
-            saveRoomBtn.disabled = e.target.value.trim() === '';
+        roomNameInput.addEventListener('input', (e: Event) => {
+            const target = e.target as HTMLInputElement;
+            if (target.value.length > 10) target.value = target.value.substring(0, 10);
+            saveRoomBtn.disabled = target.value.trim() === '';
         });
 
         // Initial load
@@ -442,7 +473,7 @@ export class UIManager {
         roomNameInput.dispatchEvent(new Event('input'));
     }
 
-    createRoomItem(name, config) {
+    createRoomItem(name: string, config: RoomConfig): HTMLDivElement {
         const div = document.createElement('div');
         div.className = 'saved-room-item';
         div.dataset.roomName = name;
@@ -456,23 +487,30 @@ export class UIManager {
             </div>
         `;
 
-        div.querySelector('.room-delete-btn').addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (confirm(`Delete room "${name}"?`)) {
-                deleteRoom(name);
-                this.loadSavedRooms();
-            }
-        });
+        const deleteBtn = div.querySelector('.room-delete-btn');
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (confirm(`Delete room "${name}"?`)) {
+                    deleteRoom(name);
+                    if (this.loadSavedRooms) this.loadSavedRooms();
+                }
+            });
+        }
 
         div.addEventListener('click', () => {
-            this.applyValues(config);
-            this.closeMenu();
+            this.applyValues(config as SavedInputs);
+            if (this.closeMenu) this.closeMenu();
             this.showResultMessage(`Room "${name}" loaded successfully`, 'success');
             setTimeout(() => this.hideResultMessage(), 3000);
 
             // Update UI fully
-            document.getElementById('showWardrobe').dispatchEvent(new Event('change'));
-            document.getElementById('showWindow').dispatchEvent(new Event('change'));
+            const showWardrobe = document.getElementById('showWardrobe');
+            if (showWardrobe) showWardrobe.dispatchEvent(new Event('change'));
+
+            const showWindow = document.getElementById('showWindow');
+            if (showWindow) showWindow.dispatchEvent(new Event('change'));
+
             this.updateLineConfigOptions();
             this.calculateAndVisualize();
         });

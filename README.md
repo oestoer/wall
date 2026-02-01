@@ -2,7 +2,7 @@
 
 A web application designed to help you calculate and visualize vertical or horizontal line patterns on walls. Perfect for planning decorative wall treatments like wallpaper, paint stripes, or paneling.
 
-![Wall Line Calculator](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![Wall Line Calculator](https://img.shields.io/badge/version-2.0.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
 ## Demo
@@ -33,23 +33,44 @@ The Wall Line Calculator & Visualizer is an interactive tool that allows you to:
 - 🌓 **Theme Support** - Toggle between light, dark, and auto (system) themes
 - 📱 **Responsive Design** - Works seamlessly on desktop, tablet, and mobile devices
 
-### User Experience
-- ⚡ **Instant Calculations** - Real-time updates as you adjust parameters
-- 🎯 **Visual Feedback** - Animated line appearances and hover effects
-- ✅ **Form Validation** - Built-in validation to prevent invalid configurations
-- 🔄 **Reset Functionality** - Quickly return to default settings
-
 ## 🚀 Getting Started
 
 ### Prerequisites
-- A modern web browser (Chrome, Firefox, Safari, or Edge)
-- No installation or build process required!
+- [Node.js](https://nodejs.org/) (Latest LTS recommended)
+- [Yarn](https://yarnpkg.com/) (Version 4+)
 
-### Usage
+### Installation
 
-1. **Clone or download** this repository
-2. **Open** `index.html` in your web browser
-3. **Start designing** your wall!
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/oestoer/wall.git
+   cd wall
+   ```
+
+2. **Install dependencies**
+   ```bash
+   yarn install
+   ```
+
+3. **Start the development server**
+   ```bash
+   yarn dev
+   ```
+   Open `http://localhost:5173` in your browser.
+
+### Building for Production
+
+To create a production-ready build:
+
+```bash
+yarn build
+```
+
+To preview the production build locally:
+
+```bash
+yarn preview
+```
 
 ### Basic Workflow
 
@@ -79,36 +100,33 @@ The Wall Line Calculator & Visualizer is an interactive tool that allows you to:
 
 ```
 wall/
-├── index.html              # Main HTML file
-├── components/
-│   └── color-picker.js     # Custom color picker web component
-├── README.md               # This file
-└── .git/                   # Git repository
+├── css/                    # Global styles
+│   └── styles.css
+├── components/             # Web Components
+│   └── color-picker.ts     # Custom color picker implementation
+├── js/                     # Application Logic (TypeScript)
+│   ├── app.ts              # Main entry point
+│   ├── ui-manager.ts       # UI coordination
+│   ├── wall-model.ts       # Calculation logic
+│   ├── visualizer.ts       # Rendering logic
+│   ├── theme.ts            # Theme management
+│   ├── storage.ts          # LocalStorage handlers
+│   └── utils.ts            # Utility functions
+├── index.html              # Main HTML entry point
+├── package.json            # Dependencies and scripts (Yarn Berry)
+├── tsconfig.json           # TypeScript configuration
+└── vite.config.js          # Vite configuration (optional/auto)
 ```
-
-## 🎨 Customization
-
-### Themes
-The application supports three theme modes:
-- **Auto** - Follows your system preference
-- **Light** - Bright, clean interface
-- **Dark** - Easy on the eyes for low-light environments
-
-Access theme settings via the hamburger menu in the top-right corner.
-
-### Color Picker
-The custom `<color-picker>` web component provides:
-- Visual color preview
-- Hex color code display
-- Smooth transitions and focus states
 
 ## 🔧 Technical Details
 
 ### Built With
-- **HTML5** - Semantic markup
-- **CSS3** - Modern styling with CSS custom properties
-- **Vanilla JavaScript** - No frameworks, pure ES6+
-- **Web Components** - Custom color picker element
+- **TypeScript** - Static typing for robust code
+- **Vite** - Fast development server and bundler
+- **Yarn Berry** - Modern package management
+- **Vanilla JavaScript/DOM** - Lightweight, no framework overhead
+- **Web Components** - Custom encapsulated elements
+- **CSS3** - Responsive styling with Variables
 
 ### Browser Support
 - Chrome/Edge (latest)

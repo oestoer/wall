@@ -2,17 +2,54 @@
  * Business logic for Wall Line Calculator
  */
 
+export interface LineConfig {
+    colored: number;
+    white: number;
+    whiteLineWidth: number;
+    coloredLineWidth: number;
+    total: number;
+}
+
+export interface WallDimensionsResult {
+    success: boolean;
+    message?: string;
+    error?: string;
+    type?: 'success' | 'warning' | 'error';
+    data?: WallData;
+}
+
+export interface WallData {
+    numColoured: number;
+    numWhite: number;
+    whiteLineWidth: number;
+    coloredLineWidth: number;
+    wallDimension: number;
+    wallLengthCm: number;
+    wallHeightCm: number;
+    lineDirection: string;
+}
+
+export interface CalculationParams {
+    wallLengthCm: number;
+    wallHeightCm: number;
+    lineConfigValue: string;
+    lineRatio: number;
+    lineDirection: string;
+    minThickness?: number;
+    maxThickness?: number;
+}
+
 /**
  * Calculate available line configurations based on current wall dimensions and constraints
- * @param {number} wallLengthCm 
- * @param {number} wallHeightCm 
- * @param {number} minThickness 
- * @param {number} maxThickness 
- * @param {number} lineRatio 
- * @param {string} lineDirection 
- * @returns {Array} List of valid configuration objects
  */
-export function calculateLineConfigs(wallLengthCm, wallHeightCm, minThickness, maxThickness, lineRatio, lineDirection) {
+export function calculateLineConfigs(
+    wallLengthCm: number,
+    wallHeightCm: number,
+    minThickness: number,
+    maxThickness: number,
+    lineRatio: number,
+    lineDirection: string
+): LineConfig[] {
     if (isNaN(wallLengthCm) || wallLengthCm <= 0) {
         return [];
     }
@@ -23,7 +60,7 @@ export function calculateLineConfigs(wallLengthCm, wallHeightCm, minThickness, m
     const direction = lineDirection || 'vertical';
 
     // Generate configurations where colored = n+1 and white = n
-    const validOptions = [];
+    const validOptions: LineConfig[] = [];
 
     for (let n = 1; n <= 15; n++) { // n from 1 to 15 (reasonable range)
         const colored = n + 1;
@@ -33,11 +70,6 @@ export function calculateLineConfigs(wallLengthCm, wallHeightCm, minThickness, m
         const wallDimension = direction === 'vertical' ? wallLengthCm : wallHeightCm;
 
         // Calculate line widths based on ratio
-        // Total width = colored_count * colored_width + white_count * white_width
-        // colored_width = ratio * white_width
-        // Total width = colored_count * (ratio * white_width) + white_count * white_width
-        // Total width = white_width * (colored_count * ratio + white_count)
-        // white_width = Total width / (colored_count * ratio + white_count)
 
         const whiteLineWidth = wallDimension / (colored * ratio + white);
         const coloredLineWidth = ratio * whiteLineWidth;
@@ -66,10 +98,8 @@ export function calculateLineConfigs(wallLengthCm, wallHeightCm, minThickness, m
 
 /**
  * Calculate line dimensions for a specific configuration
- * @param {Object} params - Calculation parameters
- * @returns {Object} Result with status and calculated values
  */
-export function calculateWallDimensions(params) {
+export function calculateWallDimensions(params: CalculationParams): WallDimensionsResult {
     const {
         wallLengthCm,
         wallHeightCm,

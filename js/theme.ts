@@ -1,13 +1,12 @@
 /**
  * Theme management for Wall Line Calculator
  */
-import { saveTheme } from './storage.js';
+import { saveTheme } from './storage';
 
 /**
  * Apply theme to the document
- * @param {string} theme - 'light', 'dark', or 'auto'
  */
-export function applyTheme(theme) {
+export function applyTheme(theme: string): void {
     const html = document.documentElement;
 
     // First remove all theme classes
@@ -27,11 +26,9 @@ export function applyTheme(theme) {
 
 /**
  * Initialize theme functionality
- * @param {string} initialTheme - The theme to start with
- * @returns {Function} - Cleanup function
  */
-export function initTheme(initialTheme) {
-    const themeSelect = document.getElementById('theme-select');
+export function initTheme(initialTheme: string): () => void {
+    const themeSelect = document.getElementById('theme-select') as HTMLSelectElement | null;
 
     if (themeSelect) {
         themeSelect.value = initialTheme;
@@ -48,7 +45,7 @@ export function initTheme(initialTheme) {
     // Detect system preference changes
     if (window.matchMedia) {
         const colorSchemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
-        const listener = (e) => {
+        const listener = (e: MediaQueryListEvent) => {
             if (themeSelect && themeSelect.value === 'auto') {
                 console.log(`System theme preference changed to: ${e.matches ? 'dark' : 'light'}`);
             }

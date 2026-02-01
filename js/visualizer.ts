@@ -1,15 +1,53 @@
 /**
  * Visualization logic for Wall Line Calculator
  */
-import { adjustColor } from './utils.js';
+import { adjustColor } from './utils';
+import { WallData } from './wall-model';
+
+interface RenderConfig {
+    mainColor: string;
+    whiteColor: string;
+    showWardrobe: boolean;
+    wardrobeWidth: number;
+    wardrobeHeight: number;
+    wardrobeOffset: number;
+    wardrobeColor: string;
+    showWindow: boolean;
+    windowWidth: number;
+    windowHeight: number;
+    windowRightOffset: number;
+    windowFloorOffset: number;
+    windowColor: string;
+}
+
+interface WardrobeParams {
+    show: boolean;
+    width: number;
+    height: number;
+    offset: number;
+    color: string;
+    wallLength: number;
+    wallHeight: number;
+}
+
+interface WindowParams {
+    show: boolean;
+    width: number;
+    height: number;
+    rightOffset: number;
+    floorOffset: number;
+    color: string;
+    wallLength: number;
+    wallHeight: number;
+}
 
 /**
  * Visualize the wall with lines, wardrobe, and window
- * @param {Object} data - Calculated wall data
- * @param {Object} config - Configuration for appearance
  */
-export function renderWall(data, config) {
+export function renderWall(data: WallData, config: RenderConfig): void {
     const wallContainer = document.getElementById('wall-container');
+    if (!wallContainer) return;
+
     const {
         wallLengthCm,
         wallHeightCm,
@@ -117,12 +155,12 @@ export function renderWall(data, config) {
 /**
  * Handle container sizing logic
  */
-function updateContainerDimensions(container, wallAspectRatio) {
+function updateContainerDimensions(container: HTMLElement, wallAspectRatio: number): void {
     // Set container dimensions based on aspect ratio and screen size
     const isMobile = window.innerWidth <= 768;
     const isSmallMobile = window.innerWidth <= 600;
 
-    let containerWidth, containerHeight;
+    let containerWidth: number, containerHeight: number;
 
     // Define maximum available space for the visualization
     const maxAvailableWidth = isMobile ? (isSmallMobile ? 280 : 350) : 500;
@@ -170,7 +208,7 @@ function updateContainerDimensions(container, wallAspectRatio) {
 /**
  * Render wardrobe element
  */
-function renderWardrobe(element, params) {
+function renderWardrobe(element: HTMLElement, params: WardrobeParams): void {
     const { show, width, height, offset, color, wallLength, wallHeight } = params;
 
     if (show && width > 0 && height > 0) {
@@ -207,7 +245,7 @@ function renderWardrobe(element, params) {
 /**
  * Render window element
  */
-function renderWindow(element, params) {
+function renderWindow(element: HTMLElement, params: WindowParams): void {
     const { show, width, height, rightOffset, floorOffset, color, wallLength, wallHeight } = params;
 
     if (show && width > 0 && height > 0) {
@@ -245,11 +283,13 @@ function renderWindow(element, params) {
 /**
  * Show error state in visualization
  */
-export function setVisualizerError(isError) {
+export function setVisualizerError(isError: boolean): void {
     const wallContainer = document.getElementById('wall-container');
-    if (isError) {
-        wallContainer.className = 'wall-container error';
-    } else {
-        wallContainer.className = 'wall-container';
+    if (wallContainer) {
+        if (isError) {
+            wallContainer.className = 'wall-container error';
+        } else {
+            wallContainer.className = 'wall-container';
+        }
     }
 }

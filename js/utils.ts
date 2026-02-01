@@ -4,13 +4,10 @@
 
 /**
  * Debounce function to limit how often a function can fire
- * @param {Function} func - The function to debounce
- * @param {number} wait - The delay in milliseconds
- * @returns {Function} - The debounced function
  */
-export function debounce(func, wait = 300) {
-    let timeout;
-    return function executedFunction(...args) {
+export function debounce(func: Function, wait: number = 300): (...args: any[]) => void {
+    let timeout: ReturnType<typeof setTimeout>;
+    return function executedFunction(...args: any[]) {
         const later = () => {
             clearTimeout(timeout);
             func(...args);
@@ -22,11 +19,8 @@ export function debounce(func, wait = 300) {
 
 /**
  * Helper function to adjust a hex color's brightness
- * @param {string} color - Hex color code
- * @param {number} percent - Brightness adjustment
- * @returns {string} - Adjusted hex color
  */
-export function adjustColor(color, percent) {
+export function adjustColor(color: string, percent: number): string {
     // Remove hash if present
     const hex = color.replace('#', '');
 

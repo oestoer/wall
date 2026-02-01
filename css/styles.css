@@ -20,8 +20,8 @@
     --border-color-focus: #007bff;
 
     --border-radius: 8px;
-    --box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-    --box-shadow-hover: 0 6px 20px rgba(0,123,255,0.4);
+    --box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    --box-shadow-hover: 0 6px 20px rgba(0, 123, 255, 0.4);
     --transition-speed: 0.2s;
 
     --button-gradient: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-dark) 100%);
@@ -44,8 +44,8 @@ html.theme-light {
     --border-color-focus: #007bff;
 
     --primary-color-light: #e8f4fd;
-    --box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-    --box-shadow-hover: 0 6px 20px rgba(0,123,255,0.4);
+    --box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    --box-shadow-hover: 0 6px 20px rgba(0, 123, 255, 0.4);
 
     --button-gradient: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-dark) 100%);
     --button-gradient-hover: linear-gradient(135deg, #0069d9 0%, #004085 100%);
@@ -62,8 +62,8 @@ html.theme-dark {
     --border-color-focus: #4299e1;
 
     --primary-color-light: #2a4365;
-    --box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-    --box-shadow-hover: 0 6px 20px rgba(0,123,255,0.6);
+    --box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --box-shadow-hover: 0 6px 20px rgba(0, 123, 255, 0.6);
 
     /* Adjust some colors for better visibility in dark mode */
     --button-gradient: linear-gradient(135deg, #4299e1 0%, #2b6cb0 100%);
@@ -83,8 +83,8 @@ html.theme-dark {
         --border-color-focus: #4299e1;
 
         --primary-color-light: #2a4365;
-        --box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-        --box-shadow-hover: 0 6px 20px rgba(0,123,255,0.6);
+        --box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        --box-shadow-hover: 0 6px 20px rgba(0, 123, 255, 0.6);
 
         /* Adjust some colors for better visibility in dark mode */
         --button-gradient: linear-gradient(135deg, #4299e1 0%, #2b6cb0 100%);
@@ -116,7 +116,7 @@ body {
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
     width: 100%;
-    border: 1px solid rgba(255,255,255,0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 h1 {
@@ -137,7 +137,7 @@ h1 {
 }
 
 .section:hover {
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     transform: translateY(-1px);
 }
 
@@ -208,6 +208,7 @@ h1 {
         max-height: 0;
         transform: translateY(-10px);
     }
+
     to {
         opacity: 1;
         max-height: 1000px;
@@ -221,6 +222,7 @@ h1 {
         max-height: 1000px;
         transform: translateY(0);
     }
+
     to {
         opacity: 0;
         max-height: 0;
@@ -251,6 +253,7 @@ h1 {
     content: "";
     opacity: 0;
 }
+
 .input-group:has(input:invalid:not(:placeholder-shown))::after {
     content: "✗";
     color: var(--error-color);
@@ -295,9 +298,11 @@ input[type="number"]:invalid:not(:placeholder-shown) {
     /* Smaller mobile devices - more flexible for aspect ratios */
     #wall-container {
         min-height: 120px;
-        max-height: 220px; /* Allow reasonable height for tall walls */
+        max-height: 220px;
+        /* Allow reasonable height for tall walls */
         min-width: 200px;
-        max-width: 280px; /* Constrain max width on small mobile */
+        max-width: 280px;
+        /* Constrain max width on small mobile */
         box-sizing: border-box;
     }
 
@@ -305,16 +310,19 @@ input[type="number"]:invalid:not(:placeholder-shown) {
     #wall-container[data-height="small"] {
         min-height: 130px;
     }
+
     #wall-container[data-height="medium"] {
         min-height: 150px;
     }
+
     #wall-container[data-height="large"] {
         min-height: 170px;
     }
 
     .calculator-visualization {
         padding: 0.75rem;
-        min-height: 180px; /* Adjust for small screens but allow tall walls */
+        min-height: 180px;
+        /* Adjust for small screens but allow tall walls */
     }
 }
 
@@ -326,7 +334,8 @@ label {
     font-size: 0.9rem;
 }
 
-input[type="number"], select {
+input[type="number"],
+select {
     width: 100%;
     padding: 12px;
     border: 2px solid var(--border-color);
@@ -337,16 +346,17 @@ input[type="number"], select {
     color: var(--text-color);
 }
 
-input[type="number"]:focus, select:focus {
+input[type="number"]:focus,
+select:focus {
     outline: none;
     border-color: var(--border-color-focus);
-    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
 }
 
 /* Validation styles for invalid inputs */
 input[type="number"]:invalid {
     border-color: var(--error-color);
-    box-shadow: 0 0 0 3px rgba(220,53,69,0.1);
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
 }
 
 input[type="number"]:valid {
@@ -365,7 +375,7 @@ input[type="number"]:valid {
     border-radius: 4px;
 }
 
-input[type="number"]:invalid + .validation-message {
+input[type="number"]:invalid+.validation-message {
     display: block;
 }
 
@@ -402,25 +412,25 @@ button[type="submit"]:disabled {
     cursor: not-allowed;
     opacity: 0.6;
     transform: none;
-    box-shadow: 0 2px 6px rgba(108,117,125,0.2);
+    box-shadow: 0 2px 6px rgba(108, 117, 125, 0.2);
     pointer-events: none;
 }
 
 button[type="submit"]:disabled:hover {
     transform: none;
-    box-shadow: 0 2px 6px rgba(108,117,125,0.2);
+    box-shadow: 0 2px 6px rgba(108, 117, 125, 0.2);
     background: var(--secondary-button-gradient);
 }
 
 /* Secondary button (Reset) specific styles */
 button[type="button"] {
     background: var(--secondary-button-gradient);
-    box-shadow: 0 4px 12px rgba(108,117,125,0.3);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
 }
 
 button[type="button"]:hover {
     background: var(--secondary-button-gradient-hover);
-    box-shadow: 0 6px 20px rgba(108,117,125,0.4);
+    box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
 }
 
 button[type="button"]:active {
@@ -428,13 +438,13 @@ button[type="button"]:active {
 }
 
 button[type="button"]:focus {
-    box-shadow: 0 4px 12px rgba(108,117,125,0.3), 0 0 0 3px rgba(108,117,125,0.3);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3), 0 0 0 3px rgba(108, 117, 125, 0.3);
 }
 
 /* Select validation styles */
 select:invalid {
     border-color: var(--error-color);
-    box-shadow: 0 0 0 3px rgba(220,53,69,0.1);
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
 }
 
 select:valid {
@@ -442,7 +452,7 @@ select:valid {
 }
 
 /* Validation message styles for select elements */
-select:invalid + .validation-message {
+select:invalid+.validation-message {
     display: block;
 }
 
@@ -485,6 +495,7 @@ select:invalid + .validation-message {
         opacity: 0;
         transform: translateY(-5px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -497,10 +508,20 @@ select:invalid + .validation-message {
 }
 
 @keyframes shake {
-    0%, 20%, 40%, 60%, 80% {
+
+    0%,
+    20%,
+    40%,
+    60%,
+    80% {
         transform: translateX(0);
     }
-    10%, 30%, 50%, 70%, 90% {
+
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
         transform: translateX(-5px);
     }
 }
@@ -508,12 +529,12 @@ select:invalid + .validation-message {
 /* Enhanced focus states */
 input[type="number"]:focus:invalid {
     border-color: var(--error-color);
-    box-shadow: 0 0 0 3px rgba(220,53,69,0.25);
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25);
 }
 
 input[type="number"]:focus:valid {
     border-color: var(--success-color);
-    box-shadow: 0 0 0 3px rgba(40,167,69,0.25);
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.25);
 }
 
 /* CSS-only checkbox toggles */
@@ -531,8 +552,8 @@ input[type="number"]:focus:valid {
     transform: translateY(-10px);
 }
 
-input[type="checkbox"]:checked + label + .collapsible-content,
-.checkbox-group:has(input[type="checkbox"]:checked) ~ .collapsible-content {
+input[type="checkbox"]:checked+label+.collapsible-content,
+.checkbox-group:has(input[type="checkbox"]:checked)~.collapsible-content {
     display: block;
     opacity: 1;
     max-height: 500px;
@@ -551,7 +572,7 @@ button {
     width: 100%;
     margin-top: 16px;
     transition: all var(--transition-speed) ease;
-    box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
     position: relative;
     overflow: hidden;
     user-select: none;
@@ -570,7 +591,7 @@ button:hover {
 /* Active/pressed state */
 button:active {
     transform: translateY(1px);
-    box-shadow: 0 2px 8px rgba(0,123,255,0.2);
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2);
     background: var(--button-gradient-active);
     transition: all 0.1s ease;
 }
@@ -578,11 +599,11 @@ button:active {
 /* Focus state for accessibility */
 button:focus {
     outline: none;
-    box-shadow: 0 4px 12px rgba(0,123,255,0.3), 0 0 0 3px rgba(0,123,255,0.3);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3), 0 0 0 3px rgba(0, 123, 255, 0.3);
 }
 
 button:focus:hover {
-    box-shadow: var(--box-shadow-hover), 0 0 0 3px rgba(0,123,255,0.3);
+    box-shadow: var(--box-shadow-hover), 0 0 0 3px rgba(0, 123, 255, 0.3);
 }
 
 /* Ripple effect using pseudo-element */
@@ -627,30 +648,35 @@ button.loading::after {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* Success state */
 button.success {
     background: linear-gradient(135deg, var(--success-color) 0%, var(--success-color-dark) 100%);
-    box-shadow: 0 4px 12px rgba(40,167,69,0.3);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
 }
 
 button.success:hover {
     background: linear-gradient(135deg, #218838 0%, #155724 100%);
-    box-shadow: 0 6px 20px rgba(40,167,69,0.4);
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
 }
 
 /* Error state */
 button.error {
     background: linear-gradient(135deg, var(--error-color) 0%, #bd2130 100%);
-    box-shadow: 0 4px 12px rgba(220,53,69,0.3);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
 }
 
 button.error:hover {
     background: linear-gradient(135deg, #c82333 0%, #a71e2a 100%);
-    box-shadow: 0 6px 20px rgba(220,53,69,0.4);
+    box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
 }
 
 /* Result state classes to replace JavaScript innerHTML manipulation */
@@ -732,9 +758,17 @@ button.error:hover {
 }
 
 /* Dynamic wall height classes - now more flexible */
-.wall-container[data-height="small"] { min-height: 140px; }
-.wall-container[data-height="medium"] { min-height: 180px; }
-.wall-container[data-height="large"] { min-height: 220px; }
+.wall-container[data-height="small"] {
+    min-height: 140px;
+}
+
+.wall-container[data-height="medium"] {
+    min-height: 180px;
+}
+
+.wall-container[data-height="large"] {
+    min-height: 220px;
+}
 
 #result {
     padding: 16px;
@@ -751,7 +785,8 @@ button.error:hover {
 }
 
 #wall-container {
-    max-width: 100%; /* Allow flexible width */
+    max-width: 100%;
+    /* Allow flexible width */
     border: 3px solid var(--text-color);
     display: flex;
     overflow: hidden;
@@ -759,12 +794,16 @@ button.error:hover {
     background-color: var(--section-bg);
     border-radius: var(--border-radius);
     position: relative;
-    margin: 0 auto; /* Center the container */
-    height: 250px; /* Default height - will be overridden by JavaScript */
-    width: 400px; /* Default width - will be overridden by JavaScript */
+    margin: 0 auto;
+    /* Center the container */
+    height: 250px;
+    /* Default height - will be overridden by JavaScript */
+    width: 400px;
+    /* Default width - will be overridden by JavaScript */
     min-height: 150px;
     min-width: 200px;
-    max-height: 450px; /* Allow for tall walls on desktop */
+    max-height: 450px;
+    /* Allow for tall walls on desktop */
 }
 
 .line {
@@ -781,6 +820,7 @@ button.error:hover {
         opacity: 0;
         transform: scale(0.9);
     }
+
     to {
         opacity: 1;
         transform: scale(1);
@@ -788,19 +828,50 @@ button.error:hover {
 }
 
 /* Stagger the animation for multiple lines */
-.line:nth-child(1) { animation-delay: 0.1s; }
-.line:nth-child(2) { animation-delay: 0.15s; }
-.line:nth-child(3) { animation-delay: 0.2s; }
-.line:nth-child(4) { animation-delay: 0.25s; }
-.line:nth-child(5) { animation-delay: 0.3s; }
-.line:nth-child(6) { animation-delay: 0.35s; }
-.line:nth-child(7) { animation-delay: 0.4s; }
-.line:nth-child(8) { animation-delay: 0.45s; }
-.line:nth-child(9) { animation-delay: 0.5s; }
-.line:nth-child(10) { animation-delay: 0.55s; }
+.line:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.line:nth-child(2) {
+    animation-delay: 0.15s;
+}
+
+.line:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.line:nth-child(4) {
+    animation-delay: 0.25s;
+}
+
+.line:nth-child(5) {
+    animation-delay: 0.3s;
+}
+
+.line:nth-child(6) {
+    animation-delay: 0.35s;
+}
+
+.line:nth-child(7) {
+    animation-delay: 0.4s;
+}
+
+.line:nth-child(8) {
+    animation-delay: 0.45s;
+}
+
+.line:nth-child(9) {
+    animation-delay: 0.5s;
+}
+
+.line:nth-child(10) {
+    animation-delay: 0.55s;
+}
 
 /* For lines beyond 10, use a general delay */
-.line:nth-child(n+11) { animation-delay: 0.6s; }
+.line:nth-child(n+11) {
+    animation-delay: 0.6s;
+}
 
 .line:hover {
     filter: brightness(1.1);
@@ -816,7 +887,7 @@ button.error:hover {
     background-color: #8B4513;
     border: 2px solid #5D2906;
     z-index: 10;
-    box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
     display: none;
     border-radius: 4px 4px 0 0;
 }
@@ -826,7 +897,7 @@ button.error:hover {
     background-color: #87CEEB;
     border: 2px solid #4682B4;
     z-index: 10;
-    box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
     display: none;
     border-radius: 4px;
 }
@@ -863,12 +934,12 @@ input[type="checkbox"] {
 /* Enhanced checkbox states */
 input[type="checkbox"]:hover {
     transform: scale(1.1);
-    box-shadow: 0 0 0 3px rgba(0,123,255,0.2);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
 }
 
 input[type="checkbox"]:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(0,123,255,0.3);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.3);
 }
 
 input[type="checkbox"]:active {
@@ -880,12 +951,12 @@ input[type="checkbox"]:active {
     background-color: var(--section-bg);
     border-color: var(--primary-color);
     transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .checkbox-group:focus-within {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
 }
 
 .status-indicator {
@@ -896,9 +967,18 @@ input[type="checkbox"]:active {
     margin-right: 8px;
 }
 
-.status-success { background-color: var(--success-color); }
-.status-warning { background-color: var(--warning-color); }
-.status-error { background-color: var(--error-color); }
+.status-success {
+    background-color: var(--success-color);
+}
+
+.status-warning {
+    background-color: var(--warning-color);
+}
+
+.status-error {
+    background-color: var(--error-color);
+}
+
 .help-text {
     font-size: 0.75rem;
     color: var(--text-color-secondary);
@@ -906,18 +986,21 @@ input[type="checkbox"]:active {
 }
 
 /* Enhanced wardrobe and window visibility states */
-#wardrobe, #window {
+#wardrobe,
+#window {
     opacity: 0;
     transform: scale(0.8);
     transition: all 0.3s ease;
 }
 
-#wardrobe.visible, #window.visible {
+#wardrobe.visible,
+#window.visible {
     opacity: 1;
     transform: scale(1);
 }
 
-#wardrobe.hidden, #window.hidden {
+#wardrobe.hidden,
+#window.hidden {
     display: none !important;
 }
 
@@ -961,12 +1044,14 @@ input[type="checkbox"]:active {
     background-color: var(--container-bg);
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
-    border: 1px solid rgba(255,255,255,0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     height: fit-content;
     align-self: flex-start;
     width: 100%;
-    min-height: 200px; /* Ensure minimum height */
-    overflow: visible; /* Allow content to determine size */
+    min-height: 200px;
+    /* Ensure minimum height */
+    overflow: visible;
+    /* Allow content to determine size */
 }
 
 .calculator-results {
@@ -995,7 +1080,8 @@ input[type="checkbox"]:active {
     .calculator-visualization {
         margin-bottom: 1rem;
         padding: 1rem;
-        min-height: 200px; /* Increase to accommodate taller walls */
+        min-height: 200px;
+        /* Increase to accommodate taller walls */
     }
 
     .calculator-controls {
@@ -1006,9 +1092,11 @@ input[type="checkbox"]:active {
     /* Mobile-specific wall container styles */
     #wall-container {
         min-height: 120px;
-        max-height: 280px; /* Allow taller walls on mobile */
+        max-height: 280px;
+        /* Allow taller walls on mobile */
         min-width: 250px;
-        max-width: 350px; /* Constrain max width on mobile */
+        max-width: 350px;
+        /* Constrain max width on mobile */
         /* Maintain aspect ratio based on actual wall proportions */
         aspect-ratio: auto;
         /* Ensure proper border-box sizing */
@@ -1019,9 +1107,11 @@ input[type="checkbox"]:active {
     #wall-container[data-height="small"] {
         min-height: 140px;
     }
+
     #wall-container[data-height="medium"] {
         min-height: 160px;
     }
+
     #wall-container[data-height="large"] {
         min-height: 180px;
     }
@@ -1068,13 +1158,16 @@ input[type="checkbox"]:active {
     position: fixed;
     top: 15px;
     right: 15px;
-    z-index: 1001; /* Increased z-index to be above the side menu */
+    z-index: 1001;
+    /* Increased z-index to be above the side menu */
     cursor: pointer;
-    width: 50px; /* Increased from 40px for better mobile UX */
-    height: 50px; /* Increased from 40px for better mobile UX */
+    width: 50px;
+    /* Increased from 40px for better mobile UX */
+    height: 50px;
+    /* Increased from 40px for better mobile UX */
     border-radius: 50%;
     background-color: var(--container-bg);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1094,7 +1187,8 @@ input[type="checkbox"]:active {
 .hamburger-menu.open {
     background-color: transparent;
     box-shadow: none;
-    right: 20px; /* Align with the side panel padding */
+    right: 20px;
+    /* Align with the side panel padding */
 }
 
 .hamburger-icon {
@@ -1124,7 +1218,8 @@ input[type="checkbox"]:active {
     left: 30%;
 }
 
-.hamburger-icon span:nth-child(2), .hamburger-icon span:nth-child(3) {
+.hamburger-icon span:nth-child(2),
+.hamburger-icon span:nth-child(3) {
     top: 7px;
 }
 
@@ -1141,12 +1236,13 @@ input[type="checkbox"]:active {
     width: 300px;
     height: 100vh;
     background-color: var(--container-bg);
-    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     z-index: 999;
     transition: right 0.3s ease, box-shadow 0.3s ease;
-    padding: 70px 28px 28px; /* Adjusted padding to account for hamburger button */
+    padding: 70px 28px 28px;
+    /* Adjusted padding to account for hamburger button */
     overflow-y: auto;
-    border-left: 1px solid rgba(0,0,0,0.05);
+    border-left: 1px solid rgba(0, 0, 0, 0.05);
     backdrop-filter: blur(5px);
     display: flex;
     flex-direction: column;
@@ -1155,7 +1251,7 @@ input[type="checkbox"]:active {
 
 .side-menu.open {
     right: 0;
-    box-shadow: 0 0 30px rgba(0,0,0,0.15);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
 }
 
 /* Menu overlay for mobile */
@@ -1189,7 +1285,8 @@ input[type="checkbox"]:active {
     flex-direction: column;
     flex-grow: 1;
     min-height: 200px;
-    overflow: hidden; /* Prevent any overflow from causing scrollbars on the section itself */
+    overflow: hidden;
+    /* Prevent any overflow from causing scrollbars on the section itself */
 }
 
 .menu-section:not(:last-child):after {
@@ -1314,7 +1411,7 @@ select:hover {
 }
 
 .side-menu::-webkit-scrollbar-thumb {
-    background: rgba(0,0,0,0.1);
+    background: rgba(0, 0, 0, 0.1);
     border-radius: 10px;
 }
 
@@ -1344,7 +1441,7 @@ select:hover {
 .room-input:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
 }
 
 .room-save-btn,
@@ -1358,7 +1455,7 @@ select:hover {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     color: white;
 }
 
@@ -1384,12 +1481,16 @@ select:hover {
 
 .saved-rooms-list {
     margin-top: 16px;
-    max-height: calc(70vh - 240px); /* Dynamic calculation for available space */
-    min-height: 100px; /* Ensure minimum height */
+    max-height: calc(70vh - 240px);
+    /* Dynamic calculation for available space */
+    min-height: 100px;
+    /* Ensure minimum height */
     overflow-y: auto;
-    scrollbar-width: thin; /* For Firefox */
+    scrollbar-width: thin;
+    /* For Firefox */
     scrollbar-color: var(--border-color) transparent;
-    padding-right: 2px; /* Add a small padding to account for scrollbar space */
+    padding-right: 2px;
+    /* Add a small padding to account for scrollbar space */
 }
 
 /* Custom scrollbar for the saved rooms list */
