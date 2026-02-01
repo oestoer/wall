@@ -7,7 +7,7 @@ A web application designed to help you calculate and visualize vertical or horiz
 
 ## Demo
 
-Try it out at [Wall Line Calculator](https://oestoer.github.io/wall/).
+Try it out at [Wall Line Calculator](https://wall.ostor.dev/).
 
 ## 📋 What This Project Is
 
