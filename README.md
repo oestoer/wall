@@ -5,6 +5,10 @@ A web application designed to help you calculate and visualize vertical or horiz
 ![Wall Line Calculator](https://img.shields.io/badge/version-1.0.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
+## Demo
+
+Try it out at [Wall Line Calculator](https://oestoer.github.io/wall/).
+
 ## 📋 What This Project Is
 
 The Wall Line Calculator & Visualizer is an interactive tool that allows you to:
