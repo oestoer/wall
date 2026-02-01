@@ -17,3 +17,10 @@ node_modules
 .pnp.*
 
 dist
+
+# Playwright
+playwright-report
+test-results
+playwright-video
+playwright-mcp
+playwright-mcp.log
