@@ -1,0 +1,1458 @@
+/* CSS Custom Properties for Theming */
+:root {
+    /* Base theme (default - light) */
+    --primary-color: #007bff;
+    --primary-color-dark: #0056b3;
+    --primary-color-light: #e8f4fd;
+    --success-color: #28a745;
+    --success-color-dark: #1e7e34;
+    --warning-color: #ffc107;
+    --warning-color-dark: #856404;
+    --error-color: #dc3545;
+    --error-color-dark: #721c24;
+
+    --background-color: linear-gradient(135deg, #fcfdfe 0%, #d0daea 100%);
+    --container-bg: white;
+    --section-bg: #f8f9fa;
+    --text-color: #2c3e50;
+    --text-color-secondary: #495057;
+    --border-color: #e9ecef;
+    --border-color-focus: #007bff;
+
+    --border-radius: 8px;
+    --box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    --box-shadow-hover: 0 6px 20px rgba(0,123,255,0.4);
+    --transition-speed: 0.2s;
+
+    --button-gradient: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-dark) 100%);
+    --button-gradient-hover: linear-gradient(135deg, #0069d9 0%, #004085 100%);
+    --button-gradient-active: linear-gradient(135deg, var(--primary-color-dark) 0%, #003d7a 100%);
+
+    --secondary-button-gradient: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    --secondary-button-gradient-hover: linear-gradient(135deg, #5a6268 0%, #3d4142 100%);
+    --secondary-button-gradient-active: linear-gradient(135deg, #495057 0%, #2d3436 100%);
+}
+
+/* Adding explicit theme classes to override the media query */
+html.theme-light {
+    --background-color: linear-gradient(135deg, #fcfdfe 0%, #d0daea 100%);
+    --container-bg: white;
+    --section-bg: #f8f9fa;
+    --text-color: #2c3e50;
+    --text-color-secondary: #495057;
+    --border-color: #e9ecef;
+    --border-color-focus: #007bff;
+
+    --primary-color-light: #e8f4fd;
+    --box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    --box-shadow-hover: 0 6px 20px rgba(0,123,255,0.4);
+
+    --button-gradient: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-dark) 100%);
+    --button-gradient-hover: linear-gradient(135deg, #0069d9 0%, #004085 100%);
+    --button-gradient-active: linear-gradient(135deg, var(--primary-color-dark) 0%, #003d7a 100%);
+}
+
+html.theme-dark {
+    --background-color: linear-gradient(135deg, #2c3e50 0%, #1a2639 100%);
+    --container-bg: #283747;
+    --section-bg: #1e2b38;
+    --text-color: #ecf0f1;
+    --text-color-secondary: #d1d8e0;
+    --border-color: #4a5568;
+    --border-color-focus: #4299e1;
+
+    --primary-color-light: #2a4365;
+    --box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    --box-shadow-hover: 0 6px 20px rgba(0,123,255,0.6);
+
+    /* Adjust some colors for better visibility in dark mode */
+    --button-gradient: linear-gradient(135deg, #4299e1 0%, #2b6cb0 100%);
+    --button-gradient-hover: linear-gradient(135deg, #3182ce 0%, #2c5282 100%);
+    --button-gradient-active: linear-gradient(135deg, #2b6cb0 0%, #2c5282 100%);
+}
+
+/* Dark theme using prefers-color-scheme media query */
+@media (prefers-color-scheme: dark) {
+    :root:not(.theme-light):not(.theme-dark) {
+        --background-color: linear-gradient(135deg, #2c3e50 0%, #1a2639 100%);
+        --container-bg: #283747;
+        --section-bg: #1e2b38;
+        --text-color: #ecf0f1;
+        --text-color-secondary: #d1d8e0;
+        --border-color: #4a5568;
+        --border-color-focus: #4299e1;
+
+        --primary-color-light: #2a4365;
+        --box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        --box-shadow-hover: 0 6px 20px rgba(0,123,255,0.6);
+
+        /* Adjust some colors for better visibility in dark mode */
+        --button-gradient: linear-gradient(135deg, #4299e1 0%, #2b6cb0 100%);
+        --button-gradient-hover: linear-gradient(135deg, #3182ce 0%, #2c5282 100%);
+        --button-gradient-active: linear-gradient(135deg, #2b6cb0 0%, #2c5282 100%);
+    }
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px;
+    background: var(--background-color);
+    margin: 0;
+    min-height: 100vh;
+    line-height: 1.5;
+    color: var(--text-color);
+}
+
+.container {
+    background-color: var(--container-bg);
+    padding: 24px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    width: 100%;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+h1 {
+    color: var(--text-color);
+    text-align: center;
+    margin-bottom: 32px;
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.section {
+    margin-bottom: 24px;
+    padding: 20px;
+    background-color: var(--section-bg);
+    border-radius: var(--border-radius);
+    border-left: 4px solid var(--primary-color);
+    transition: all var(--transition-speed) ease;
+}
+
+.section:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transform: translateY(-1px);
+}
+
+.section details {
+    margin: 0;
+}
+
+.section details summary {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+    transition: color var(--transition-speed) ease;
+    list-style: none;
+    outline: none;
+}
+
+.section details summary::-webkit-details-marker {
+    display: none;
+}
+
+.section details summary:hover {
+    color: var(--primary-color);
+}
+
+.section details summary::after {
+    content: '▼';
+    font-size: 0.8rem;
+    margin-left: auto;
+    transition: transform 0.3s ease;
+    transform-origin: center;
+}
+
+.section details:not([open]) summary::after {
+    transform: rotate(-90deg);
+}
+
+.section details[open] summary {
+    margin-bottom: 16px;
+}
+
+.section details {
+    overflow: hidden;
+}
+
+.section-content {
+    animation: slideDown 0.3s ease-out;
+    overflow: hidden;
+}
+
+/* Pure CSS animation for details opening */
+.section details[open] .section-content {
+    animation: slideDown 0.3s ease-out;
+}
+
+.section details:not([open]) .section-content {
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        max-height: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        max-height: 1000px;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 1;
+        max-height: 1000px;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        max-height: 0;
+        transform: translateY(-10px);
+    }
+}
+
+.input-group {
+    margin-bottom: 16px;
+    position: relative;
+}
+
+/* Move validation icons to the left of the input */
+.input-group::after {
+    content: "";
+    position: absolute;
+    left: 8px;
+    top: 40px;
+    width: 16px;
+    height: 16px;
+    opacity: 0;
+    transition: opacity var(--transition-speed) ease;
+    pointer-events: none;
+}
+
+/* Remove checkmark for valid input fields, only show red cross for invalid */
+.input-group:has(input:valid)::after {
+    content: "";
+    opacity: 0;
+}
+.input-group:has(input:invalid:not(:placeholder-shown))::after {
+    content: "✗";
+    color: var(--error-color);
+    opacity: 1;
+    font-weight: bold;
+}
+
+/* Add left padding to number inputs only when invalid to avoid overlap with icon */
+input[type="number"] {
+    padding-left: 12px;
+    transition: padding-left var(--transition-speed) ease;
+}
+
+input[type="number"]:invalid:not(:placeholder-shown) {
+    padding-left: 18px;
+}
+
+.input-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+@media (max-width: 600px) {
+    .input-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    body {
+        padding: 12px;
+    }
+
+    .container {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    /* Smaller mobile devices - more flexible for aspect ratios */
+    #wall-container {
+        min-height: 120px;
+        max-height: 220px; /* Allow reasonable height for tall walls */
+        min-width: 200px;
+        max-width: 280px; /* Constrain max width on small mobile */
+        box-sizing: border-box;
+    }
+
+    /* Override data-height attributes for very small screens */
+    #wall-container[data-height="small"] {
+        min-height: 130px;
+    }
+    #wall-container[data-height="medium"] {
+        min-height: 150px;
+    }
+    #wall-container[data-height="large"] {
+        min-height: 170px;
+    }
+
+    .calculator-visualization {
+        padding: 0.75rem;
+        min-height: 180px; /* Adjust for small screens but allow tall walls */
+    }
+}
+
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: var(--text-color-secondary);
+    font-size: 0.9rem;
+}
+
+input[type="number"], select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 16px;
+    transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+    background-color: var(--container-bg);
+    color: var(--text-color);
+}
+
+input[type="number"]:focus, select:focus {
+    outline: none;
+    border-color: var(--border-color-focus);
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+}
+
+/* Validation styles for invalid inputs */
+input[type="number"]:invalid {
+    border-color: var(--error-color);
+    box-shadow: 0 0 0 3px rgba(220,53,69,0.1);
+}
+
+input[type="number"]:valid {
+    border-color: var(--success-color);
+}
+
+/* Custom validation messages */
+.validation-message {
+    display: none;
+    color: var(--error-color);
+    font-size: 0.875rem;
+    margin-top: 4px;
+    padding: 4px 8px;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+}
+
+input[type="number"]:invalid + .validation-message {
+    display: block;
+}
+
+/* Required field indicators */
+.required::after {
+    content: " *";
+    color: var(--error-color);
+    font-weight: bold;
+}
+
+/* Form validation summary */
+.form-errors {
+    display: none;
+    background-color: #f8d7da;
+    color: var(--error-color-dark);
+    padding: 12px 16px;
+    border: 1px solid #f5c6cb;
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
+}
+
+form:invalid .form-errors {
+    display: block;
+}
+
+.form-errors ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+/* Disable submit button when form is invalid */
+button[type="submit"]:disabled {
+    background: var(--secondary-button-gradient);
+    cursor: not-allowed;
+    opacity: 0.6;
+    transform: none;
+    box-shadow: 0 2px 6px rgba(108,117,125,0.2);
+    pointer-events: none;
+}
+
+button[type="submit"]:disabled:hover {
+    transform: none;
+    box-shadow: 0 2px 6px rgba(108,117,125,0.2);
+    background: var(--secondary-button-gradient);
+}
+
+/* Secondary button (Reset) specific styles */
+button[type="button"] {
+    background: var(--secondary-button-gradient);
+    box-shadow: 0 4px 12px rgba(108,117,125,0.3);
+}
+
+button[type="button"]:hover {
+    background: var(--secondary-button-gradient-hover);
+    box-shadow: 0 6px 20px rgba(108,117,125,0.4);
+}
+
+button[type="button"]:active {
+    background: var(--secondary-button-gradient-active);
+}
+
+button[type="button"]:focus {
+    box-shadow: 0 4px 12px rgba(108,117,125,0.3), 0 0 0 3px rgba(108,117,125,0.3);
+}
+
+/* Select validation styles */
+select:invalid {
+    border-color: var(--error-color);
+    box-shadow: 0 0 0 3px rgba(220,53,69,0.1);
+}
+
+select:valid {
+    border-color: var(--success-color);
+}
+
+/* Validation message styles for select elements */
+select:invalid + .validation-message {
+    display: block;
+}
+
+/* Custom validation tooltip */
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 200px;
+    background-color: #555;
+    color: white;
+    text-align: center;
+    border-radius: var(--border-radius);
+    padding: 5px 8px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -100px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 12px;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Animate validation messages */
+.validation-message {
+    animation: slideIn 0.3s ease-in-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Improved form error styling */
+.form-errors {
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 20%, 40%, 60%, 80% {
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-5px);
+    }
+}
+
+/* Enhanced focus states */
+input[type="number"]:focus:invalid {
+    border-color: var(--error-color);
+    box-shadow: 0 0 0 3px rgba(220,53,69,0.25);
+}
+
+input[type="number"]:focus:valid {
+    border-color: var(--success-color);
+    box-shadow: 0 0 0 3px rgba(40,167,69,0.25);
+}
+
+/* CSS-only checkbox toggles */
+.collapsible-content {
+    display: none;
+    background-color: var(--container-bg);
+    border-radius: var(--border-radius);
+    padding: 16px;
+    margin-top: 12px;
+    border: 2px solid var(--border-color);
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    transform: translateY(-10px);
+}
+
+input[type="checkbox"]:checked + label + .collapsible-content,
+.checkbox-group:has(input[type="checkbox"]:checked) ~ .collapsible-content {
+    display: block;
+    opacity: 1;
+    max-height: 500px;
+    transform: translateY(0);
+}
+
+button {
+    background: var(--button-gradient);
+    color: white;
+    padding: 14px 24px;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    width: 100%;
+    margin-top: 16px;
+    transition: all var(--transition-speed) ease;
+    box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+    position: relative;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+/* Hover state */
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--box-shadow-hover);
+    background: var(--button-gradient-hover);
+}
+
+/* Active/pressed state */
+button:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 8px rgba(0,123,255,0.2);
+    background: var(--button-gradient-active);
+    transition: all 0.1s ease;
+}
+
+/* Focus state for accessibility */
+button:focus {
+    outline: none;
+    box-shadow: 0 4px 12px rgba(0,123,255,0.3), 0 0 0 3px rgba(0,123,255,0.3);
+}
+
+button:focus:hover {
+    box-shadow: var(--box-shadow-hover), 0 0 0 3px rgba(0,123,255,0.3);
+}
+
+/* Ripple effect using pseudo-element */
+button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+}
+
+button:active::before {
+    width: 300px;
+    height: 300px;
+    transition: width 0.1s ease, height 0.1s ease;
+}
+
+/* Loading state (can be triggered by adding 'loading' class) */
+button.loading {
+    cursor: not-allowed;
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+button.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid transparent;
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Success state */
+button.success {
+    background: linear-gradient(135deg, var(--success-color) 0%, var(--success-color-dark) 100%);
+    box-shadow: 0 4px 12px rgba(40,167,69,0.3);
+}
+
+button.success:hover {
+    background: linear-gradient(135deg, #218838 0%, #155724 100%);
+    box-shadow: 0 6px 20px rgba(40,167,69,0.4);
+}
+
+/* Error state */
+button.error {
+    background: linear-gradient(135deg, var(--error-color) 0%, #bd2130 100%);
+    box-shadow: 0 4px 12px rgba(220,53,69,0.3);
+}
+
+button.error:hover {
+    background: linear-gradient(135deg, #c82333 0%, #a71e2a 100%);
+    box-shadow: 0 6px 20px rgba(220,53,69,0.4);
+}
+
+/* Result state classes to replace JavaScript innerHTML manipulation */
+.result-message {
+    margin-top: 20px;
+    padding: 16px;
+    font-size: 1rem;
+    color: var(--text-color);
+    text-align: center;
+    background-color: var(--primary-color-light);
+    border-radius: var(--border-radius);
+    border-left: 4px solid var(--primary-color);
+    line-height: 1.6;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+}
+
+.result-message.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.result-message.error {
+    background-color: #f8d7da;
+    color: var(--error-color-dark);
+    border-left-color: var(--error-color);
+}
+
+.result-message.warning {
+    background-color: #fff3cd;
+    color: var(--warning-color-dark);
+    border-left-color: var(--warning-color);
+}
+
+.result-message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border-left-color: var(--success-color);
+}
+
+/* Wall container states */
+.wall-container {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.wall-container.calculating {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.wall-container.error {
+    opacity: 0.3;
+    filter: grayscale(100%);
+}
+
+/* Form state classes */
+.form-calculating {
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+.form-calculating button {
+    background: var(--secondary-button-gradient);
+    cursor: wait;
+}
+
+.form-calculating button::after {
+    content: '';
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-left: 8px;
+    border: 2px solid transparent;
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Dynamic wall height classes - now more flexible */
+.wall-container[data-height="small"] { min-height: 140px; }
+.wall-container[data-height="medium"] { min-height: 180px; }
+.wall-container[data-height="large"] { min-height: 220px; }
+
+#result {
+    padding: 16px;
+    font-size: 1rem;
+    color: var(--text-color);
+    text-align: center;
+    background-color: var(--primary-color-light);
+    border-radius: var(--border-radius);
+    border-left: 4px solid var(--primary-color);
+    line-height: 1.6;
+    margin: 0;
+    width: 100%;
+    box-shadow: var(--box-shadow);
+}
+
+#wall-container {
+    max-width: 100%; /* Allow flexible width */
+    border: 3px solid var(--text-color);
+    display: flex;
+    overflow: hidden;
+    box-shadow: var(--box-shadow);
+    background-color: var(--section-bg);
+    border-radius: var(--border-radius);
+    position: relative;
+    margin: 0 auto; /* Center the container */
+    height: 250px; /* Default height - will be overridden by JavaScript */
+    width: 400px; /* Default width - will be overridden by JavaScript */
+    min-height: 150px;
+    min-width: 200px;
+    max-height: 450px; /* Allow for tall walls on desktop */
+}
+
+.line {
+    height: 100%;
+    width: 100%;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+    opacity: 0;
+    animation: lineAppear 0.4s ease-out forwards;
+}
+
+@keyframes lineAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Stagger the animation for multiple lines */
+.line:nth-child(1) { animation-delay: 0.1s; }
+.line:nth-child(2) { animation-delay: 0.15s; }
+.line:nth-child(3) { animation-delay: 0.2s; }
+.line:nth-child(4) { animation-delay: 0.25s; }
+.line:nth-child(5) { animation-delay: 0.3s; }
+.line:nth-child(6) { animation-delay: 0.35s; }
+.line:nth-child(7) { animation-delay: 0.4s; }
+.line:nth-child(8) { animation-delay: 0.45s; }
+.line:nth-child(9) { animation-delay: 0.5s; }
+.line:nth-child(10) { animation-delay: 0.55s; }
+
+/* For lines beyond 10, use a general delay */
+.line:nth-child(n+11) { animation-delay: 0.6s; }
+
+.line:hover {
+    filter: brightness(1.1);
+    transform: scale(1.02);
+    z-index: 5;
+    position: relative;
+}
+
+#wardrobe {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: #8B4513;
+    border: 2px solid #5D2906;
+    z-index: 10;
+    box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+    display: none;
+    border-radius: 4px 4px 0 0;
+}
+
+#window {
+    position: absolute;
+    background-color: #87CEEB;
+    border: 2px solid #4682B4;
+    z-index: 10;
+    box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+    display: none;
+    border-radius: 4px;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding: 12px;
+    background-color: var(--container-bg);
+    border-radius: var(--border-radius);
+    border: 2px solid var(--border-color);
+    transition: all var(--transition-speed) ease;
+    cursor: pointer;
+}
+
+.checkbox-group label {
+    margin-bottom: 0;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--primary-color);
+    transition: all var(--transition-speed) ease;
+    position: relative;
+    border-radius: 3px;
+}
+
+/* Enhanced checkbox states */
+input[type="checkbox"]:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.2);
+}
+
+input[type="checkbox"]:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.3);
+}
+
+input[type="checkbox"]:active {
+    transform: scale(0.95);
+}
+
+/* Checkbox group hover effect */
+.checkbox-group:hover {
+    background-color: var(--section-bg);
+    border-color: var(--primary-color);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.checkbox-group:focus-within {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+}
+
+.status-indicator {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.status-success { background-color: var(--success-color); }
+.status-warning { background-color: var(--warning-color); }
+.status-error { background-color: var(--error-color); }
+.help-text {
+    font-size: 0.75rem;
+    color: var(--text-color-secondary);
+    margin-top: 4px;
+}
+
+/* Enhanced wardrobe and window visibility states */
+#wardrobe, #window {
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.3s ease;
+}
+
+#wardrobe.visible, #window.visible {
+    opacity: 1;
+    transform: scale(1);
+}
+
+#wardrobe.hidden, #window.hidden {
+    display: none !important;
+}
+
+/* Better layout structure - Grid Layout */
+.calculator-grid {
+    display: grid;
+    grid-template-areas:
+        "controls right-column";
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    align-items: start;
+    gap: 2rem;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.calculator-controls {
+    grid-area: controls;
+    height: fit-content;
+    overflow-y: visible;
+}
+
+/* Container for visualization and results to handle sticky behavior together */
+.calculator-right-column {
+    grid-area: right-column;
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 2rem;
+    height: fit-content;
+    align-self: flex-start;
+}
+
+.calculator-visualization {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 1rem;
+    background-color: var(--container-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    border: 1px solid rgba(255,255,255,0.2);
+    height: fit-content;
+    align-self: flex-start;
+    width: 100%;
+    min-height: 200px; /* Ensure minimum height */
+    overflow: visible; /* Allow content to determine size */
+}
+
+.calculator-results {
+    grid-area: results;
+    margin-top: 1rem;
+    padding: 0;
+    align-self: flex-start;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .calculator-grid {
+        grid-template-areas:
+            "controls"
+            "right-column";
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+    }
+
+    .calculator-right-column {
+        position: static;
+        flex-direction: column;
+        margin-top: 2rem;
+    }
+
+    .calculator-visualization {
+        margin-bottom: 1rem;
+        padding: 1rem;
+        min-height: 200px; /* Increase to accommodate taller walls */
+    }
+
+    .calculator-controls {
+        height: auto;
+        overflow-y: visible;
+    }
+
+    /* Mobile-specific wall container styles */
+    #wall-container {
+        min-height: 120px;
+        max-height: 280px; /* Allow taller walls on mobile */
+        min-width: 250px;
+        max-width: 350px; /* Constrain max width on mobile */
+        /* Maintain aspect ratio based on actual wall proportions */
+        aspect-ratio: auto;
+        /* Ensure proper border-box sizing */
+        box-sizing: border-box;
+    }
+
+    /* Override the data-height attributes for mobile - more flexible */
+    #wall-container[data-height="small"] {
+        min-height: 140px;
+    }
+    #wall-container[data-height="medium"] {
+        min-height: 160px;
+    }
+    #wall-container[data-height="large"] {
+        min-height: 180px;
+    }
+}
+
+/* User theme preference toggle */
+.theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding: 4px 0;
+}
+
+.theme-toggle label {
+    margin: 0;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    color: var(--text-color);
+}
+
+.theme-toggle select {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+    border-radius: var(--border-radius);
+    background-color: var(--section-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    flex-grow: 1;
+    transition: border-color var(--transition-speed) ease;
+}
+
+.theme-toggle select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+/* Hamburger Menu Styles */
+.hamburger-menu {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    z-index: 1001; /* Increased z-index to be above the side menu */
+    cursor: pointer;
+    width: 50px; /* Increased from 40px for better mobile UX */
+    height: 50px; /* Increased from 40px for better mobile UX */
+    border-radius: 50%;
+    background-color: var(--container-bg);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-speed) ease;
+}
+
+.hamburger-menu:hover {
+    background-color: var(--section-bg);
+    transform: scale(1.05);
+}
+
+.hamburger-menu:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--primary-color-light);
+}
+
+.hamburger-menu.open {
+    background-color: transparent;
+    box-shadow: none;
+    right: 20px; /* Align with the side panel padding */
+}
+
+.hamburger-icon {
+    width: 20px;
+    height: 16px;
+    position: relative;
+    transform: rotate(0deg);
+    transition: .3s ease-in-out;
+}
+
+.hamburger-icon span {
+    display: block;
+    position: absolute;
+    height: 2px;
+    width: 100%;
+    background: var(--text-color);
+    border-radius: 4px;
+    opacity: 1;
+    left: 0;
+    transform: rotate(0deg);
+    transition: .25s ease-in-out;
+}
+
+.hamburger-icon span:nth-child(1) {
+    top: 0px;
+    width: 70%;
+    left: 30%;
+}
+
+.hamburger-icon span:nth-child(2), .hamburger-icon span:nth-child(3) {
+    top: 7px;
+}
+
+.hamburger-icon span:nth-child(4) {
+    top: 14px;
+    width: 70%;
+}
+
+/* Side menu panel */
+.side-menu {
+    position: fixed;
+    top: 0;
+    right: -300px;
+    width: 300px;
+    height: 100vh;
+    background-color: var(--container-bg);
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    z-index: 999;
+    transition: right 0.3s ease, box-shadow 0.3s ease;
+    padding: 70px 28px 28px; /* Adjusted padding to account for hamburger button */
+    overflow-y: auto;
+    border-left: 1px solid rgba(0,0,0,0.05);
+    backdrop-filter: blur(5px);
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.side-menu.open {
+    right: 0;
+    box-shadow: 0 0 30px rgba(0,0,0,0.15);
+}
+
+/* Menu overlay for mobile */
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.menu-overlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.menu-section {
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    position: relative;
+}
+
+/* Special handling for the rooms configuration section */
+.menu-section.room-configs-section {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    min-height: 200px;
+    overflow: hidden; /* Prevent any overflow from causing scrollbars on the section itself */
+}
+
+.menu-section:not(:last-child):after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--border-color);
+    opacity: 0.5;
+}
+
+.menu-section:last-child {
+    margin-bottom: 0;
+}
+
+.menu-section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--text-color);
+    letter-spacing: 0.5px;
+    padding-bottom: 6px;
+    border-bottom: 1px dotted var(--border-color);
+}
+
+/* When hamburger icon is clicked - Transform to X icon */
+.hamburger-menu.open .hamburger-icon span:nth-child(1) {
+    top: 7px;
+    width: 0%;
+    left: 50%;
+    opacity: 0;
+}
+
+.hamburger-menu.open .hamburger-icon span:nth-child(2) {
+    transform: rotate(45deg);
+    width: 100%;
+    left: 0;
+}
+
+.hamburger-menu.open .hamburger-icon span:nth-child(3) {
+    transform: rotate(-45deg);
+    width: 100%;
+    left: 0;
+}
+
+.hamburger-menu.open .hamburger-icon span:nth-child(4) {
+    top: 7px;
+    width: 0%;
+    left: 50%;
+    opacity: 0;
+}
+
+/* Add hover effect when menu is open */
+.hamburger-menu.open:hover {
+    transform: scale(1.05) rotate(90deg);
+    transition: transform 0.3s ease;
+}
+
+/* Mobile specific styles */
+@media (max-width: 768px) {
+    .side-menu {
+        right: -100%;
+        width: 100%;
+        padding-top: 70px;
+        border-left: none;
+    }
+
+    .side-menu.open {
+        right: 0;
+    }
+
+    /* Keep hamburger menu positioned properly on mobile */
+    .hamburger-menu.open {
+        right: 15px;
+    }
+}
+
+/* Menu item styles - Adding these new styles for a smoother look */
+.menu-item {
+    margin-bottom: 12px;
+    transition: transform 0.2s ease;
+}
+
+.menu-item:hover {
+    transform: translateX(2px);
+}
+
+/* Style for future menu items with icons */
+.menu-item-with-icon {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Smooth hover effects for select elements */
+select:hover {
+    border-color: var(--primary-color);
+}
+
+/* When element is active in the menu */
+.menu-item.active {
+    color: var(--primary-color);
+}
+
+/* Side menu header */
+.side-menu-header {
+    padding-bottom: 16px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--border-color);
+    opacity: 0.8;
+}
+
+/* Nice scrollbar for the menu */
+.side-menu::-webkit-scrollbar {
+    width: 6px;
+}
+
+.side-menu::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.side-menu::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.1);
+    border-radius: 10px;
+}
+
+.side-menu::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
+}
+
+/* Room Configuration Styles */
+.room-input-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    gap: 8px;
+}
+
+.room-input {
+    flex-grow: 1;
+    padding: 8px 12px;
+    border-radius: var(--border-radius);
+    background-color: var(--container-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    font-size: 0.9rem;
+    transition: all var(--transition-speed) ease;
+}
+
+.room-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+}
+
+.room-save-btn,
+.room-delete-btn {
+    padding: 8px 12px;
+    border-radius: var(--border-radius);
+    border: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all var(--transition-speed) ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    color: white;
+}
+
+.room-save-btn {
+    background: var(--button-gradient);
+}
+
+.room-save-btn:hover {
+    background: var(--button-gradient-hover);
+    transform: translateY(-1px);
+}
+
+.room-delete-btn {
+    background: var(--secondary-button-gradient);
+    padding: 6px 10px;
+    min-width: 36px;
+}
+
+.room-delete-btn:hover {
+    background: linear-gradient(135deg, var(--error-color) 0%, var(--error-color-dark) 100%);
+    transform: translateY(-1px);
+}
+
+.saved-rooms-list {
+    margin-top: 16px;
+    max-height: calc(70vh - 240px); /* Dynamic calculation for available space */
+    min-height: 100px; /* Ensure minimum height */
+    overflow-y: auto;
+    scrollbar-width: thin; /* For Firefox */
+    scrollbar-color: var(--border-color) transparent;
+    padding-right: 2px; /* Add a small padding to account for scrollbar space */
+}
+
+/* Custom scrollbar for the saved rooms list */
+.saved-rooms-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.saved-rooms-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.saved-rooms-list::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 10px;
+}
+
+.saved-rooms-list::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
+}
+
+/* Always display scrollbar space to prevent layout shifts */
+.saved-rooms-list {
+    scrollbar-gutter: stable;
+}
+
+.saved-room-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background-color: var(--section-bg);
+    border-radius: var(--border-radius);
+    margin-bottom: 8px;
+    border-left: 3px solid var(--primary-color);
+    transition: all var(--transition-speed) ease;
+    cursor: pointer;
+}
+
+.saved-room-item:hover {
+    background-color: var(--primary-color-light);
+    transform: translateX(2px);
+}
+
+.saved-room-name {
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.saved-room-dimensions {
+    font-size: 0.8rem;
+    color: var(--text-color-secondary);
+    margin-top: 4px;
+}
+
+.room-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.no-rooms-message {
+    text-align: center;
+    color: var(--text-color-secondary);
+    font-style: italic;
+    padding: 12px 0;
+    font-size: 0.9rem;
+}
